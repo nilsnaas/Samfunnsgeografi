@@ -197,10 +197,10 @@
         </button>
       </div>
 
-      <div class="flex items-center gap-2 text-[11px]">
-        <span class="text-sec hidden sm:inline">Klassisk leseside:</span>
-        <a href="urfolk.html" class="elevated-surface border px-2.5 py-1 rounded-md hover:border-emerald-500/60 transition-colors font-medium">Urfolk ↗</a>
-        <a href="samenes-hjemland.html" class="elevated-surface border px-2.5 py-1 rounded-md hover:border-emerald-500/60 transition-colors font-medium">Samenes hjemland ↗</a>
+      <div class="flex flex-wrap items-center gap-1.5 text-[11px]">
+        <span class="px-2.5 py-1 rounded-md bg-emerald-600 text-white font-semibold">🌳 Tre</span>
+        <a href="urfolk.html" class="elevated-surface border px-2.5 py-1 rounded-md hover:border-emerald-500/60 transition-colors font-medium">1. Urfolk ↗</a>
+        <a href="samenes-hjemland.html" class="elevated-surface border px-2.5 py-1 rounded-md hover:border-emerald-500/60 transition-colors font-medium">2. Sápmi ↗</a>
       </div>
     </div>
   </header>
@@ -421,8 +421,8 @@
         part: 'Fordypning · Urfolk',
         title: 'Trenger ikke ha vært der først',
         subtitle: 'Inuittene på Grønland og quechuafolket i Andesfjellene utfordrer myter om urfolk',
-        image: 'Images/urfolk-mangfold.jpg',
-        caption: 'Både jegere og sankere i Arktis og jordbrukssamfunn som Inkariket i Andesfjellene regnes som urfolk.',
+        image: 'Images/inuitt-kajakk.jpg',
+        caption: 'Inuittisk jeger i kajakk på Grønland (Wikimedia Commons, åpen lisens). Inuittene er Grønlands urfolk selv om de ikke var de første menneskene på øya.',
         enkel: `
           <p>Man trenger <strong>ikke</strong> å ha vært de aller første menneskene i et område for å regnes som ${g('urfolk', 'urfolk')}. Det avgjørende er at gruppen bodde i området <em>før dagens stater og landegrenser ble etablert</em>, og har bevart egen kultur og tilknytning til landet.</p>
           <p>På Grønland kom inuittene etter vikingene til sørvestkysten, men regnes likevel som urfolk. Og quechuafolket i Andesfjellene (over 10 millioner) bygde det avanserte Inkariket før spansk kolonisering.</p>
@@ -790,8 +790,8 @@
         part: 'Motperspektiv · Natur & miljø',
         title: 'Rovdyr, naturvern & truet laksefiske',
         subtitle: 'Når samiske næringsinteresser og naturverninteresser ikke peker i samme retning',
-        image: 'Images/fosen-konflikt.jpg',
-        caption: 'Både rovdyrforvaltning på vidda og fiskestopp i Tanaelva viser at urfolk og naturvernere kan ha motstridende interesser.',
+        image: 'Images/tanaelva.jpg',
+        caption: 'Tanaelva på grensen mellom Norge og Finland (Wikimedia Commons, åpen lisens). Her kolliderer hensynet til truet villaks med tradisjonell samisk fiskekultur.',
         enkel: `
           <p>Selv om samer og naturvernere ofte står sammen mot kraftutbygging, bruker også moderne urfolksnæringer naturen hardt enkelte steder: Store reinflokker kan gi <strong>nedbeiting</strong> av reinbeiteområder, og bruk av <strong>motoriserte kjøretøy</strong> (snøscooter og ATV) sliter på sårbar vidde.</p>
           <p>I tillegg kolliderer interessene om <strong>rovdyr</strong> (ulv, jerv, gaupe og kongeørn tar rein) og om fiskestopp i <strong>Tanaelva</strong>.</p>
@@ -1057,7 +1057,14 @@
       const tabBody = document.getElementById('tab-body');
 
       if (activeTab === 'fagstoff') {
-        tabBody.innerHTML = readingMode === 'enkel' ? node.enkel : node.full;
+        const textHtml = readingMode === 'enkel' ? node.enkel : node.full;
+        const sumText = node.goal || node.subtitle;
+        tabBody.innerHTML = textHtml + `
+          <div class="mt-4 elevated-surface border border-emerald-500/30 rounded-xl p-3.5 text-xs sm:text-sm">
+            <p class="font-bold uppercase tracking-wider text-emerald-400 text-[11px] mb-1">⚡ Super-sammendrag</p>
+            <p class="text-sec">${sumText}</p>
+          </div>
+        `;
       } else if (activeTab === 'case') {
         tabBody.innerHTML = node.caseHtml;
       } else if (activeTab === 'oppgaver') {
