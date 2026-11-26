@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kunnskapstreet · Samfunnsgeografi – Nils sin samfunnsgeografibok</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,600;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            serif: ['Source Serif 4', 'Georgia', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --bg-app: #090d16;
+      --bg-panel: #0f1623;
+      --bg-elevated: #151e30;
+      --border-subtle: rgba(148, 163, 184, 0.16);
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --canvas-bg: radial-gradient(circle at 50% 45%, #111a2b 0%, #070b12 100%);
+    }
+    html.light-theme {
+      --bg-app: #f5f5f4;
+      --bg-panel: #ffffff;
+      --bg-elevated: #fafaf9;
+      --border-subtle: rgba(120, 113, 108, 0.22);
+      --text-primary: #1c1917;
+      --text-secondary: #57534e;
+      --canvas-bg: radial-gradient(circle at 50% 45%, #fafaf9 0%, #f0efed 100%);
+    }
+    body {
+      background-color: var(--bg-app);
+      color: var(--text-primary);
+      font-family: 'Inter', system-ui, sans-serif;
+      transition: background-color 200ms ease, color 200ms ease;
+    }
+    .panel-surface {
+      background-color: var(--bg-panel);
+      border-color: var(--border-subtle);
+    }
+    .elevated-surface {
+      background-color: var(--bg-elevated);
+      border-color: var(--border-subtle);
+    }
+    .tree-canvas-bg {
+      background-color: #060a12;
+      background-image:
+        radial-gradient(circle at 28% 28%, rgba(16, 185, 129, 0.10), transparent 45%),
+        radial-gradient(circle at 75% 68%, rgba(56, 189, 248, 0.08), transparent 48%),
+        radial-gradient(rgba(148, 163, 184, 0.16) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 24px 24px;
+    }
+    html.light-theme .tree-canvas-bg {
+      background-color: #f6f5f2;
+      background-image:
+        radial-gradient(circle at 28% 28%, rgba(24, 89, 82, 0.07), transparent 45%),
+        radial-gradient(circle at 75% 68%, rgba(14, 165, 233, 0.06), transparent 48%),
+        radial-gradient(rgba(120, 113, 108, 0.18) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 24px 24px;
+    }
+    @keyframes flowDash {
+      to { stroke-dashoffset: -24; }
+    }
+    .edge-flowing {
+      animation: flowDash 1.4s linear infinite;
+    }
+    .node-glass {
+      background: rgba(15, 23, 42, 0.78);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    html.light-theme .node-glass {
+      background: rgba(255, 255, 255, 0.88);
+    }
+    .text-sec { color: var(--text-secondary); }
+    .glossary-term {
+      font-weight: 700;
+      color: #34d399;
+      border-bottom: 1.5px dotted #10b981;
+      padding: 0 2px;
+      border-radius: 3px;
+      cursor: help;
+      transition: background-color 150ms ease;
+    }
+    html.light-theme .glossary-term {
+      color: #185952;
+      border-bottom-color: #1f6f66;
+    }
+    .glossary-term:hover {
+      background-color: rgba(16, 185, 129, 0.16);
+    }
+    .tree-node {
+      transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+      user-select: none;
+    }
+    .tree-node:hover {
+      transform: translate(-50%, -50%) scale(1.04);
+    }
+    .tree-node.active-node {
+      transform: translate(-50%, -50%) scale(1.06);
+    }
+    #glossary-tooltip {
+      transition: opacity 150ms ease, transform 150ms ease;
+    }
+    #glossary-tooltip.hidden-tooltip {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(4px);
+    }
+    #glossary-tooltip.visible-tooltip {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.25); border-radius: 999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.45); }
+
+    @media print {
+      header, #tree-pane, #modal-backdrop, .no-print { display: none !important; }
+      body, .panel-surface { background: #fff !important; color: #000 !important; border: none !important; }
+      #main-grid { display: block !important; height: auto !important; }
+      #content-pane { overflow: visible !important; height: auto !important; }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col lg:h-screen lg:overflow-hidden">
+
+  <!-- Top Navigation Bar (2 rows) -->
+  <header class="panel-surface border-b px-3 sm:px-5 py-2.5 shrink-0 z-30">
+    <!-- Row 1: Brand + Controls -->
+    <div class="flex flex-wrap items-center justify-between gap-2.5">
+      <!-- Left: Logo & Title -->
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-emerald-700 text-white font-serif font-bold text-xs flex items-center justify-center tracking-tight shadow-sm shrink-0">NN</div>
+        <div class="leading-tight">
+          <div class="flex items-center gap-2">
+            <span class="text-[11px] font-semibold uppercase tracking-wider text-emerald-400 light-brand">Nils sin samfunnsgeografibok</span>
+            <span class="text-xs text-sec hidden sm:inline">·</span>
+            <span class="text-xs font-medium text-sec hidden sm:inline">Kurs 1.3 Urfolkenes land</span>
+          </div>
+          <h1 class="font-bold text-sm sm:text-base tracking-tight">Samfunnsgeografi · Kunnskapstreet</h1>
+        </div>
+      </div>
+
+      <!-- Right: Tools & Toggles -->
+      <div class="flex flex-wrap items-center gap-2">
+        <!-- Enkel / Full Toggle -->
+        <div class="elevated-surface border rounded-lg p-0.5 flex items-center text-xs font-medium" title="Bytt mellom kortversjon og full læreboktekst">
+          <button id="mode-enkel" type="button" class="px-2.5 py-1 rounded-md transition-colors text-sec hover:text-current">Enkel</button>
+          <button id="mode-full" type="button" class="px-2.5 py-1 rounded-md transition-colors bg-emerald-600 text-white font-semibold">Full</button>
+        </div>
+
+        <!-- Search -->
+        <div class="relative">
+          <input id="search-input" type="search" placeholder="Søk i boka..." class="elevated-surface border rounded-lg pl-8 pr-3 py-1.5 text-xs w-36 sm:w-48 focus:outline-none focus:ring-2 focus:ring-emerald-500/50" />
+          <svg class="w-3.5 h-3.5 text-sec absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <div id="search-results" class="hidden absolute right-0 mt-1.5 w-72 sm:w-80 panel-surface border rounded-xl shadow-2xl p-2 z-50 max-h-72 overflow-y-auto"></div>
+        </div>
+
+        <!-- Action Buttons -->
+        <button id="btn-ordliste" type="button" class="elevated-surface border hover:border-emerald-500/50 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors">Ordliste</button>
+        <button id="btn-quiz" type="button" class="elevated-surface border hover:border-emerald-500/50 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors">Quiz og oppgaver</button>
+        <button id="btn-share" type="button" class="elevated-surface border hover:border-emerald-500/50 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors hidden sm:inline-flex items-center gap-1">Del / QR</button>
+        <button id="btn-print" type="button" class="elevated-surface border hover:border-emerald-500/50 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors hidden md:inline-flex items-center gap-1">PDF-bok</button>
+
+        <!-- Theme Switcher -->
+        <button id="btn-theme" type="button" aria-label="Bytt mellom mørkt og lyst tema" title="Bytt mellom mørkt og lyst tema" class="elevated-surface border hover:border-emerald-500/50 p-1.5 rounded-lg text-xs transition-colors">
+          <span id="theme-icon">☀️</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Row 2: Chapter Filter Pills & Classic View Links -->
+    <div class="flex flex-wrap items-center justify-between gap-2 mt-2.5 pt-2 border-t border-slate-500/15">
+      <div class="flex flex-wrap items-center gap-1.5 text-xs">
+        <button type="button" data-filter="all" class="chapter-pill px-3 py-1 rounded-full border border-emerald-500/60 bg-emerald-500/15 text-emerald-300 font-semibold transition-colors">Oversikt</button>
+        <button type="button" data-filter="urfolk" class="chapter-pill px-3 py-1 rounded-full border border-slate-500/25 text-sec hover:border-slate-400/50 transition-colors flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>Urfolk
+        </button>
+        <button type="button" data-filter="sapmi" class="chapter-pill px-3 py-1 rounded-full border border-slate-500/25 text-sec hover:border-slate-400/50 transition-colors flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-sky-400"></span>Samenes hjemland
+        </button>
+      </div>
+
+      <div class="flex items-center gap-2 text-[11px]">
+        <span class="text-sec hidden sm:inline">Klassisk leseside:</span>
+        <a href="urfolk.html" class="elevated-surface border px-2.5 py-1 rounded-md hover:border-emerald-500/60 transition-colors font-medium">Urfolk ↗</a>
+        <a href="samenes-hjemland.html" class="elevated-surface border px-2.5 py-1 rounded-md hover:border-emerald-500/60 transition-colors font-medium">Samenes hjemland ↗</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Split-View Workspace -->
+  <div id="main-grid" class="flex-1 grid grid-cols-1 lg:grid-cols-[44%_56%] xl:grid-cols-[46%_54%] gap-3 p-3 min-h-0 overflow-hidden">
+
+    <!-- LEFT PANE: Interactive Knowledge Tree -->
+    <section id="tree-pane" class="panel-surface border rounded-2xl relative overflow-hidden flex flex-col min-h-[380px] lg:min-h-0 tree-canvas-bg">
+      <!-- Top Overlay Bar -->
+      <div class="relative z-20 flex flex-wrap items-center justify-between gap-2 p-3 pointer-events-none">
+        <!-- Legend + Progress -->
+        <div class="panel-surface/90 backdrop-blur border rounded-xl px-3 py-1.5 flex flex-wrap items-center gap-3 text-[11px] font-medium pointer-events-auto shadow-sm">
+          <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]"></span>Hovedstamme</span>
+          <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-sky-400 shadow-[0_0_8px_rgba(56,189,248,0.8)]"></span>Fordypning</span>
+          <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-rose-400 shadow-[0_0_8px_rgba(251,113,133,0.8)]"></span>Motperspektiv</span>
+          <span class="h-3 w-px bg-slate-500/25 hidden sm:inline"></span>
+          <span id="tree-progress-text" class="text-emerald-400 font-semibold hidden sm:inline">1 / 10 utforsket</span>
+        </div>
+
+        <!-- Zoom & Follow Controls -->
+        <div class="panel-surface/90 backdrop-blur border rounded-xl p-1 flex items-center gap-1 text-xs pointer-events-auto shadow-sm">
+          <button id="btn-follow" type="button" class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white font-semibold transition-colors" title="Sentrer automatisk på aktiv node">Følg</button>
+          <button id="btn-overview" type="button" class="px-2.5 py-1 rounded-lg text-sec hover:text-current transition-colors">Oversikt</button>
+          <button id="btn-zoom-in" type="button" class="w-7 h-7 rounded-lg text-sec hover:text-current font-bold flex items-center justify-center">+</button>
+          <button id="btn-zoom-out" type="button" class="w-7 h-7 rounded-lg text-sec hover:text-current font-bold flex items-center justify-center">−</button>
+        </div>
+      </div>
+
+      <!-- Interactive Pan/Zoom Stage -->
+      <div id="tree-viewport" class="flex-1 relative cursor-grab active:cursor-grabbing overflow-hidden">
+        <div id="tree-world" class="absolute top-0 left-0 origin-top-left" style="width: 1000px; height: 760px;">
+          <svg id="tree-edges" class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 1000 760"></svg>
+          <div id="tree-nodes" class="absolute inset-0"></div>
+        </div>
+      </div>
+
+      <!-- Bottom Hint -->
+      <div class="relative z-20 px-3 py-2 text-center text-[11px] text-sec pointer-events-none">
+        Dra for å panorere · Rull for zoom · Klikk på noder for å åpne tema
+      </div>
+    </section>
+
+    <!-- RIGHT PANE: Content Reader -->
+    <section id="content-pane" class="panel-surface border rounded-2xl overflow-y-auto p-5 sm:p-7 flex flex-col">
+      <!-- Meta Header -->
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+        <div class="flex flex-wrap items-center gap-2 text-xs">
+          <span id="node-period" class="font-semibold text-emerald-400"></span>
+          <span id="node-part" class="elevated-surface border px-2.5 py-0.5 rounded-full text-sec font-medium"></span>
+          <span id="node-type-badge" class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold"></span>
+        </div>
+        <div class="flex items-center gap-1.5 no-print">
+          <button id="btn-prev-node" type="button" class="elevated-surface border px-2.5 py-1 rounded-lg text-xs font-medium hover:border-emerald-500/50 transition-colors">← Forrige</button>
+          <button id="btn-next-node" type="button" class="elevated-surface border px-2.5 py-1 rounded-lg text-xs font-medium hover:border-emerald-500/50 transition-colors">Neste →</button>
+        </div>
+      </div>
+
+      <!-- Title & Subtitle -->
+      <h2 id="node-title" class="font-serif text-2xl sm:text-3xl font-bold tracking-tight mb-1.5"></h2>
+      <p id="node-subtitle" class="text-sm sm:text-base text-sec mb-5"></p>
+
+      <!-- Hero Illustration -->
+      <figure class="overflow-hidden rounded-xl border border-slate-500/20 elevated-surface mb-5 shrink-0">
+        <img id="node-image" src="" alt="" class="w-full h-52 sm:h-64 object-cover" />
+        <figcaption id="node-caption" class="px-4 py-2 text-xs text-sec border-t border-slate-500/15"></figcaption>
+      </figure>
+
+      <!-- 3 Content Tabs -->
+      <div class="grid grid-cols-3 gap-2 elevated-surface border rounded-xl p-1 mb-5 shrink-0 no-print" role="tablist">
+        <button type="button" data-tab="fagstoff" class="content-tab py-2 px-3 rounded-lg text-xs sm:text-sm font-semibold bg-emerald-600 text-white transition-colors">Fagstoff</button>
+        <button type="button" data-tab="case" class="content-tab py-2 px-3 rounded-lg text-xs sm:text-sm font-medium text-sec hover:text-current transition-colors">Kilder og case</button>
+        <button type="button" data-tab="oppgaver" class="content-tab py-2 px-3 rounded-lg text-xs sm:text-sm font-medium text-sec hover:text-current transition-colors">Arbeidsoppgaver</button>
+      </div>
+
+      <!-- Tab Body -->
+      <div id="tab-body" class="space-y-4 text-sm sm:text-base leading-relaxed flex-1"></div>
+
+      <!-- Kompetansemål Box -->
+      <div class="mt-6 pt-4 border-t border-slate-500/15">
+        <div class="elevated-surface border rounded-xl p-4">
+          <p class="text-xs font-bold uppercase tracking-wider text-emerald-400 mb-1">Kompetansemål &amp; Læringsfokus</p>
+          <p id="node-goal" class="text-xs sm:text-sm text-sec leading-relaxed"></p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Modal Backdrop (Ordliste / Quiz / Del) -->
+  <div id="modal-backdrop" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="panel-surface border rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-500/20">
+        <h3 id="modal-title" class="font-serif text-xl font-bold"></h3>
+        <button id="modal-close" type="button" class="p-1.5 rounded-lg text-sec hover:text-current elevated-surface border">✕</button>
+      </div>
+      <div id="modal-body" class="p-6 overflow-y-auto space-y-4 text-sm"></div>
+    </div>
+  </div>
+
+  <!-- Floating Glossary Tooltip -->
+  <div id="glossary-tooltip" role="tooltip" class="hidden-tooltip fixed z-50 max-w-xs sm:max-w-sm bg-slate-900 text-slate-100 rounded-xl p-4 shadow-2xl border border-slate-700">
+    <div class="flex items-start justify-between gap-3 mb-1">
+      <span id="tooltip-title" class="font-serif font-bold text-base text-emerald-300"></span>
+      <button id="tooltip-close" type="button" aria-label="Lukk begrepsforklaring" class="text-slate-400 hover:text-white text-xs px-1">✕</button>
+    </div>
+    <p id="tooltip-body" class="text-xs sm:text-sm text-slate-200 leading-relaxed"></p>
+  </div>
+
+  <script>
+    // 1. Glossary (Single source of truth)
+    const GLOSSARY = {
+      'urfolk': {
+        title: 'Urfolk',
+        definition: 'Etniske grupper som har bodd i et bestemt område før statene som dekker området i dag, ble etablert. Mange urfolk har hatt en levemåte preget av mindre omfattende inngrep i naturen enn andre etniske grupper i samme område.'
+      },
+      'minoritet': {
+        title: 'Minoritet',
+        definition: 'En gruppe mennesker i et land som er i mindretall og skiller seg fra flertallsbefolkningen gjennom språk, kultur, religion eller etnisk bakgrunn. I Norge har samene status som urfolk, mens jøder, kvener/norskfinner, rom, romanifolket/tatere og skogfinner er nasjonale minoriteter.'
+      },
+      'assimilering': {
+        title: 'Assimilering',
+        definition: 'Innebærer at alle kulturelle og språklige kjennetegn en etnisk gruppe har, forsvinner, og at etterkommerne ser på seg selv som tilhørende en annen etnisk gruppe (majoriteten).'
+      },
+      'segregering': {
+        title: 'Segregering',
+        definition: 'At ulike folkegrupper holdes atskilt fra hverandre i samfunnet – fysisk, geografisk, sosialt eller rettslig – for eksempel gjennom reservater eller egne skoler.'
+      },
+      'integrering': {
+        title: 'Integrering',
+        definition: 'At minoriteter eller urfolk blir en fullverdig og likeverdig del av storsamfunnet (i arbeidsliv, utdanning og politikk), samtidig som de får beholde og utvikle sin egen kultur, språk og identitet.'
+      },
+      'fornorskningspolitikk': {
+        title: 'Fornorskningspolitikk',
+        definition: 'Den norske statens offisielle assimileringspolitikk fra ca. 1850 og langt inn i etterkrigstiden, rettet mot samer, kvener/norskfinner og skogfinner, med mål om at de skulle gi opp eget språk og kultur og bli «norske».'
+      },
+      'ilo169': {
+        title: 'ILO-konvensjon 169',
+        definition: 'FNs internasjonale arbeidsorganisasjons konvensjon om urfolk og stammefolk i selvstendige stater (vedtatt i 1989, ratifisert av Norge i 1990). Den er rettslig forpliktende og skal sikre urfolks rett til tradisjonelle næringer, språk, kultur og råderett over landområder.'
+      },
+      'kolonisering': {
+        title: 'Kolonisering',
+        definition: 'Det at en stat dominert av andre folkegrupper enn dem som opprinnelig har bodd der, tar over et landområde og begynner å utnytte ressursene i området.'
+      },
+      'ratifikasjon': {
+        title: 'Ratifikasjon (å ratifisere)',
+        definition: 'Betyr at en internasjonal konvensjon blir godkjent og gjort til en del av lovverket i et land gjennom vedtak i landets lovgivende forsamling.'
+      },
+      'finnmarksloven': {
+        title: 'Finnmarksloven',
+        definition: 'Lov vedtatt i 2005 for å følge opp ILO-konvensjon 169. Opprettet Finnmarkseiendommen (FeFo), der Sametinget og fylkestinget sammen forvalter statlig grunn i Finnmark.'
+      },
+      'sapmi': {
+        title: 'Sápmi',
+        definition: 'Det nordsamiske navnet på samenes historiske og tradisjonelle bosettingsområde i Nord-Norge, Nord-Sverige, Nord-Finland og Kolahalvøya i Russland (Sábme på lulesamisk, Saepmie på sørsamisk).'
+      },
+      'nasjon-i-nasjonen': {
+        title: 'Nasjon i nasjonen',
+        definition: 'Når et urfolk definerer seg som et eget kulturelt og politisk fellesskap med rett til selvstyre innenfor en stats grenser, uten at det står i motsetning til å være en del av statens nasjonsfellesskap.'
+      }
+    };
+
+    const g = (term, label) => `<button type="button" class="glossary-term" data-term="${term}">${label}</button>`;
+
+    // 2. Knowledge Tree Nodes (Kurs 1.3: Urfolk + Samenes hjemland)
+    const NODES = [
+      {
+        id: 'n1',
+        chapter: 'urfolk',
+        type: 'hovedstamme',
+        icon: '🌱',
+        x: 500, y: 610,
+        parents: [],
+        period: 'Før statsdannelse – i dag',
+        part: 'Del 1 · Urfolk',
+        title: 'Hvem er urfolk?',
+        subtitle: 'Etniske grupper med historisk tilknytning til landområder før dagens stater ble etablert',
+        image: 'Images/urfolk-mangfold.jpg',
+        caption: 'Urfolk over hele verden har tradisjonelt hatt en levemåte nært knyttet til naturen – fra Arktis til Andesfjellene og Amazonas.',
+        enkel: `
+          <p>${g('urfolk', 'Urfolk')} betegner etniske grupper som har bodd i et bestemt område før statene som dekker området i dag, ble etablert. Mange urfolk har hatt en levemåte preget av mindre omfattende inngrep i naturen enn andre etniske grupper i samme område.</p>
+          <p>Det er viktig å skille mellom et urfolk og en ${g('minoritet', 'minoritet')}: Alle urfolk er som regel minoriteter i staten de bor i, men ikke alle minoriteter er urfolk.</p>
+        `,
+        full: `
+          <p>Forstavelsen <em>ur</em> i ${g('urfolk', 'urfolk')} forteller oss at det handler om en gruppe mennesker som har bodd i et bestemt område lenge, siden før statene som dekker området i dag, ble etablert. Begrepet <em>folk</em> brukes her som synonym for en etnisk gruppe – mennesker med felles kulturelle kjennetegn som språk, religion, historisk opprinnelse eller levemåte.</p>
+          <p>Samtidig må vi skille mellom ${g('urfolk', 'urfolk')} og ${g('minoritet', 'minoritet')}. En minoritet er en gruppe som er i mindretall og skiller seg fra flertallsbefolkningen. I Norge har samene status som urfolk, mens kvener/norskfinner, skogfinner, jøder, rom og romanifolket/tatere er nasjonale minoriteter.</p>
+          <p>De fleste urfolk har tradisjonelt hatt en levemåte preget av enklere teknologi og mer skånsom naturbruk enn majoritetssamfunnet. Samtidig er det viktig å nyansere dette bildet: I dag tar flere urfolk i bruk moderne teknologi som kan belaste naturen ganske hardt – for eksempel når store reinflokker fører til <strong>nedbeiting</strong> av sårbare beiteområder, eller når moderne reindrift bruker <strong>motoriserte kjøretøy</strong> som snøscooter og ATV i fjellet.</p>
+        `,
+        caseHtml: `
+          <div class="elevated-surface border rounded-xl p-4 space-y-2">
+            <p class="text-xs font-bold uppercase tracking-wider text-emerald-400">Begrepsavklaring i Norge</p>
+            <p class="text-sm"><strong>Urfolk:</strong> Samer (bosatt i Sápmi før statene Norge, Sverige, Finland og Russland ble trukket opp).</p>
+            <p class="text-sm"><strong>Nasjonale minoriteter:</strong> Jøder, kvener/norskfinner, rom, romanifolket/tatere og skogfinner.</p>
+          </div>
+          <p class="text-xs text-sec"><strong>Kilder:</strong> FN / ILO-konvensjon nr. 169; Store norske leksikon («Urfolk», «Minoritet»).</p>
+        `,
+        quiz: {
+          q: 'Hva menes med et urfolk?',
+          options: [
+            'En etnisk minoritet som nylig har flyttet til et land eller område',
+            'En etnisk gruppe som har bodd i et område før statene som dekker området i dag, ble etablert',
+            'Det aller første folket som noen gang satte sin fot i et område',
+            'Folkegruppen som bodde i byen Ur i Mesopotamia'
+          ],
+          correct: 1,
+          feedback: 'Riktig! Urfolk defineres av tilknytning før dagens statsgrenser – ikke av at de nødvendigvis var de aller første menneskene der.'
+        },
+        reflection: 'Hvilke urfolksgrupper kjenner du til utenfor Norge, og hva kjennetegner deres forhold til naturen?',
+        goal: 'Kunne definere begrepene urfolk, etnisk gruppe og minoritet, og forklare hva som skiller urfolk fra andre minoritetsgrupper.'
+      },
+      {
+        id: 'n2',
+        chapter: 'urfolk',
+        type: 'fordypning',
+        icon: '🛶',
+        x: 170, y: 455,
+        parents: ['n1'],
+        period: '2500 fvt. – 1500-tallet',
+        part: 'Fordypning · Urfolk',
+        title: 'Trenger ikke ha vært der først',
+        subtitle: 'Inuittene på Grønland og quechuafolket i Andesfjellene utfordrer myter om urfolk',
+        image: 'Images/urfolk-mangfold.jpg',
+        caption: 'Både jegere og sankere i Arktis og jordbrukssamfunn som Inkariket i Andesfjellene regnes som urfolk.',
+        enkel: `
+          <p>Man trenger <strong>ikke</strong> å ha vært de aller første menneskene i et område for å regnes som ${g('urfolk', 'urfolk')}. Det avgjørende er at gruppen bodde i området <em>før dagens stater og landegrenser ble etablert</em>, og har bevart egen kultur og tilknytning til landet.</p>
+          <p>På Grønland kom inuittene etter vikingene til sørvestkysten, men regnes likevel som urfolk. Og quechuafolket i Andesfjellene (over 10 millioner) bygde det avanserte Inkariket før spansk kolonisering.</p>
+        `,
+        full: `
+          <p>Mange tror at «urfolk» betyr det aller første folket som noen gang satte sin fot i et område. Slik er det ikke: I folkeretten (blant annet ${g('ilo169', 'ILO-konvensjon 169')}) er det avgjørende kriteriet at folkegruppen bodde i området <strong>før dagens stater og grenser ble etablert</strong> – ikke hvem som kom først i forhistorisk tid.</p>
+          <p>De første bosettingene på Grønland daterer seg til ca. 2500 fvt. Da inuittene slo seg ned i nord på 1000-tallet, var det etter at vikingene hadde etablert bosettinger på sørvestkysten. Flertallet av Grønlands inuitter bor i dag i sørvest, der de flyttet inn etter at de norrøne bosettingene døde ut på 1400-tallet – og de er like fullt Grønlands urfolk. Det samme gjelder i Norden: Om samene eller andre grupper kom aller først etter istiden for 12 000 år siden, har ingen betydning for samenes urfolksstatus.</p>
+          <p>Å ha blitt utsatt for ${g('kolonisering', 'kolonisering')} er også en felles erfaring. Derfor er ikke alle urfolk jegere og sankere: Verdens folkerikeste urfolk, <strong>quechuafolket</strong> i Andesfjellene (over 10 millioner), drev avansert jordbruk og etablerte Inkariket før Spania koloniserte området på 1500-tallet.</p>
+        `,
+        caseHtml: `
+          <div class="elevated-surface border rounded-xl p-4 space-y-2 text-sm">
+            <p class="text-xs font-bold uppercase tracking-wider text-sky-400">To viktige eksempler</p>
+            <p><strong>Grønland:</strong> Inuittene etablerte seg i sørvest etter 1400-tallet, lenge etter de første bosettingene (2500 fvt.) og norrøn bosetting.</p>
+            <p><strong>Andesfjellene:</strong> Quechuafolket er over 10 millioner mennesker og bygde Inkariket før spansk kolonisering.</p>
+          </div>
+          <p class="text-xs text-sec"><strong>Kilde:</strong> Britannicas redaksjon (2016). «Quechua». <em>Encyclopedia Britannica</em>.</p>
+        `,
+        quiz: {
+          q: 'Hvorfor regnes quechuafolket i Andesfjellene som et urfolk selv om de drev avansert jordbruk og hadde et eget rike?',
+          options: [
+            'Fordi de bodde i området før dagens stater ble etablert og ble utsatt for kolonisering',
+            'Fordi de bare lever av jakt og sanking i dag',
+            'Fordi de var de eneste menneskene i Sør-Amerika',
+            'Fordi FN har bestemt at alle som snakker spansk er urfolk'
+          ],
+          correct: 0,
+          feedback: 'Riktig! Både fastboende jordbruksfolk og nomadiske jegere/sankere kan være urfolk når de bodde der før statene ble etablert og har opplevd kolonisering.'
+        },
+        reflection: 'Hvorfor tror du mange tror at «urfolk» bare betyr jegere og sankere, og hvordan motbeviser Inkariket denne myten?',
+        goal: 'Forstå at urfolksstatus ikke krever at man var aller først i et område eller lever som jegere og sankere.'
+      },
+      {
+        id: 'n3',
+        chapter: 'urfolk',
+        type: 'hovedstamme',
+        icon: '🏛️',
+        x: 340, y: 390,
+        parents: ['n1'],
+        period: '1500 – 1960-tallet',
+        part: 'Del 2 · Kolonisering',
+        title: 'Kolonisering, segregering & motstand',
+        subtitle: 'Fra fysisk utryddelse og reservater til internatskoler og politisk oppvåkning',
+        image: 'Images/kolonisering-motstand.jpg',
+        caption: 'Tvangsflytting, reservater og assimilering i Nord-Amerika møtte motstand og la grunnlaget for en global urfolksbevegelse.',
+        enkel: `
+          <p>${g('kolonisering', 'Kolonisering')} betyr at en stat dominert av andre folkegrupper tar over et landområde og utnytter ressursene der. For mange urfolk førte dette til massedrap, fordriving til reservater (${g('segregering', 'segregering')}) og tvungen ${g('assimilering', 'assimilering')} på internatskoler.</p>
+          <p>Motstanden – fra Wounded Knee i 1890 til 1960-tallets rettighetskamp – inspirerte også samene, som stiftet Norske Samers Riksforbund i 1968.</p>
+        `,
+        full: `
+          <p>Når en stat dominert av andre folkegrupper enn dem som opprinnelig har bodd der, tar over et landområde og utnytter ressursene, kalles det ${g('kolonisering', 'kolonisering')}. På Hispaniola ble størstedelen av urbefolkningen utryddet få tiår etter år 1500 på grunn av sykdommer og slaveri. I Australia ble det begått massedrap på aboriginere helt fram til 1930.</p>
+          <p>I USA ble rundt 60 000 mennesker fra fem urfolksnasjoner tvangsflyttet vest for Mississippi med <em>Indian Removal Act</em> (1830). Da nybyggerne ønsket jorda i Oklahoma også, ble løftene brutt med <em>Dawes Act</em> (1887). Urfolk ble henvist til små, ressursfattige reservater – et tydelig eksempel på geografisk og rettslig ${g('segregering', 'segregering')} – mens barna ble sendt på internatskoler for ${g('assimilering', 'assimilering')}: de skulle miste alle egne kulturelle kjennetegn og bli som majoriteten.</p>
+          <p>Da lakotafolket samlet seg rundt Ghost Dance-bevegelsen, ble lederen Sitting Bull drept, og nærmere 300 ubevæpnede urfolk ble drept ved <strong>Wounded Knee</strong> i desember 1890. På 1960-tallet ble Wounded Knee likevel et symbol for en ny internasjonal urfolksbevegelse, som også inspirerte dannelsen av <strong>Norske Samers Riksforbund (NSR)</strong> i 1968.</p>
+        `,
+        caseHtml: `
+          <div class="elevated-surface border rounded-xl p-4 space-y-2 text-sm">
+            <p class="text-xs font-bold uppercase tracking-wider text-emerald-400">Tre strategier mot minoriteter</p>
+            <p><strong>${g('segregering', 'Segregering')}:</strong> Gruppene holdes fysisk eller rettslig atskilt (f.eks. reservater).</p>
+            <p><strong>${g('assimilering', 'Assimilering')}:</strong> Minoriteten skal miste sitt særpreg og bli lik majoriteten (f.eks. internatskoler).</p>
+            <p><strong>${g('integrering', 'Integrering')}:</strong> Likeverdig deltakelse i storsamfunnet samtidig som egen kultur og språk bevares.</p>
+          </div>
+          <p class="text-xs text-sec"><strong>Kilder:</strong> Allam &amp; Evershed (2019), <em>The Guardian</em>; Siverts (2017), <em>SNL</em>.</p>
+        `,
+        quiz: {
+          q: 'Hva innebærer begrepet assimilering?',
+          options: [
+            'At ulike folkegrupper holdes fysisk atskilt i egne reservater',
+            'At alle kjennetegn en etnisk gruppe har, forsvinner, og etterkommerne ser på seg selv som del av majoriteten',
+            'At urfolk får egne plasser i parlamentet',
+            'At staten gir full erstatning for tapt land'
+          ],
+          correct: 1,
+          feedback: 'Riktig! Assimilering betyr at minoritetens kulturelle og språklige særpreg forsvinner inn i majoritetskulturen.'
+        },
+        reflection: 'Hvordan skiller integrering seg fra assimilering og segregering? Gi et konkret eksempel på hver.',
+        goal: 'Kunne gjøre rede for historisk kolonisering og skille klart mellom assimilering, segregering og integrering.'
+      },
+      {
+        id: 'n4',
+        chapter: 'urfolk',
+        type: 'hovedstamme',
+        icon: '📜',
+        x: 270, y: 215,
+        parents: ['n3'],
+        period: '1989 – i dag',
+        part: 'Del 3 · Urfolksrettigheter',
+        title: 'ILO-konvensjon 169 & Nasjoner i nasjoner',
+        subtitle: 'Internasjonale rettigheter, klimaendringer og politisk selvstyre innenfor staten',
+        image: 'Images/urfolk-mangfold.jpg',
+        caption: 'Urfolksforkjempere og miljøvernere står ofte på samme side når klimaendringer og ressursutnyttelse truer tradisjonelle næringer.',
+        enkel: `
+          <p>${g('ilo169', 'ILO-konvensjon 169')} ble vedtatt i 1989 (ratifisert av Norge i 1990) for å sikre urfolks rett til tradisjonelle næringer, språk, utdanning og landområder, og beskytte mot tvungen ${g('assimilering', 'assimilering')}.</p>
+          <p>Flere urfolk definerer seg i dag som ${g('nasjon-i-nasjonen', 'nasjoner i nasjonen')} – et politisk fellesskap med rett til selvstyre innenfor statens grenser.</p>
+        `,
+        full: `
+          <p>Gjennom FNs arbeidsorganisasjon ILO ble ${g('ilo169', 'ILO-konvensjon 169')} vedtatt i <strong>1989</strong>. En konvensjon er rettslig forpliktende for statene som ratifiserer den. Norge var først i verden til å ratifisere avtalen i <strong>1990</strong> (23 land har ratifisert den totalt). Målet er å sikre urfolk mulighet til å opprettholde tradisjonelle næringer, språk og kultur, samt å beskytte dem mot tvangsmessig ${g('assimilering', 'assimilering')}.</p>
+          <p>I tillegg trues mange urfolk direkte av <strong>global oppvarming</strong>: inuitter rammes av smeltende sjøis og tining av permafrost, urfolk i Australia av tørke og flom, og samer av usikre konsekvenser for reindrift og fiske. Fordi urfolks levemåte bygger på forsiktig bruk av naturen, står de ofte sammen med miljøvernere.</p>
+          <p>Mange urfolk definerer seg i dag som ${g('nasjon-i-nasjonen', 'nasjoner i nasjonen')}: et kulturelt og politisk fellesskap med rett til selvstyre innenfor eller på tvers av statsgrenser. Dette står ikke i motsetning til å være en del av statens nasjonsfellesskap – tvert imot kan det styrke reell ${g('integrering', 'integrering')}.</p>
+        `,
+        caseHtml: `
+          <div class="elevated-surface border rounded-xl p-4 space-y-2 text-sm">
+            <p class="text-xs font-bold uppercase tracking-wider text-emerald-400">Tre søyler i ILO-konvensjon 169</p>
+            <p><strong>Språk:</strong> Rett til å bevare og lære eget språk, og å bli forstått i offentlige prosesser.</p>
+            <p><strong>Utdanning:</strong> Undervisning utformet i samarbeid med urfolk, og saklige lærebøker i storsamfunnet.</p>
+            <p><strong>Landområder:</strong> Anerkjennelse av tradisjonell bruksrett og plikt til konsultasjon før ressursinngrep.</p>
+          </div>
+          <p class="text-xs text-sec"><strong>Kilde:</strong> U.S. Climate Resilience Toolkit (2020); Larsen &amp; Eriksen (Framsenteret).</p>
+        `,
+        quiz: {
+          q: 'Hvilken av disse er IKKE et av formålene med ILO-konvensjon 169?',
+          options: [
+            'Å sikre at urfolk får faste representanter i parlamentet til staten de bor i',
+            'Å sørge for at urfolk kan fortsette sine tradisjonelle næringer',
+            'Å beskytte urfolk mot tvungen assimilering',
+            'Å sørge for at urfolks kulturelle tradisjoner bevares'
+          ],
+          correct: 0,
+          feedback: 'Riktig! Konvensjonen krever ikke faste parlamentsplasser, men verner næringer, språk, kultur og landrettigheter.'
+        },
+        reflection: 'Hvilke fordeler – og eventuelle utfordringer – kan det gi for et urfolk å definere seg som en «nasjon i nasjonen»?',
+        goal: 'Kjenne hovedinnholdet i ILO-konvensjon 169 og forstå begrepet «nasjon i nasjonen».'
+      },
+      {
+        id: 'n5',
+        chapter: 'urfolk',
+        type: 'motperspektiv',
+        icon: '🛢️',
+        x: 165, y: 95,
+        parents: ['n4'],
+        period: '2000 – i dag',
+        part: 'Motperspektiv · Nord-Amerika',
+        title: 'Oljesand og oljeledninger',
+        subtitle: 'Moderne velstand og arbeidsplasser mot rent vann og urfolksrettigheter',
+        image: 'Images/kolonisering-motstand.jpg',
+        caption: 'Konfliktene i Alberta (Canada) og Standing Rock (USA) stiller urfolksinteresser og naturvern opp mot energiutvinning.',
+        enkel: `
+          <p>Utvinning av oljesand i Alberta i Canada gir arbeidsplasser og eksportinntekter, men skaper enorme krater og forurenser vannet for 23 000 urfolk i området.</p>
+          <p>I USA førte rørledningen Dakota Access Pipeline til store protester i Standing Rock (2016–2017), mens planene for Keystone XL ble stanset i 2021.</p>
+        `,
+        full: `
+          <p>En av verdens mest kjente ressurskonflikter gjelder utvinning av olje fra oljeholdig sand i provinsen <strong>Alberta i Canada</strong>, der rundt 23 000 mennesker tilhørende urbefolkningen bor. Utgravingene skaper enorme krater, og kjemikalieutslipp forurenser vannet der urfolk fanger fisk og vilt. På den andre siden har utvinningen gjort Canada til verdens fjerde største oljeprodusent og skapt moderne arbeidsplasser i et område preget av arbeidsledighet og fattigdom.</p>
+          <p>I USA førte utbyggingen av oljerørledningen <strong>Dakota Access Pipeline</strong> til massive protester i 2016–2017, særlig i urfolksreservatet <strong>Standing Rock</strong> (ledningen har vært i drift siden 2017). Planene om rørledningen <strong>Keystone XL</strong> fra Canada til Mexicogulfen møtte så hard motstand fra urfolk og miljøvernere at utbyggingen ble avbrutt i 2021.</p>
+        `,
+        caseHtml: `
+          <div class="elevated-surface border rounded-xl p-4 space-y-2 text-sm">
+            <p class="text-xs font-bold uppercase tracking-wider text-rose-400">Interessekonflikt</p>
+            <p><strong>Pro:</strong> Eksportinntekter, energisikkerhet og moderne arbeidsplasser i fattige regioner.</p>
+            <p><strong>Kontra:</strong> Landskapsinngrep, fare for oljelekkasjer, forurensning av drikkevann, fisk og vilt.</p>
+          </div>
+          <p class="text-xs text-sec"><strong>Kilde:</strong> Kusnetz, N. (2021). «The Deep Toll of Tar Sands on Canada’s Indigenous People», <em>Undark</em>.</p>
+        `,
+        quiz: {
+          q: 'Hva skjedde med den planlagte oljerørledningen Keystone XL i 2021?',
+          options: [
+            'Den ble åpnet for full drift gjennom Standing Rock',
+            'Utbyggingen ble avbrutt etter hard motstand fra urfolk og miljøvernere',
+            'Den ble gjort om til en vannledning',
+            'Den ble flyttet til Alaska'
+          ],
+          correct: 1,
+          feedback: 'Riktig! Keystone XL ble avbrutt i 2021, mens Dakota Access Pipeline har vært i drift siden 2017.'
+        },
+        reflection: 'Hvorfor er lokalbefolkning og urfolk ofte splittet når store industriprosjekter lover både arbeidsplasser og miljørisiko?',
+        goal: 'Kunne drøfte målkonflikter mellom økonomisk vekst/arbeidsplasser og urfolks rettigheter i Nord-Amerika.'
+      },
+      {
+        id: 'n6',
+        chapter: 'sapmi',
+        type: 'hovedstamme',
+        icon: '❄️',
+        x: 665, y: 425,
+        parents: ['n1'],
+        period: 'Historisk – i dag',
+        part: 'Del 4 · Samenes hjemland',
+        title: 'Samenes hjemland (Sápmi) & språk',
+        subtitle: 'Bosetting over fire land, tradisjonelle næringer, moderne yrker og tre språk i Norge',
+        image: 'Images/sapmi-kart.jpg',
+        caption: 'Samenes historiske bosettingsområde (Sápmi / Sábme / Saepmie) strekker seg over Norge, Sverige, Finland og Kolahalvøya.',
+        enkel: `
+          <p>Samenes tradisjonelle hjemland (${g('sapmi', 'Sápmi')}) dekker Nord-Norge, Nord-Sverige, Nord-Finland, Kolahalvøya og innlandet sørover til nordlige Østlandet. Det anslås at det lever <strong>50 000–80 000 samer</strong> totalt (40 000–60 000 i Norge), og stadig flere bor i byer som Oslo, Tromsø og Alta.</p>
+          <p>Tradisjonelt har også <strong>sjøsamer</strong> (fiske og småbruk ved kysten) og <strong>skogssamer</strong> vært sentrale grupper utover reindriften. De samiske språkene tilhører den <strong>finsk-ugriske</strong> språkfamilien, og i Norge snakkes nordsamisk, lulesamisk og sørsamisk.</p>
+        `,
+        full: `
+          <p>Samer har status som ${g('urfolk', 'urfolk')} i Norge. Selv om samene delvis kan stamme fra de første menneskene som kom til Norden for ca. 12 000 år siden, avgjøres ikke urfolksstatusen av hvem som var først. Ingen av de nordiske landene fører etnisitetsstatistikk, men det anslås at det bor <strong>50 000–80 000 samer</strong> i Sápmi: 40 000–60 000 i Norge, 15 000–36 000 i Sverige, 7 000–9 000 i Finland og 1 500–2 000 i Russland. I dag bor stadig flere samer i byer som Oslo, Tromsø og Alta.</p>
+          <p>I middelalderen ble samer kalt <em>finner</em> (derav Finnmark). Et annet gammeldags ord er <em>lapp</em> – å bruke ordet «lapp» om samer i dag oppfattes som nedsettende og rasistisk.</p>
+          <p>Tradisjonelt har næringsgrunnlaget vært mangfoldig: I tillegg til fjellreindrift har <strong>sjøsamer</strong> langs kysten og fjordene i Nord-Norge levd av fiske og småbruk (og ble særlig hardt rammet av språktap under fornorskingen), mens <strong>skogssamer</strong> har drevet skogreindrift, jakt og fiske i innlandet. I dag jobber de fleste samer som leger, lærere, sjåfører, journalister eller i andre moderne yrker.</p>
+          <p>De samiske språkene tilhører den <strong>finsk-ugriske språkfamilien</strong> (i slekt med finsk, ikke norsk). Av elleve historiske språk er fire utdødd, seks lever, og tre snakkes i Norge: <strong>nordsamisk</strong> (flest brukere, dominerende i Karasjok og Kautokeino), <strong>lulesamisk</strong> og <strong>sørsamisk</strong> (noen få hundre brukere hver).</p>
+        `,
+        caseHtml: `
+          <div class="elevated-surface border rounded-xl overflow-hidden">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-emerald-500/10 text-emerald-300">
+                <tr><th class="px-4 py-2">Språk</th><th class="px-4 py-2">Én fisk</th><th class="px-4 py-2">Norge</th><th class="px-4 py-2">Hjemland</th></tr>
+              </thead>
+              <tbody class="divide-y divide-slate-500/20">
+                <tr><td class="px-4 py-2 font-semibold">Lulesamisk</td><td class="px-4 py-2"><em>akta guolle</em></td><td class="px-4 py-2"><em>Vuodna</em></td><td class="px-4 py-2">Sábme</td></tr>
+                <tr><td class="px-4 py-2 font-semibold">Sørsamisk</td><td class="px-4 py-2"><em>akte guelie</em></td><td class="px-4 py-2"><em>Nöörje</em></td><td class="px-4 py-2">Saepmie</td></tr>
+                <tr><td class="px-4 py-2 font-semibold">Nordsamisk</td><td class="px-4 py-2"><em>okta guolli</em></td><td class="px-4 py-2"><em>Norga</em></td><td class="px-4 py-2">Sápmi</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="text-xs text-sec"><strong>Kilder:</strong> Berg-Nordlie &amp; Gaski (2022), <em>SNL</em>; Samisk myteknuser.</p>
+        `,
+        quiz: {
+          q: 'Hvilke tre samiske språk snakkes fortsatt i Norge i dag?',
+          options: [
+            'Østsamisk, vest-samisk og kystsamisk',
+            'Nordsamisk, lulesamisk og sørsamisk',
+            'Karesuandosamisk, pitesamisk og umesamisk',
+            'Kun nordsamisk og finsk'
+          ],
+          correct: 1,
+          feedback: 'Riktig! Nordsamisk, lulesamisk og sørsamisk er de tre samiske språkene som snakkes i Norge i dag.'
+        },
+        reflection: 'Hvorfor er det viktig å avlive myten om at «alle samer driver med reindrift»?',
+        goal: 'Kjenne samenes geografiske utbredelse, næringsgrunnlag og de tre samiske språkene i Norge.'
+      },
+      {
+        id: 'n7',
+        chapter: 'sapmi',
+        type: 'motperspektiv',
+        icon: '⚖️',
+        x: 515, y: 255,
+        parents: ['n6'],
+        period: '1850 – 2024',
+        part: 'Motperspektiv · Fornorsking',
+        title: 'Fornorskingspolitikk & Sannhetskommisjonen',
+        subtitle: 'Fra språkforbud og Jordloven 1902 til rapporten i 2023 og Stortingets unnskyldning i 2024',
+        image: 'Images/sannhet-forsoning.jpg',
+        caption: 'Sannhets- og forsoningskommisjonens rapport (2023) og Stortingets behandling (2024) markerer et historisk oppgjør med fornorskningspolitikken.',
+        enkel: `
+          <p>Fra midten av 1800-tallet førte den norske staten en hard ${g('fornorskningspolitikk', 'fornorskningspolitikk')} for å ${g('assimilering', 'tvangsassimilere')} samer, kvener/norskfinner og skogfinner – blant annet gjennom språkforbud i skolen og Jordloven av 1902.</p>
+          <p>I juni 2023 la <strong>Sannhets- og forsoningskommisjonen</strong> fram sin rapport, og 12. november 2024 ba Stortinget formelt om unnskyldning.</p>
+        `,
+        full: `
+          <p>Fram til faste statsgrenser ble trukket på 1700-tallet, ble samer ofte dobbelt eller trippelt skattlagt av Danmark-Norge, Sverige og Russland. Da grensene ble stengt for reinflokker fra <strong>1852</strong>, skapte det stor nød fordi man mistet tilgangen til både vinter- og sommerbeiter. Samtidig ble samisk bruksrett ikke anerkjent på lik linje med bønders private eiendomsrett, og med <strong>Jordloven for Finnmark (1902)</strong> ble norsktalende favorisert ved jordkjøp.</p>
+          <p>Gjennom en bevisst ${g('fornorskningspolitikk', 'fornorskningspolitikk')} ble samisk og kvensk språk forbudt i skolen og i friminuttene, og barn ble sendt på internatskoler. Kong Harald framførte en offisiell beklagelse i 1997.</p>
+          <p><strong>Oppdatering (2023–2024):</strong> Den 1. juni 2023 overleverte <strong>Sannhets- og forsoningskommisjonen</strong> (ledet av Dagfinn Høybråten) sin rapport til Stortinget (Dokument 19 (2022–2023)). Den dokumenterte langvarig språktap og urett mot <strong>samer</strong>, <strong>kvener/norskfinner</strong> og <strong>skogfinner</strong>. Den <strong>12. november 2024</strong> behandlet Stortinget rapporten, ba formelt om unnskyldning og vedtok 17 tiltak for forsoning, språk og kunnskap i skolen.</p>
+        `,
+        caseHtml: `
+          <div class="elevated-surface border rounded-xl p-4 space-y-2 text-sm">
+            <p class="text-xs font-bold uppercase tracking-wider text-rose-400">Milepæler i oppgjøret</p>
+            <p><strong>1902:</strong> Jordloven for Finnmark krevde norsk språk og norske navn ved jordkjøp.</p>
+            <p><strong>1997:</strong> Kong Harald V ba samene om unnskyldning på vegne av staten.</p>
+            <p><strong>1. juni 2023:</strong> Sannhets- og forsoningskommisjonen la fram over 760 vitnesbyrd i sin rapport.</p>
+            <p><strong>12. nov. 2024:</strong> Stortinget ba formelt om unnskyldning til samer, kvener/norskfinner og skogfinner.</p>
+          </div>
+          <p class="text-xs text-sec"><strong>Kilder:</strong> Dokument 19 (2022–2023); Innst. 30 S (2024–2025); Pedersen (2019), <em>Samiske veivisere</em>.</p>
+        `,
+        quiz: {
+          q: 'Hvilke tre grupper omfattet Sannhets- og forsoningskommisjonens rapport (2023)?',
+          options: [
+            'Samer, islendinger og grønlendere',
+            'Samer, kvener/norskfinner og skogfinner',
+            'Samer, rom og jøder',
+            'Kun reindriftssamer i Finnmark'
+          ],
+          correct: 1,
+          feedback: 'Riktig! Rapporten dokumenterte fornorskningspolitikken mot samer (urfolk) og de nasjonale minoritetene kvener/norskfinner og skogfinner.'
+        },
+        reflection: 'Hvorfor var det viktig for Stortinget i 2024 å inkludere både samer, kvener/norskfinner og skogfinner i den formelle unnskyldningen?',
+        goal: 'Forstå hvordan fornorskningspolitikken virket historisk og hvordan Sannhets- og forsoningskommisjonen følges opp i dag.'
+      },
+      {
+        id: 'n8',
+        chapter: 'sapmi',
+        type: 'fordypning',
+        icon: '⚡',
+        x: 735, y: 245,
+        parents: ['n6'],
+        period: '1979 – 2005',
+        part: 'Fordypning · Rettigheter',
+        title: 'Alta-aksjonen, Sametinget & Finnmarksloven',
+        subtitle: 'Fra politisk kamp i Alta-Kautokeinovassdraget til ny lovgivning og medbestemmelse',
+        image: 'Images/alta-demning.jpg',
+        caption: 'Utbyggingen av Alta-Kautokeinovassdraget (1987) ble et vendepunkt for samiske rettigheter i Norge.',
+        enkel: `
+          <p>Striden om vannkraftverket i <strong>Alta-Kautokeinovassdraget</strong> (ferdig 1987, ca. 700 GWh) samlet samer og miljøvernere. Kampen førte til <strong>Grunnloven § 108</strong> (1988, styrket i 2023), opprettelsen av <strong>Sametinget</strong> (1989), ${g('ratifikasjon', 'ratifisering')} av ${g('ilo169', 'ILO-konvensjon 169')} (1990) og ${g('finnmarksloven', 'Finnmarksloven')} (2005).</p>
+          <p>For å stå i <strong>Samemanntallet</strong> (under 20 000 velgere) må man både regne seg som same og oppfylle et språkkriterium i familien.</p>
+        `,
+        full: `
+          <p>På slutten av 1970-tallet og begynnelsen av 1980-tallet sto en av Norges hardeste politiske kamper om utbyggingen av <strong>Alta-Kautokeinovassdraget</strong>. Utbyggingen sto ferdig i <strong>1987</strong> (underkant av 700 GWh/år), men protestene fra samer og naturvernere – fordi oppdemmingen skadet reinbeite, laksefiske og biologisk mangfold – ble et varig symbol på samisk rettighetskamp.</p>
+          <p>Som direkte følge ble <strong>Grunnloven § 108</strong> («Sameparagrafen», opprinnelig § 110 a) vedtatt i <strong>1988</strong>, og styrket i mai <strong>2023</strong> slik at den nå uttrykkelig slår fast at staten skal legge til rette for at det samiske folk, <em>som urfolk</em>, kan sikre og utvikle sitt språk, sin kultur og sitt samfunnsliv. I <strong>1989</strong> ble <strong>Sametinget</strong> opprettet, og i <strong>1990</strong> ble Norge først i verden til å ${g('ratifikasjon', 'ratifisere')} ${g('ilo169', 'ILO-konvensjon 169')}.</p>
+          <p>Ved valg til Sametinget (under 20 000 registrerte i <strong>Samemanntallet</strong>) gjelder både et <em>subjektivt kriterium</em> (at man regner seg som same) og et <em>objektivt kriterium</em> (at man selv, foreldre, besteforeldre eller oldeforeldre har hatt samisk som hjemmespråk). Det finnes også egne sameting i Sverige og Finland som samarbeider i <strong>Samisk parlamentarisk råd</strong>.</p>
+          <p>For å følge opp ILO 169 vedtok Stortinget ${g('finnmarksloven', 'Finnmarksloven')} i <strong>2005</strong>, som opprettet <strong>Finnmarkseiendommen (FeFo)</strong> med tre styremedlemmer fra Sametinget og tre fra fylkestinget.</p>
+        `,
+        caseHtml: `
+          <div class="elevated-surface border rounded-xl p-4 space-y-2 text-sm">
+            <p class="text-xs font-bold uppercase tracking-wider text-sky-400">Tidslinje etter Alta</p>
+            <p><strong>1987:</strong> Altakraftverket ferdigstilles (ca. 700 GWh).</p>
+            <p><strong>1989:</strong> Sametinget opprettes.</p>
+            <p><strong>1990:</strong> Norge ratifiserer ILO-konvensjon 169.</p>
+            <p><strong>2005:</strong> Finnmarksloven oppretter FeFo.</p>
+          </div>
+          <p class="text-xs text-sec"><strong>Kilder:</strong> Berg-Nordlie &amp; Tvedt (2019), <em>SNL</em>; Skogvang (2021), <em>SNL</em>.</p>
+        `,
+        quiz: {
+          q: 'Hvorfor ble Finnmarksloven vedtatt i 2005?',
+          options: [
+            'For å selge all grunn i Finnmark til utenlandske selskaper',
+            'For å følge opp ILO-konvensjon 169 om råderett over land og vann gjennom Finnmarkseiendommen',
+            'For å stenge Sametinget',
+            'For å flytte alle reineiere sørover'
+          ],
+          correct: 1,
+          feedback: 'Riktig! Finnmarksloven ga samiske representanter medbestemmelse over statlig grunn i Finnmark gjennom FeFo.'
+        },
+        reflection: 'Hva mener du veier tyngst i diskusjonen om Finnmarksloven: hensynet til å veie opp for historisk urett, eller kritikken om dobbel representasjon?',
+        goal: 'Kunne forklare sammenhengen mellom Alta-aksjonen, Sametinget, ILO 169 og Finnmarksloven.'
+      },
+      {
+        id: 'n9',
+        chapter: 'sapmi',
+        type: 'motperspektiv',
+        icon: '🌬️',
+        x: 790, y: 95,
+        parents: ['n8'],
+        period: '2021 – 2024',
+        part: 'Motperspektiv · Areal & energi',
+        title: 'Fosen-dommen og kampen mot vindmøller',
+        subtitle: 'Når storsamfunnets behov for fornybar vindkraft kolliderer med sørsamisk reindrift',
+        image: 'Images/fosen-konflikt.jpg',
+        caption: 'Vindkraftverkene på Fosen (277 turbiner) står i viktige vinterbeiteområder for sørsamisk reindrift.',
+        enkel: `
+          <p>Vindkraftanleggene på <strong>Fosen</strong> (277 turbiner, 3,4 TWh) ødelegger viktige vinterbeiter for sørsamisk reindrift. I oktober 2021 slo Høyesterett fast at konsesjonene for Storheia og Roan var <strong>ugyldige</strong> fordi de krenket urfolks rett til kulturutøvelse.</p>
+          <p>Etter store protester i 2023 ble det inngått meklingsavtaler i desember 2023 og mars 2024 med erstatning og tilleggsbeite, mens turbinene blir stående.</p>
+        `,
+        full: `
+          <p>De siste tiårene har mesteparten av ny kraftproduksjon i Norge kommet fra vindkraft. På <strong>Fosen</strong> produserer 277 turbiner <strong>3,4 TWh</strong> årlig – nesten fem ganger så mye som Altakraftverket. Men anleggene på <strong>Storheia</strong> og <strong>Roan</strong> ødelegger seinvinterbeite for sørsamiske reineiere.</p>
+          <p>Reineierne avslo 90 millioner kroner i erstatning for vinterfôring og gikk til Høyesterett. Den <strong>11. oktober 2021</strong> slo Høyesterett i storkammer fast at utbyggingen krenket retten til kulturutøvelse etter FNs konvensjon om sivile og politiske rettigheter (SP) artikkel 27, og erklærte konsesjonene <strong>ugyldige</strong>.</p>
+          <p><strong>Utviklingen videre (2023–2026):</strong> Fordi turbinene fortsatte å gå etter dommen, oppsto store demonstrasjoner i Oslo vinteren 2023, der aktivister brukte begrepet <em>«grønn kolonialisme»</em>. Etter statlig mekling inngikk staten avtaler med <strong>Sør-Fosen sijte</strong> (desember 2023) og <strong>Nord-Fosen siida</strong> (mars 2024) som gir økonomisk kompensasjon og nye vinterbeiter mot at vindkraftverkene får stå ut konsesjonsperioden.</p>
+          <p><strong>Hvorfor er løsningen så komplisert?</strong> Da staten utredet å flytte opptil 2 100 rein rundt 35 mil sørover til <strong>Håmmålsfjellet–Sålekinna</strong> i Nord-Østerdalen (Os, Tolga og Engerdal) som nytt vinterbeite, utløste det kraftig motstand fra bønder, hytteeiere, DNT, naturvernere og lokale reineiere – på grunn av beitekonflikter, trussel mot villrein og planer om opptil 100 km sperregjerder. En bred allianse ba regjeringen «trykke på stoppknappen».</p>
+          <p><strong>Kraftunderskudd i Trøndelag:</strong> Samtidig viser situasjonen i trøndersk industri hvorfor mange advarer mot å rive vindkraften på Fosen (3,4 TWh): I <strong>Verdal Industripark</strong> (over 3 400 ansatte og 15,1 milliarder kroner i omsetning) er strømnettet allerede «tomt» for ny kraft. Bedrifter som Franzefoss Minerals får ikke nok strøm til å gjøre produksjonen utslippsfri, og kommunen må si nei til nye arbeidsplasser og etableringer. Å fjerne Fosen-kraften ville forsterket kraftmangelen i Trøndelag betydelig.</p>
+        `,
+        caseHtml: `
+          <div class="elevated-surface border rounded-xl p-4 space-y-2 text-sm">
+            <p class="text-xs font-bold uppercase tracking-wider text-rose-400">Trilemmaet i Fosen-saken</p>
+            <p><strong>1. Urfolks rettigheter:</strong> Vern mot arealinngrep som truer sørsamisk reindrift og kulturutøvelse (SP art. 27).</p>
+            <p><strong>2. Erstatningsbeite i Nord-Østerdalen:</strong> Forslaget om å flytte reinen 35 mil sørover skaper ny konflikt med landbruk, villrein og friluftsliv.</p>
+            <p><strong>3. Kraftbehovet i Trøndelag:</strong> Industriparker som Verdal har allerede akutt kraftmangel som hindrer utslippskutt og nye arbeidsplasser – å ta bort 3,4 TWh fra Fosen vil ramme regionen hardt.</p>
+          </div>
+          <p class="text-xs text-sec"><strong>Kilder:</strong> Høyesterett HR-2021-1975-S; Energidepartementet (2023–2024); NRK Sápmi («Den umulige Fosen-løsningen»); Vold, Ø. S. (2026), <em>Trønder-Avisa</em> («Akutt kraftmangel i Verdal: – Parken er tom»).</p>
+        `,
+        quiz: {
+          q: 'Hva slo Høyesterett fast i Fosen-dommen i oktober 2021?',
+          options: [
+            'At vindkraft alltid går foran reindrift',
+            'At konsesjonene for Storheia og Roan var ugyldige fordi de krenket samenes rett til kulturutøvelse',
+            'At reineierne måtte nøye seg med 90 millioner i erstatning uten rettssak',
+            'At all vindkraft i Norge skulle legges ned'
+          ],
+          correct: 1,
+          feedback: 'Riktig! Høyesterett i storkammer erklærte konsesjonene ugyldige etter SP artikkel 27.'
+        },
+        reflection: 'Hva menes med begrepet «grønn kolonialisme» i forbindelse med Fosen-saken, og hvordan bør slike konflikter forebygges i framtiden?',
+        goal: 'Kunne analysere Fosen-saken som et hovedeksempel på areal- og ressurskonflikt mellom fornybar energi og urfolksrettigheter.'
+      },
+      {
+        id: 'n10',
+        chapter: 'sapmi',
+        type: 'motperspektiv',
+        icon: '🐺',
+        x: 850, y: 410,
+        parents: ['n6'],
+        period: 'Nåtid',
+        part: 'Motperspektiv · Natur & miljø',
+        title: 'Rovdyr, naturvern & truet laksefiske',
+        subtitle: 'Når samiske næringsinteresser og naturverninteresser ikke peker i samme retning',
+        image: 'Images/fosen-konflikt.jpg',
+        caption: 'Både rovdyrforvaltning på vidda og fiskestopp i Tanaelva viser at urfolk og naturvernere kan ha motstridende interesser.',
+        enkel: `
+          <p>Selv om samer og naturvernere ofte står sammen mot kraftutbygging, bruker også moderne urfolksnæringer naturen hardt enkelte steder: Store reinflokker kan gi <strong>nedbeiting</strong> av reinbeiteområder, og bruk av <strong>motoriserte kjøretøy</strong> (snøscooter og ATV) sliter på sårbar vidde.</p>
+          <p>I tillegg kolliderer interessene om <strong>rovdyr</strong> (ulv, jerv, gaupe og kongeørn tar rein) og om fiskestopp i <strong>Tanaelva</strong>.</p>
+        `,
+        full: `
+          <p>Urfolk og naturvernere står ofte sammen mot energi- og gruveprosjekter, men det finnes også tydelige motsetninger. Ikke all moderne urfolksnæring er skånsom mot naturen: På Finnmarksvidda har moderne reindrift med svært store reinflokker ført til <strong>overbeite og nedbeiting</strong> av lavdekket i enkelte beiteområder. Samtidig gir utstrakt bruk av <strong>motoriserte kjøretøy</strong> – som snøscootere, firehjulinger (ATV) og terrengbiler – dype kjørespor og hard belastning på den sårbare tundranaturen.</p>
+          <p>I tillegg er reindrift uforenlig med ulv i fjellet (derfor er den norske ulvesonen lagt til Østlandet), og jerv, gaupe og kongeørn tar mange reinkalver. Dermed kolliderer naturvernkonvensjoner (vern av rødlistede rovdyr) med urfolkskonvensjoner (rett til tradisjonell næring).</p>
+          <p>Også laksefisket er en kilde til konflikt. Redusert villaksbestand har ført til fiskestopp i <strong>Tanaelva</strong> flere år på rad. Sametinget mener det må være rom for et begrenset fiske slik at unge lærer tradisjonelle fiskemetoder. Den største trusselen mot villaksen er sykdommer og lakselus fra <strong>oppdrettslaks</strong> (Norges nest største eksportnæring), i tillegg til varmere klima (mer gjedde) og fremmed <strong>pukkellaks</strong> fra Kolahalvøya.</p>
+        `,
+        caseHtml: `
+          <div class="elevated-surface border rounded-xl p-4 space-y-2 text-sm">
+            <p class="text-xs font-bold uppercase tracking-wider text-rose-400">To klassiske dilemmaer</p>
+            <p><strong>Rovdyr:</strong> Rødlistede rovdyr vs. reindriftens tap og økonomi.</p>
+            <p><strong>Tanaelva:</strong> Totalfredning av villaks vs. samisk fiskekultur, og strengere krav til oppdrett vs. eksportinntekter.</p>
+          </div>
+          <p class="text-xs text-sec"><strong>Kilder:</strong> Miljødirektoratet (2021); Wormdal (2022), <em>NRK</em>; Wasskog (2017).</p>
+        `,
+        quiz: {
+          q: 'Hvorfor har Sametinget protestert mot totalforbudet mot tradisjonelt laksefiske i Tanaelva?',
+          options: [
+            'Fordi de mener lakselus ikke finnes i Finnmark',
+            'Fordi et totalforbud hindrer unge i å lære tradisjonelle fiskemetoder som er sentrale i samisk kultur',
+            'Fordi de ønsker å starte oppdrettsanlegg midt i Tanaelva',
+            'Fordi gjedda skal utryddes'
+          ],
+          correct: 1,
+          feedback: 'Riktig! Sametinget ønsker et begrenset fiske for å bevare tradisjonell kunnskap og kultur.'
+        },
+        reflection: 'Hvordan kan myndighetene balansere hensynet til truet villaks, samisk fiskekultur og lønnsomheten i norsk oppdrettsnæring?',
+        goal: 'Kunne drøfte situasjoner der urfolksinteresser og naturverninteresser står mot hverandre.'
+      }
+    ];
+
+    // 3. State
+    let activeNodeId = 'n1';
+    let readingMode = 'full'; // 'enkel' | 'full'
+    let activeTab = 'fagstoff'; // 'fagstoff' | 'case' | 'oppgaver'
+    let activeFilter = 'all'; // 'all' | 'urfolk' | 'sapmi'
+    let followMode = true;
+    let panX = 0, panY = 0, scale = 0.85;
+    const nodeQuizState = {};
+    const visitedNodes = new Set(['n1']);
+
+    function getAncestorEdgeSet(nodeId) {
+      const activeEdges = new Set();
+      const queue = [nodeId];
+      const seen = new Set();
+      while (queue.length) {
+        const currId = queue.shift();
+        if (seen.has(currId)) continue;
+        seen.add(currId);
+        const curr = NODES.find(n => n.id === currId);
+        if (!curr) continue;
+        curr.parents.forEach(pId => {
+          activeEdges.add(`${pId}->${currId}`);
+          queue.push(pId);
+        });
+      }
+      return activeEdges;
+    }
+
+    const treeViewport = document.getElementById('tree-viewport');
+    const treeWorld = document.getElementById('tree-world');
+    const treeEdges = document.getElementById('tree-edges');
+    const treeNodes = document.getElementById('tree-nodes');
+
+    const typeStyles = {
+      hovedstamme: { dot: 'bg-emerald-400', border: 'border-emerald-500/50', activeRing: 'ring-2 ring-emerald-400 border-emerald-400 shadow-lg shadow-emerald-500/20', badge: 'bg-emerald-500/15 text-emerald-300', label: 'Hovedstamme' },
+      fordypning: { dot: 'bg-sky-400', border: 'border-sky-500/50', activeRing: 'ring-2 ring-sky-400 border-sky-400 shadow-lg shadow-sky-500/20', badge: 'bg-sky-500/15 text-sky-300', label: 'Fordypning' },
+      motperspektiv: { dot: 'bg-rose-400', border: 'border-rose-500/50', activeRing: 'ring-2 ring-rose-400 border-rose-400 shadow-lg shadow-rose-500/20', badge: 'bg-rose-500/15 text-rose-300', label: 'Motperspektiv' }
+    };
+
+    function applyTransform() {
+      treeWorld.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
+    }
+
+    function centerOnNode(node) {
+      const vpW = treeViewport.clientWidth;
+      const vpH = treeViewport.clientHeight;
+      if (!vpW || !vpH) return;
+      panX = vpW / 2 - node.x * scale;
+      panY = vpH / 2 - node.y * scale;
+      applyTransform();
+    }
+
+    function fitOverview() {
+      const vpW = treeViewport.clientWidth;
+      const vpH = treeViewport.clientHeight;
+      if (!vpW || !vpH) return;
+      scale = Math.min(vpW / 920, vpH / 760, 0.95);
+      scale = Math.max(0.45, scale);
+      panX = (vpW - 920 * scale) / 2;
+      panY = (vpH - 760 * scale) / 2 + 10;
+      applyTransform();
+    }
+
+    // Render Physical Organic Tree + Glass HTML nodes
+    function renderTree() {
+      treeEdges.innerHTML = '';
+      treeNodes.innerHTML = '';
+      const activePathEdges = getAncestorEdgeSet(activeNodeId);
+
+      // Update progress indicator
+      const progEl = document.getElementById('tree-progress-text');
+      if (progEl) progEl.textContent = `${visitedNodes.size} / ${NODES.length} utforsket`;
+
+      // 1. Organic Tree Backdrop (Canopy clouds, Ground horizon, Roots & Trunk)
+      const backdrop = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      backdrop.innerHTML = `
+        <defs>
+          <radialGradient id="canopy-left" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="rgba(16, 185, 129, 0.16)" />
+            <stop offset="100%" stop-color="rgba(16, 185, 129, 0)" />
+          </radialGradient>
+          <radialGradient id="canopy-right" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="rgba(56, 189, 248, 0.15)" />
+            <stop offset="100%" stop-color="rgba(56, 189, 248, 0)" />
+          </radialGradient>
+          <radialGradient id="canopy-top" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="rgba(244, 63, 94, 0.10)" />
+            <stop offset="100%" stop-color="rgba(244, 63, 94, 0)" />
+          </radialGradient>
+          <linearGradient id="trunk-grad" x1="0%" y1="100%" x2="0%" y2="0%">
+            <stop offset="0%" stop-color="#44403c" />
+            <stop offset="60%" stop-color="#57534e" />
+            <stop offset="100%" stop-color="#292524" />
+          </linearGradient>
+        </defs>
+
+        <!-- Soft Nordic Canopy Clouds -->
+        <ellipse cx="280" cy="240" rx="230" ry="180" fill="url(#canopy-left)" />
+        <ellipse cx="700" cy="250" rx="240" ry="190" fill="url(#canopy-right)" />
+        <ellipse cx="500" cy="140" rx="260" ry="130" fill="url(#canopy-top)" />
+
+        <!-- Subtle Ground / Moss Horizon -->
+        <path d="M 80 710 Q 500 685 920 710" fill="none" stroke="rgba(16, 185, 129, 0.22)" stroke-width="2" stroke-dasharray="4 6" />
+
+        <!-- Organic Roots spreading from n1 (500, 610) -->
+        <path d="M 500 615 C 485 665, 430 695, 340 722" fill="none" stroke="url(#trunk-grad)" stroke-width="10" stroke-linecap="round" opacity="0.75" />
+        <path d="M 500 615 C 495 670, 470 705, 435 735" fill="none" stroke="url(#trunk-grad)" stroke-width="7" stroke-linecap="round" opacity="0.65" />
+        <path d="M 500 615 C 515 665, 570 695, 665 722" fill="none" stroke="url(#trunk-grad)" stroke-width="10" stroke-linecap="round" opacity="0.75" />
+        <path d="M 500 615 C 505 670, 535 705, 570 735" fill="none" stroke="url(#trunk-grad)" stroke-width="7" stroke-linecap="round" opacity="0.65" />
+        <path d="M 500 610 L 500 732" fill="none" stroke="url(#trunk-grad)" stroke-width="14" stroke-linecap="round" opacity="0.85" />
+      `;
+      treeEdges.appendChild(backdrop);
+
+      // 2. Organic Branches between parent -> child nodes
+      NODES.forEach(node => {
+        const isDimmed = activeFilter !== 'all' && node.chapter !== activeFilter;
+
+        node.parents.forEach(pId => {
+          const parent = NODES.find(n => n.id === pId);
+          if (!parent) return;
+
+          // Organic upward-curving branch bezier
+          const dx = node.x - parent.x;
+          const dy = node.y - parent.y;
+          const c1x = parent.x + dx * 0.15;
+          const c1y = parent.y + dy * 0.55;
+          const c2x = node.x - dx * 0.15;
+          const c2y = node.y - dy * 0.35;
+          const d = `M ${parent.x} ${parent.y} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${node.x} ${node.y}`;
+          const isPathActive = activePathEdges.has(`${pId}->${node.id}`);
+
+          // Branch thickness tapers from trunk (n1) to outer twigs
+          const branchWidth = pId === 'n1' ? 14 : (node.type === 'hovedstamme' ? 9 : 6);
+
+          // Physical wooden branch body
+          const branch = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          branch.setAttribute('d', d);
+          branch.setAttribute('fill', 'none');
+          branch.setAttribute('stroke', 'url(#trunk-grad)');
+          branch.setAttribute('stroke-width', String(branchWidth));
+          branch.setAttribute('stroke-linecap', 'round');
+          branch.setAttribute('opacity', isDimmed ? '0.2' : '0.82');
+          treeEdges.appendChild(branch);
+
+          // Active glowing "sap" energy line inside the branch
+          if (isPathActive) {
+            const glow = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            glow.setAttribute('d', d);
+            glow.setAttribute('fill', 'none');
+            glow.setAttribute('stroke', 'rgba(52, 211, 153, 0.35)');
+            glow.setAttribute('stroke-width', String(branchWidth + 4));
+            glow.setAttribute('stroke-linecap', 'round');
+            treeEdges.appendChild(glow);
+
+            const sap = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            sap.setAttribute('d', d);
+            sap.setAttribute('fill', 'none');
+            sap.setAttribute('stroke', '#34d399');
+            sap.setAttribute('stroke-width', '2.5');
+            sap.setAttribute('stroke-dasharray', '6 6');
+            sap.classList.add('edge-flowing');
+            treeEdges.appendChild(sap);
+          }
+        });
+
+        // 3. Modern Glassmorphic Leaf/Node Card
+        const st = typeStyles[node.type];
+        const isActive = node.id === activeNodeId;
+        const isVisited = visitedNodes.has(node.id);
+        const topAccent = node.type === 'hovedstamme' ? 'bg-emerald-400' : node.type === 'fordypning' ? 'bg-sky-400' : 'bg-rose-400';
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `tree-node node-glass absolute -translate-x-1/2 -translate-y-1/2 w-48 text-left border rounded-2xl overflow-hidden shadow-lg ${isActive ? 'active-node ' + st.activeRing : st.border} ${isDimmed ? 'opacity-25' : 'opacity-100'}`;
+        btn.style.left = `${node.x}px`;
+        btn.style.top = `${node.y}px`;
+        btn.innerHTML = `
+          <div class="h-1 w-full ${topAccent} ${isActive ? 'opacity-100' : 'opacity-65'}"></div>
+          <div class="p-3">
+            <div class="flex items-center justify-between gap-1.5 mb-1.5">
+              <div class="flex items-center gap-1.5 min-w-0">
+                <span class="text-sm leading-none">${node.icon || '📌'}</span>
+                <span class="text-[10px] font-semibold uppercase tracking-wider text-sec truncate">${node.chapter === 'urfolk' ? 'Urfolk' : 'Sápmi'}</span>
+              </div>
+              ${isVisited ? '<span class="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px] font-bold flex items-center justify-center shrink-0" title="Utforsket">✓</span>' : ''}
+            </div>
+            <p class="text-xs font-bold leading-snug line-clamp-2 mb-1">${node.title}</p>
+            <p class="text-[10px] text-sec truncate">${node.period}</p>
+          </div>
+        `;
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          selectNode(node.id);
+        });
+        treeNodes.appendChild(btn);
+      });
+    }
+
+    function selectNode(id) {
+      activeNodeId = id;
+      visitedNodes.add(id);
+      const node = NODES.find(n => n.id === id);
+      if (!node) return;
+
+      renderTree();
+      if (followMode) centerOnNode(node);
+
+      const st = typeStyles[node.type];
+      document.getElementById('node-period').textContent = node.period;
+      document.getElementById('node-part').textContent = node.part;
+      const typeBadge = document.getElementById('node-type-badge');
+      typeBadge.className = `px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${st.badge}`;
+      typeBadge.textContent = st.label;
+
+      document.getElementById('node-title').textContent = node.title;
+      document.getElementById('node-subtitle').textContent = node.subtitle;
+      const imgEl = document.getElementById('node-image');
+      imgEl.src = node.image;
+      imgEl.alt = node.title;
+      document.getElementById('node-caption').textContent = node.caption;
+      document.getElementById('node-goal').textContent = node.goal;
+
+      renderTabContent();
+      bindTooltips();
+      document.getElementById('content-pane').scrollTop = 0;
+    }
+
+    function renderTabContent() {
+      const node = NODES.find(n => n.id === activeNodeId);
+      const tabBody = document.getElementById('tab-body');
+
+      if (activeTab === 'fagstoff') {
+        tabBody.innerHTML = readingMode === 'enkel' ? node.enkel : node.full;
+      } else if (activeTab === 'case') {
+        tabBody.innerHTML = node.caseHtml;
+      } else if (activeTab === 'oppgaver') {
+        const q = node.quiz;
+        const chosen = nodeQuizState[node.id];
+        tabBody.innerHTML = `
+          <div class="elevated-surface border rounded-xl p-4 space-y-3">
+            <p class="text-xs font-bold uppercase tracking-wider text-emerald-400">Kontrollspørsmål</p>
+            <p class="font-semibold text-sm sm:text-base">${q.q}</p>
+            <div class="space-y-2">
+              ${q.options.map((opt, idx) => {
+                let cls = 'elevated-surface border hover:border-emerald-500/50';
+                if (chosen !== undefined) {
+                  if (idx === q.correct) cls = 'border-emerald-500 bg-emerald-500/15 font-medium';
+                  else if (idx === chosen) cls = 'border-rose-500 bg-rose-500/15';
+                }
+                return `<button type="button" data-opt="${idx}" class="node-quiz-opt w-full text-left px-3.5 py-2 rounded-lg border text-xs sm:text-sm transition-colors ${cls}">${opt}</button>`;
+              }).join('')}
+            </div>
+            ${chosen !== undefined ? `<p class="text-xs sm:text-sm p-2.5 rounded-lg ${chosen === q.correct ? 'bg-emerald-500/15 text-emerald-300' : 'bg-rose-500/15 text-rose-300'}">${chosen === q.correct ? q.feedback : 'Ikke helt riktig – se det grønne alternativet over.'}</p>` : ''}
+          </div>
+          <div class="elevated-surface border rounded-xl p-4 space-y-1.5">
+            <p class="text-xs font-bold uppercase tracking-wider text-amber-400">Reflekter og diskuter</p>
+            <p class="text-sm">${node.reflection}</p>
+          </div>
+        `;
+        tabBody.querySelectorAll('.node-quiz-opt').forEach(btn => {
+          btn.addEventListener('click', () => {
+            nodeQuizState[node.id] = Number(btn.dataset.opt);
+            renderTabContent();
+          });
+        });
+      }
+      bindTooltips();
+    }
+
+    // Tab switching
+    document.querySelectorAll('.content-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        activeTab = tab.dataset.tab;
+        document.querySelectorAll('.content-tab').forEach(t => {
+          const on = t.dataset.tab === activeTab;
+          t.className = on
+            ? 'content-tab py-2 px-3 rounded-lg text-xs sm:text-sm font-semibold bg-emerald-600 text-white transition-colors'
+            : 'content-tab py-2 px-3 rounded-lg text-xs sm:text-sm font-medium text-sec hover:text-current transition-colors';
+        });
+        renderTabContent();
+      });
+    });
+
+    // Enkel / Full mode
+    const btnEnkel = document.getElementById('mode-enkel');
+    const btnFull = document.getElementById('mode-full');
+    function setReadingMode(mode) {
+      readingMode = mode;
+      btnEnkel.className = mode === 'enkel' ? 'px-2.5 py-1 rounded-md transition-colors bg-emerald-600 text-white font-semibold' : 'px-2.5 py-1 rounded-md transition-colors text-sec hover:text-current';
+      btnFull.className = mode === 'full' ? 'px-2.5 py-1 rounded-md transition-colors bg-emerald-600 text-white font-semibold' : 'px-2.5 py-1 rounded-md transition-colors text-sec hover:text-current';
+      renderTabContent();
+    }
+    btnEnkel.addEventListener('click', () => setReadingMode('enkel'));
+    btnFull.addEventListener('click', () => setReadingMode('full'));
+
+    // Chapter filter pills
+    document.querySelectorAll('.chapter-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        activeFilter = pill.dataset.filter;
+        document.querySelectorAll('.chapter-pill').forEach(p => {
+          const on = p.dataset.filter === activeFilter;
+          p.className = on
+            ? 'chapter-pill px-3 py-1 rounded-full border border-emerald-500/60 bg-emerald-500/15 text-emerald-300 font-semibold transition-colors flex items-center gap-1.5'
+            : 'chapter-pill px-3 py-1 rounded-full border border-slate-500/25 text-sec hover:border-slate-400/50 transition-colors flex items-center gap-1.5';
+        });
+        renderTree();
+        if (activeFilter === 'urfolk') selectNode('n1');
+        if (activeFilter === 'sapmi') selectNode('n6');
+        if (activeFilter === 'all') fitOverview();
+      });
+    });
+
+    // Prev / Next node
+    document.getElementById('btn-prev-node').addEventListener('click', () => {
+      const idx = NODES.findIndex(n => n.id === activeNodeId);
+      const prev = NODES[(idx - 1 + NODES.length) % NODES.length];
+      selectNode(prev.id);
+    });
+    document.getElementById('btn-next-node').addEventListener('click', () => {
+      const idx = NODES.findIndex(n => n.id === activeNodeId);
+      const next = NODES[(idx + 1) % NODES.length];
+      selectNode(next.id);
+    });
+
+    // Pan & Zoom on tree viewport
+    let isDragging = false, startX = 0, startY = 0;
+    treeViewport.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      startX = e.clientX - panX;
+      startY = e.clientY - panY;
+    });
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      panX = e.clientX - startX;
+      panY = e.clientY - startY;
+      applyTransform();
+    });
+    window.addEventListener('mouseup', () => { isDragging = false; });
+
+    treeViewport.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? -0.08 : 0.08;
+      scale = Math.min(1.5, Math.max(0.45, scale + delta));
+      applyTransform();
+    }, { passive: false });
+
+    document.getElementById('btn-zoom-in').addEventListener('click', () => {
+      scale = Math.min(1.5, scale + 0.12);
+      applyTransform();
+    });
+    document.getElementById('btn-zoom-out').addEventListener('click', () => {
+      scale = Math.max(0.45, scale - 0.12);
+      applyTransform();
+    });
+    document.getElementById('btn-overview').addEventListener('click', fitOverview);
+
+    const btnFollow = document.getElementById('btn-follow');
+    btnFollow.addEventListener('click', () => {
+      followMode = !followMode;
+      btnFollow.className = followMode
+        ? 'px-2.5 py-1 rounded-lg bg-emerald-600 text-white font-semibold transition-colors'
+        : 'px-2.5 py-1 rounded-lg text-sec hover:text-current transition-colors';
+      if (followMode) centerOnNode(NODES.find(n => n.id === activeNodeId));
+    });
+
+    // Search
+    const searchInput = document.getElementById('search-input');
+    const searchResults = document.getElementById('search-results');
+    searchInput.addEventListener('input', () => {
+      const q = searchInput.value.trim().toLowerCase();
+      if (!q) { searchResults.classList.add('hidden'); return; }
+      const matches = NODES.filter(n =>
+        n.title.toLowerCase().includes(q) ||
+        n.subtitle.toLowerCase().includes(q) ||
+        n.full.toLowerCase().includes(q)
+      );
+      if (!matches.length) {
+        searchResults.innerHTML = `<p class="text-xs text-sec p-2">Ingen treff for «${q}».</p>`;
+      } else {
+        searchResults.innerHTML = matches.map(m => `
+          <button type="button" data-id="${m.id}" class="search-hit w-full text-left p-2.5 rounded-lg hover:bg-emerald-500/10 transition-colors block">
+            <p class="text-xs font-bold">${m.title}</p>
+            <p class="text-[11px] text-sec truncate">${m.subtitle}</p>
+          </button>
+        `).join('');
+        searchResults.querySelectorAll('.search-hit').forEach(b => {
+          b.addEventListener('click', () => {
+            selectNode(b.dataset.id);
+            searchResults.classList.add('hidden');
+            searchInput.value = '';
+          });
+        });
+      }
+      searchResults.classList.remove('hidden');
+    });
+    document.addEventListener('click', (e) => {
+      if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+        searchResults.classList.add('hidden');
+      }
+    });
+
+    // Modals (Ordliste, Quiz, Del / QR)
+    const modalBackdrop = document.getElementById('modal-backdrop');
+    const modalTitle = document.getElementById('modal-title');
+    const modalBody = document.getElementById('modal-body');
+    const openModal = (title, html) => {
+      modalTitle.textContent = title;
+      modalBody.innerHTML = html;
+      modalBackdrop.classList.remove('hidden');
+    };
+    const closeModal = () => modalBackdrop.classList.add('hidden');
+    document.getElementById('modal-close').addEventListener('click', closeModal);
+    modalBackdrop.addEventListener('click', (e) => { if (e.target === modalBackdrop) closeModal(); });
+
+    document.getElementById('btn-ordliste').addEventListener('click', () => {
+      const html = `<div class="grid sm:grid-cols-2 gap-3">${Object.values(GLOSSARY).map(item => `
+        <div class="elevated-surface border rounded-xl p-4">
+          <p class="font-serif font-bold text-base text-emerald-400 mb-1">${item.title}</p>
+          <p class="text-xs text-sec leading-relaxed">${item.definition}</p>
+        </div>
+      `).join('')}</div>`;
+      openModal('Ordliste · Sentrale fagbegreper', html);
+    });
+
+    document.getElementById('btn-quiz').addEventListener('click', () => {
+      const html = NODES.map((n, i) => `
+        <div class="elevated-surface border rounded-xl p-4 space-y-2">
+          <p class="text-xs text-emerald-400 font-semibold">${n.title}</p>
+          <p class="font-semibold text-sm">${i + 1}. ${n.quiz.q}</p>
+          <div class="space-y-1.5">
+            ${n.quiz.options.map((o, idx) => `
+              <button type="button" data-node="${n.id}" data-idx="${idx}" class="modal-q-opt w-full text-left px-3 py-2 rounded-lg border border-slate-500/25 text-xs hover:border-emerald-500/50 transition-colors">${o}</button>
+            `).join('')}
+          </div>
+          <p class="modal-q-fb hidden text-xs p-2 rounded-lg"></p>
+        </div>
+      `).join('');
+      openModal('Samlequiz · Kurs 1.3 Urfolkenes land', html);
+
+      modalBody.querySelectorAll('.modal-q-opt').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const n = NODES.find(x => x.id === btn.dataset.node);
+          const idx = Number(btn.dataset.idx);
+          const card = btn.closest('.elevated-surface');
+          const fb = card.querySelector('.modal-q-fb');
+          card.querySelectorAll('.modal-q-opt').forEach((b, i) => {
+            b.classList.remove('border-emerald-500', 'bg-emerald-500/15', 'border-rose-500', 'bg-rose-500/15');
+            if (i === n.quiz.correct) b.classList.add('border-emerald-500', 'bg-emerald-500/15');
+            else if (i === idx) b.classList.add('border-rose-500', 'bg-rose-500/15');
+          });
+          fb.classList.remove('hidden', 'bg-emerald-500/15', 'text-emerald-300', 'bg-rose-500/15', 'text-rose-300');
+          if (idx === n.quiz.correct) {
+            fb.classList.add('bg-emerald-500/15', 'text-emerald-300');
+            fb.textContent = n.quiz.feedback;
+          } else {
+            fb.classList.add('bg-rose-500/15', 'text-rose-300');
+            fb.textContent = 'Ikke helt riktig – se det grønne alternativet over.';
+          }
+        });
+      });
+    });
+
+    document.getElementById('btn-share').addEventListener('click', () => {
+      const url = window.location.href;
+      openModal('Del denne boka', `
+        <p class="text-sm text-sec">Kopier lenken under for å dele denne interaktive læreboksiden, eller åpne den klassiske visningen:</p>
+        <div class="flex gap-2">
+          <input id="share-url" type="text" readonly value="${url}" class="elevated-surface border rounded-lg px-3 py-2 text-xs flex-1" />
+          <button id="copy-share" type="button" class="px-4 py-2 rounded-lg bg-emerald-600 text-white text-xs font-semibold">Kopier</button>
+        </div>
+        <div class="pt-2 flex gap-2 text-xs">
+          <a href="urfolk.html" class="elevated-surface border px-3 py-2 rounded-lg hover:border-emerald-500/50">Klassisk side: Urfolk →</a>
+          <a href="samenes-hjemland.html" class="elevated-surface border px-3 py-2 rounded-lg hover:border-emerald-500/50">Klassisk side: Samenes hjemland →</a>
+        </div>
+      `);
+      document.getElementById('copy-share').addEventListener('click', () => {
+        navigator.clipboard?.writeText(url);
+        document.getElementById('copy-share').textContent = 'Kopiert!';
+      });
+    });
+
+    document.getElementById('btn-print').addEventListener('click', () => window.print());
+
+    // Theme toggle (Dark Kunnskapstre <-> Light Scandinavian)
+    const btnTheme = document.getElementById('btn-theme');
+    const themeIcon = document.getElementById('theme-icon');
+    btnTheme.addEventListener('click', () => {
+      const isLight = document.documentElement.classList.toggle('light-theme');
+      themeIcon.textContent = isLight ? '🌙' : '☀️';
+    });
+
+    // Tooltip logic
+    const tooltip = document.getElementById('glossary-tooltip');
+    const tooltipTitle = document.getElementById('tooltip-title');
+    const tooltipBody = document.getElementById('tooltip-body');
+    let hideTimeout = null;
+
+    function showTooltip(trigger) {
+      const entry = GLOSSARY[trigger.dataset.term];
+      if (!entry) return;
+      clearTimeout(hideTimeout);
+      tooltipTitle.textContent = entry.title;
+      tooltipBody.textContent = entry.definition;
+      tooltip.classList.remove('hidden-tooltip');
+      tooltip.classList.add('visible-tooltip');
+      const rect = trigger.getBoundingClientRect();
+      const ttRect = tooltip.getBoundingClientRect();
+      let left = Math.max(12, Math.min(rect.left + rect.width / 2 - ttRect.width / 2, window.innerWidth - ttRect.width - 12));
+      let top = rect.top - ttRect.height - 10;
+      if (top < 12) top = rect.bottom + 10;
+      tooltip.style.left = `${left}px`;
+      tooltip.style.top = `${top}px`;
+    }
+    function hideTooltip() {
+      tooltip.classList.remove('visible-tooltip');
+      tooltip.classList.add('hidden-tooltip');
+    }
+    function bindTooltips() {
+      document.querySelectorAll('.glossary-term').forEach(btn => {
+        btn.addEventListener('mouseenter', () => showTooltip(btn));
+        btn.addEventListener('mouseleave', () => { hideTimeout = setTimeout(hideTooltip, 150); });
+        btn.addEventListener('click', (e) => { e.stopPropagation(); showTooltip(btn); });
+      });
+    }
+    document.getElementById('tooltip-close').addEventListener('click', hideTooltip);
+    document.addEventListener('click', (e) => {
+      if (!tooltip.contains(e.target) && !e.target.classList.contains('glossary-term')) hideTooltip();
+    });
+
+    // Init
+    renderTree();
+    selectNode('n1');
+    setTimeout(fitOverview, 50);
+  </script>
+</body>
+</html>

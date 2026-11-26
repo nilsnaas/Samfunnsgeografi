@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="nb" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Samenes hjemland – Samfunnsgeografi (1.3 Urfolkenes land)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,600;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            serif: ['Source Serif 4', 'Georgia', 'serif'],
+          },
+          colors: {
+            nordic: {
+              50: '#f4f7f6',
+              100: '#e3ebe8',
+              200: '#c6d8d2',
+              600: '#1f6f66',
+              700: '#185952',
+              800: '#154742',
+              900: '#123a36',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #fafaf9;
+      color: #1c1917;
+      font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    }
+    .scroll-mt-header {
+      scroll-margin-top: 2rem;
+    }
+    .glossary-term {
+      font-weight: 700;
+      color: #185952;
+      border-bottom: 1.5px dotted #1f6f66;
+      padding: 0 2px;
+      border-radius: 3px;
+      transition: background-color 150ms ease, color 150ms ease;
+      cursor: help;
+      text-align: left;
+    }
+    .glossary-term:hover,
+    .glossary-term:focus-visible {
+      background-color: #e3ebe8;
+      color: #123a36;
+      outline: none;
+    }
+    #glossary-tooltip {
+      transition: opacity 150ms ease, transform 150ms ease;
+    }
+    #glossary-tooltip.hidden-tooltip {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(4px);
+    }
+    #glossary-tooltip.visible-tooltip {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body class="antialiased selection:bg-nordic-100 selection:text-nordic-900">
+
+  <!-- Top reading progress bar -->
+  <div class="fixed top-0 left-0 right-0 h-1 bg-stone-200 z-50">
+    <div id="reading-progress" class="h-full bg-nordic-600 transition-all duration-150" style="width: 0%"></div>
+  </div>
+
+  <!-- Mobile Header -->
+  <header class="lg:hidden sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-stone-200 px-4 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-lg bg-nordic-800 text-white font-serif font-bold text-xs flex items-center justify-center tracking-tight shrink-0">NN</div>
+      <div>
+        <span class="text-[11px] font-semibold uppercase tracking-wider text-nordic-700 block">Nils sin samfunnsgeografibok · 1.3</span>
+        <span class="font-serif font-bold text-lg text-stone-900 leading-tight block">Samenes hjemland</span>
+      </div>
+    </div>
+    <button id="mobile-menu-btn" type="button" aria-label="Åpne innholdsmeny" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-stone-300 text-sm font-medium text-stone-700 hover:bg-stone-100">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      Innhold
+    </button>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div id="mobile-drawer" class="lg:hidden fixed inset-0 z-50 hidden">
+    <div id="mobile-drawer-backdrop" class="absolute inset-0 bg-stone-900/40 backdrop-blur-xs"></div>
+    <nav class="relative w-72 max-w-[85vw] h-full bg-white border-r border-stone-200 p-6 overflow-y-auto shadow-xl">
+      <div class="flex items-center justify-between mb-6 pb-4 border-b border-stone-200">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-nordic-800 text-white font-serif font-bold text-xs flex items-center justify-center tracking-tight shrink-0">NN</div>
+          <div>
+            <p class="text-[11px] font-semibold uppercase tracking-wider text-nordic-700">Nils sin samfunnsgeografibok</p>
+            <p class="font-serif font-bold text-base text-stone-900 leading-tight">Samenes hjemland</p>
+          </div>
+        </div>
+        <button id="mobile-drawer-close" type="button" aria-label="Lukk meny" class="p-1.5 rounded-md text-stone-500 hover:bg-stone-100">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <ul class="space-y-1 text-sm" id="mobile-nav-list"></ul>
+    </nav>
+  </div>
+
+  <!-- Main Layout Wrapper -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+    <div class="lg:grid lg:grid-cols-[270px_1fr] lg:gap-12 xl:gap-16 items-start">
+
+      <!-- Left Sticky Sidebar (Scroll-Spy) -->
+      <aside class="hidden lg:block sticky top-8">
+        <div class="bg-white border border-stone-200/90 rounded-2xl p-5 shadow-xs">
+          <div class="flex items-center gap-2.5 pb-3.5 mb-3.5 border-b border-stone-200">
+            <div class="w-8 h-8 rounded-lg bg-nordic-800 text-white font-serif font-bold text-xs flex items-center justify-center tracking-tight shrink-0 shadow-xs">NN</div>
+            <span class="text-xs font-semibold text-stone-800 leading-snug">Nils sin samfunnsgeografibok</span>
+          </div>
+          <div class="pb-4 mb-4 border-b border-stone-200">
+            <span class="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-nordic-700 bg-nordic-50 px-2.5 py-1 rounded-full">
+              Kurs 1.3 · Urfolkenes land
+            </span>
+            <h2 class="font-serif text-xl font-bold text-stone-900 mt-2.5">Samenes hjemland</h2>
+            <p class="text-xs text-stone-500 mt-1">Samfunnsgeografi · Nils sin samfunnsgeografibok</p>
+          </div>
+
+          <nav aria-label="Innholdsfortegnelse">
+            <ul id="desktop-nav-list" class="space-y-1 text-sm">
+              <li><a href="#innledning" data-target="innledning" class="nav-link block px-3 py-2 rounded-lg text-stone-600 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">1. Innledning</a></li>
+              <li><a href="#samenes-hjemland" data-target="samenes-hjemland" class="nav-link block px-3 py-2 rounded-lg text-stone-600 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">2. Samenes hjemland</a></li>
+              <li><a href="#samiske-sprak" data-target="samiske-sprak" class="nav-link block px-3 py-2 rounded-lg text-stone-600 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">3. Samiske språk</a></li>
+              <li><a href="#kolonisering" data-target="kolonisering" class="nav-link block px-3 py-2 rounded-lg text-stone-600 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">4. Koloniseringen av Sápmi</a></li>
+              <li><a href="#alta-aksjonen" data-target="alta-aksjonen" class="nav-link block px-3 py-2 rounded-lg text-stone-600 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">5. Alta-aksjonen</a></li>
+              <li><a href="#sametinget-og-finnmarksloven" data-target="sametinget-og-finnmarksloven" class="nav-link block px-3 py-2 rounded-lg text-stone-600 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">6. Sametinget &amp; Finnmarksloven</a></li>
+              <li><a href="#vindmoller" data-target="vindmoller" class="nav-link block px-3 py-2 rounded-lg text-stone-600 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">7. En kamp mot vindmøller</a></li>
+              <li><a href="#natur-og-rovdyr" data-target="natur-og-rovdyr" class="nav-link block px-3 py-2 rounded-lg text-stone-600 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">8. Natur, rovdyr &amp; laksefiske</a></li>
+              <li><a href="#aktiviteter" data-target="aktiviteter" class="nav-link block px-3 py-2 rounded-lg text-stone-600 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">9. Test deg selv &amp; diskusjon</a></li>
+              <li><a href="#ordliste" data-target="ordliste" class="nav-link block px-3 py-2 rounded-lg text-stone-600 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">10. Sammendrag &amp; Ordliste</a></li>
+              <li><a href="#kilder" data-target="kilder" class="nav-link block px-3 py-2 rounded-lg text-stone-600 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">11. Kilder</a></li>
+            </ul>
+          </nav>
+
+          <div class="mt-5 pt-4 border-t border-stone-200 space-y-2.5">
+            <a href="index.html" class="flex items-center justify-between px-3 py-2 rounded-lg bg-stone-900 hover:bg-stone-800 text-xs font-semibold text-white transition-colors">
+              <span>🌳 Åpne Kunnskapstreet</span>
+            </a>
+            <a href="urfolk.html" class="flex items-center justify-between px-3 py-2 rounded-lg bg-stone-50 hover:bg-stone-100 border border-stone-200/80 text-xs font-medium text-stone-700 transition-colors">
+              <span>← Forrige kapittel: Urfolk</span>
+            </a>
+            <div class="text-xs text-stone-500 flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-nordic-600 shrink-0"></span>
+              <span>Hold over <strong class="text-nordic-700 font-semibold">uthevede fagbegreper</strong> for forklaring.</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Article Content -->
+      <main class="max-w-3xl space-y-14">
+
+        <!-- 1. Innledning -->
+        <section id="innledning" class="scroll-mt-header">
+          <div class="bg-white border border-stone-200 rounded-2xl p-6 sm:p-10 shadow-xs">
+            <div class="flex flex-wrap items-center gap-2 text-xs font-medium text-nordic-700 mb-4">
+              <span class="bg-nordic-50 border border-nordic-200/70 px-2.5 py-1 rounded-md">Samfunnsgeografi</span>
+              <span class="text-stone-400">/</span>
+              <span>Kurs 1.3 Urfolkenes land</span>
+            </div>
+
+            <h1 class="font-serif text-4xl sm:text-5xl font-bold tracking-tight text-stone-900 mb-4">Samenes hjemland</h1>
+            <p class="text-lg sm:text-xl text-stone-600 leading-relaxed mb-6">
+              Vi skal se nærmere på samisk kultur, historie og næringsgrunnlag – og på konfliktene knyttet til ressursbruk, energiutbygging og naturvern i samenes historiske bosettingsområde.
+            </p>
+
+            <div class="space-y-4 text-stone-700 leading-relaxed mb-6">
+              <p>
+                Samer har status som <button type="button" class="glossary-term" data-term="urfolk">urfolk</button> i Norge, og deres historiske bosettingsområder dekker hele Nord-Norge, Nord-Sverige, Nord-Finland samt Kola-halvøya i Russland, men også innlandet i Midt-Sverige og Midt-Norge ned til den nordlige delen av Østlandet. I dag bor det samer over hele landet.
+              </p>
+              <p>
+                Tradisjonelt har samene levd av jakt, fangst, fiske, håndverk og reindrift, og naturen har stått sentralt for mange samers næringsutøvelse, kultur og identitet. I politiske saker som handler om natur og naturvern, har mange samer og naturvernere tidvis sammenfallende interesser. Men det finnes også eksempler på konflikter der reindriftssamer og naturvernere ikke mener det samme, og samiske interesser og naturverninteresser kolliderer.
+              </p>
+            </div>
+
+            <div class="grid sm:grid-cols-2 gap-4 mt-6">
+              <div class="bg-stone-50 border border-stone-200 rounded-xl p-5">
+                <h3 class="text-sm font-semibold uppercase tracking-wider text-stone-800 mb-3">Du skal lære om</h3>
+                <ul class="space-y-2 text-sm text-stone-700">
+                  <li class="flex items-start gap-2">
+                    <span class="text-nordic-600 font-bold mt-0.5">•</span>
+                    <span>Samenes tradisjonelle bosettingsområder, språk og næringsgrunnlag</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <span class="text-nordic-600 font-bold mt-0.5">•</span>
+                    <span>Kolonisering og <button type="button" class="glossary-term" data-term="fornorskningspolitikk">fornorskningspolitikk</button> i samenes hjemland</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <span class="text-nordic-600 font-bold mt-0.5">•</span>
+                    <span><button type="button" class="glossary-term" data-term="alta-saken">Alta-aksjonen</button>, Sametinget og <button type="button" class="glossary-term" data-term="finnmarksloven">Finnmarksloven</button></span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <span class="text-nordic-600 font-bold mt-0.5">•</span>
+                    <span>Samenes interesser i spørsmål om vindkraft, rovdyr og laksefiske</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="bg-amber-50/70 border border-amber-200/80 rounded-xl p-5">
+                <h3 class="text-sm font-semibold uppercase tracking-wider text-amber-900 mb-3">Tenk over</h3>
+                <ol class="space-y-2 text-sm text-amber-950/90 list-decimal list-inside">
+                  <li>Hva vet du om samisk næringsgrunnlag og kultur fra før?</li>
+                  <li>Hvorfor kan vindkraft og vannkraft skape konflikt med reindrift?</li>
+                  <li>Når kan samiske næringsinteresser og naturverninteresser komme på kollisjonskurs?</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. Samenes hjemland -->
+        <section id="samenes-hjemland" class="scroll-mt-header space-y-6">
+          <div class="border-l-4 border-nordic-600 pl-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-nordic-700">Del 1</span>
+            <h2 class="font-serif text-3xl font-bold text-stone-900 mt-1">Samenes hjemland</h2>
+          </div>
+
+          <div class="bg-white border border-stone-200 rounded-xl p-5 shadow-xs">
+            <p class="text-xs font-bold uppercase tracking-wider text-stone-500 mb-1.5">Kort fortalt</p>
+            <p class="text-stone-800 leading-relaxed">
+              Samenes hjemland er nord i Norge, Sverige, Finland og Russland, og tradisjonelt har samisk næringsgrunnlag bestått av fiske, jakt, fangst, sanking, håndverk og reindrift. I dag jobber de fleste samer i de samme yrkene som resten av Norges befolkning.
+            </p>
+          </div>
+
+          <figure class="overflow-hidden rounded-xl border border-stone-200 bg-white">
+            <img src="Images/sapmi-kart.jpg" alt="Kartillustrasjon av Sápmi – samenes tradisjonelle bosettingsområde på tvers av Norge, Sverige, Finland og Kolahalvøya" class="w-full h-60 sm:h-72 object-cover" />
+            <figcaption class="px-4 py-2.5 text-xs text-stone-500 border-t border-stone-200/80">
+              Samenes historiske bosettingsområde (Sápmi / Sábme / Saepmie) strekker seg over fire lands grenser i Nord-Europa.
+            </figcaption>
+          </figure>
+
+          <div class="space-y-4 text-stone-700 leading-relaxed">
+            <p>
+              Det er godt mulig at samene i hvert fall delvis stammer fra de aller første menneskene som innvandret til Norden etter istiden for rundt 12 000 år siden, og at etniske norske er etterkommere av folk som innvandret noe senere. Når samene oppsto som folk, er en interessant historiefaglig diskusjon, men den har ingen juridisk betydning for samenes stilling som <button type="button" class="glossary-term" data-term="urfolk">urfolk</button> i Norden: I folkeretten er det <strong>ikke</strong> et krav å ha vært aller først i et område i forhistorisk tid. Det avgjørende er at gruppen bodde i området før dagens stater og grenser ble etablert, og har bevart egen kultur og tilknytning til landet.
+            </p>
+            <p>
+              Samenes tradisjonelle hjemland dekker hele Nord-Norge, Nord-Sverige, Nord-Finland samt Kola-halvøya i Russland, i tillegg til innlandet i Midt-Sverige og Midt-Norge ned til det nordlige Østlandet. Ingen av de nordiske landene fører offisiell statistikk over etnisitet, men det anslås at det lever <strong>50 000–80 000 samer</strong> totalt: rundt 40 000–60 000 i Norge, 15 000–36 000 i Sverige, 7 000–9 000 i Finland og 1 500–2 000 i Russland. I dag bor stadig flere samer i byer som Oslo, Tromsø og Alta. I middelalderen ble samene kalt <em>finner</em> – bakgrunnen for navnet Finnmark – selv om «finner» i dag brukes om personer fra Finland. Et annet gammeldags ord for same er <em>lapp</em> (jf. Lappland i Sverige og Finland). <strong>Å bruke begrepet «lapp» om samer i dag oppfattes som nedsettende og rasistisk.</strong>
+            </p>
+          </div>
+
+          <div class="grid sm:grid-cols-2 gap-6">
+            <div class="bg-white border border-stone-200 rounded-xl p-6">
+              <h3 class="font-serif text-xl font-bold text-stone-900 mb-2">Tradisjonelt næringsgrunnlag</h3>
+              <p class="text-sm text-stone-700 leading-relaxed">
+                Tradisjonelt har samisk næringsgrunnlag vært mangfoldig: I tillegg til fjellreindrift har <strong>sjøsamer</strong> langs kysten og fjordene i Nord-Norge levd av fiske og småbruk (og ble særlig hardt rammet av språktap under fornorskingen), mens <strong>skogssamer</strong> har drevet skogreindrift, jakt og fiske i innlandet. Håndverk (duodji) og sanking har også stått sentralt.
+              </p>
+            </div>
+            <div class="bg-white border border-stone-200 rounded-xl p-6">
+              <h3 class="font-serif text-xl font-bold text-stone-900 mb-2">Moderne yrkesliv</h3>
+              <p class="text-sm text-stone-700 leading-relaxed">
+                Selv om reindrift står sentralt for mange samer og for samisk kultur, er det en myte at alle samer driver med reindrift. I dag har de fleste samer samme type arbeid som resten av befolkningen i Norge, og jobber for eksempel som leger, renholdere, sjåfører, journalister eller lærere.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. Samiske språk -->
+        <section id="samiske-sprak" class="scroll-mt-header space-y-6">
+          <div class="border-l-4 border-nordic-600 pl-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-nordic-700">Del 2</span>
+            <h2 class="font-serif text-3xl font-bold text-stone-900 mt-1">Samiske språk</h2>
+          </div>
+
+          <div class="bg-white border border-stone-200 rounded-xl p-5 shadow-xs">
+            <p class="text-xs font-bold uppercase tracking-wider text-stone-500 mb-1.5">Kort fortalt</p>
+            <p class="text-stone-800 leading-relaxed">
+              Det finnes flere samiske språk. Tre av dem blir snakket i Norge i dag: lulesamisk, nordsamisk og sørsamisk. Av de tre er det nordsamisk som blir snakket av flest mennesker.
+            </p>
+          </div>
+
+          <div class="space-y-4 text-stone-700 leading-relaxed">
+            <p>
+              Selv om samene oppfatter seg selv som ett felles folk, er samisk ikke bare ett språk, men en gruppe nært beslektede språk i den <strong>finsk-ugriske språkfamilien</strong> (i slekt med finsk, ikke norsk). De samiske språkene er likevel ikke så like at den som snakker ett samisk språk automatisk forstår alle de andre, slik nordmenn, svensker og dansker stort sett forstår hverandre.
+            </p>
+            <p>
+              Historisk har det eksistert elleve ulike samiske språk, men fire av disse er i dag utdødd. Av de seks gjenlevende samiske språkene blir tre fortsatt snakket i Norge: <strong>nordsamisk</strong>, <strong>lulesamisk</strong> og <strong>sørsamisk</strong>. Sørsamisk og lulesamisk snakkes bare av noen få hundre mennesker, mens flere tusen snakker nordsamisk. Det er likevel bare i de to kommunene Karasjok og Kautokeino på Finnmarksvidda, hvor reindrift er en hovednæring, at nordsamisk også er det dominerende språket i alle sammenhenger.
+            </p>
+          </div>
+
+          <!-- Språktabell -->
+          <div class="bg-white border border-stone-200 rounded-2xl overflow-hidden shadow-xs">
+            <div class="px-6 py-4 bg-stone-50 border-b border-stone-200">
+              <h3 class="font-serif font-bold text-lg text-stone-900">Sammenligning av de tre samiske språkene i Norge</h3>
+              <p class="text-xs text-stone-500 mt-0.5">Navnet på <button type="button" class="glossary-term" data-term="sapmi">Sápmi</button> og vanlige ord varierer mellom språkene.</p>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-sm">
+                <thead class="bg-nordic-50/70 text-nordic-900 text-xs uppercase tracking-wider">
+                  <tr>
+                    <th class="px-6 py-3 font-semibold">Språk</th>
+                    <th class="px-6 py-3 font-semibold">Én fisk</th>
+                    <th class="px-6 py-3 font-semibold">Norge</th>
+                    <th class="px-6 py-3 font-semibold">Samenes hjemland</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-stone-200 text-stone-700">
+                  <tr class="hover:bg-stone-50/70">
+                    <td class="px-6 py-3.5 font-semibold text-stone-900">Lulesamisk</td>
+                    <td class="px-6 py-3.5"><em>akta guolle</em></td>
+                    <td class="px-6 py-3.5"><em>Vuodna</em></td>
+                    <td class="px-6 py-3.5 font-medium text-nordic-800">Sábme</td>
+                  </tr>
+                  <tr class="hover:bg-stone-50/70">
+                    <td class="px-6 py-3.5 font-semibold text-stone-900">Sørsamisk</td>
+                    <td class="px-6 py-3.5"><em>akte guelie</em></td>
+                    <td class="px-6 py-3.5"><em>Nöörje</em></td>
+                    <td class="px-6 py-3.5 font-medium text-nordic-800">Saepmie</td>
+                  </tr>
+                  <tr class="hover:bg-stone-50/70">
+                    <td class="px-6 py-3.5 font-semibold text-stone-900">Nordsamisk</td>
+                    <td class="px-6 py-3.5"><em>okta guolli</em></td>
+                    <td class="px-6 py-3.5"><em>Norga</em></td>
+                    <td class="px-6 py-3.5 font-medium text-nordic-800">Sápmi</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. Koloniseringen av samenes hjemland -->
+        <section id="kolonisering" class="scroll-mt-header space-y-6">
+          <div class="border-l-4 border-nordic-600 pl-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-nordic-700">Del 3</span>
+            <h2 class="font-serif text-3xl font-bold text-stone-900 mt-1">Koloniseringen av samenes hjemland</h2>
+          </div>
+
+          <div class="bg-white border border-stone-200 rounded-xl p-5 shadow-xs">
+            <p class="text-xs font-bold uppercase tracking-wider text-stone-500 mb-1.5">Kort fortalt</p>
+            <p class="text-stone-800 leading-relaxed">
+              Samene har blitt utsatt for mye urett fra myndighetene. Den norske stat førte en hard <button type="button" class="glossary-term" data-term="fornorskningspolitikk">fornorskningspolitikk</button>, og ønsket at samene skulle gi avkall på sin kultur og sitt språk for å bli mest mulig lik majoritetsbefolkningen.
+            </p>
+          </div>
+
+          <div class="space-y-4 text-stone-700 leading-relaxed">
+            <p>
+              Koloniseringen av de samiske bosettingsområdene har tatt ulike former gjennom historien. Fram til faste statsgrenser ble trukket opp på 1700-tallet, fikk samene i stor grad opprettholde sin levemåte og styre seg selv, men ble hardt utnyttet økonomisk gjennom skattlegging. Fordi både Danmark-Norge, Sverige og Russland hadde gitt seg selv skattleggingsrett, kunne noen samer bli dobbelt eller trippelt skattlagt.
+            </p>
+            <p>
+              Den største trusselen mot livsgrunnlaget kom da det fra <strong>1852</strong> ikke lenger ble tillatt å krysse landegrensene med reinflokkene. I reindriften er det avgjørende å kunne veksle mellom vinterbeiter i innlandet nær skoggrensa og sommerbeiter ved kysten og fjordene. Grenseblokaden skapte derfor stor nød blant samer på alle sider av grensene.
+            </p>
+            <p>
+              Det var også tydelig forskjellsbehandling i landrettigheter. Mens bofaste etnisk norske bønder fikk anerkjent jorda som privat eiendom, ble samenes avtaler om delt bruksrett ikke anerkjent på samme måte. I <strong>1902</strong> vedtok Stortinget en jordlov for Finnmark som favoriserte norsktalende ved kjøp av statlig jord, og som slo fast at jordeiendommer skulle gis norske navn.
+            </p>
+            <p>
+              Fra midten av 1800-tallet førte myndighetene en bevisst politikk for å <button type="button" class="glossary-term" data-term="assimilering">tvangsassimilere</button> samene. Denne <button type="button" class="glossary-term" data-term="fornorskningspolitikk">fornorskningspolitikken</button> innebar forbud mot samisk språk i alle offentlige sammenhenger – inkludert i friminuttene på skolen – og et mål om at samene skulle slutte med egne tradisjoner og slutte å se på seg selv som et eget folk. Kong Harald framførte en offisiell beklagelse for denne politikken i <strong>1997</strong>.
+            </p>
+          </div>
+
+          <!-- Oppdatert faktaboks: Sannhets- og forsoningskommisjonen -->
+          <div class="bg-nordic-50/70 border border-nordic-200 rounded-2xl p-6 space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="inline-flex items-center text-xs font-semibold uppercase tracking-wider text-nordic-800 bg-nordic-100 px-3 py-1 rounded-full">
+                Oppdatering · Sannhets- og forsoningskommisjonen (2023–2024)
+              </span>
+            </div>
+            <figure class="overflow-hidden rounded-xl border border-nordic-200/80 bg-white">
+              <img src="Images/sannhet-forsoning.jpg" alt="Illustrasjon som symboliserer Sannhets- og forsoningskommisjonen og oppgjøret med fornorskningspolitikken" class="w-full h-48 sm:h-56 object-cover" />
+            </figure>
+            <p class="text-sm text-stone-700 leading-relaxed">
+              I juni 2023 la Sannhets- og forsoningskommisjonen fram sin rapport for Stortinget, som dokumenterte de langvarige skadevirkningene av fornorskningspolitikken mot <strong>samer</strong>, <strong>kvener/norskfinner</strong> og <strong>skogfinner</strong>. Den 12. november 2024 behandlet Stortinget rapporten og ba formelt om unnskyldning for uretten staten begikk, samtidig som det ble vedtatt 17 tiltak for å styrke språk, kultur og kunnskap i skolen.
+            </p>
+          </div>
+        </section>
+
+        <!-- 5. Alta-aksjonen -->
+        <section id="alta-aksjonen" class="scroll-mt-header space-y-6">
+          <div class="border-l-4 border-nordic-600 pl-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-nordic-700">Del 4</span>
+            <h2 class="font-serif text-3xl font-bold text-stone-900 mt-1">Alta-aksjonen</h2>
+          </div>
+
+          <div class="bg-white border border-stone-200 rounded-xl p-5 shadow-xs">
+            <p class="text-xs font-bold uppercase tracking-wider text-stone-500 mb-1.5">Kort fortalt</p>
+            <p class="text-stone-800 leading-relaxed">
+              Vannkraft er fornybar energi, men innebærer inngrep i naturen. Mange samer er avhengige av den samme naturen for å drive reindrift. Forslaget om å bygge ut et vannkraftverk i Finnmark på 70- og 80-tallet møtte enorme protester fra miljøvernere og samiske organisasjoner. Utbyggingen ble gjennomført, men motstanden blir ansett som et viktig symbol på ivaretakelsen av samiske interesser.
+            </p>
+          </div>
+
+          <figure class="overflow-hidden rounded-xl border border-stone-200 bg-white">
+            <img src="Images/alta-demning.jpg" alt="Illustrasjon av vannkraftdemning i et nordnorsk elvegjel om høsten" class="w-full h-56 sm:h-64 object-cover" />
+            <figcaption class="px-4 py-2.5 text-xs text-stone-500 border-t border-stone-200/80">
+              Utbyggingen av Alta-Kautokeinovassdraget sto ferdig i 1987 etter en av de hardeste politiske stridene i norsk etterkrigstid.
+            </figcaption>
+          </figure>
+
+          <div class="space-y-4 text-stone-700 leading-relaxed">
+            <p>
+              Skal verden unngå global oppvarming ut over to grader, må forbruket av fossil energi ned, samtidig som milliarder av mennesker trenger energi. Da må energiforbruket kuttes eller produksjonen av fornybar energi økes. Vannkraft og vindkraft er de fornybare energiformene der Norge har størst potensial – men begge innebærer naturinngrep. Fordi reindriften trenger store arealer i de minst bebodde delene av landet, har samiske interesser gjentatte ganger kollidert med kraftutbygging.
+            </p>
+            <p>
+              Striden om utbyggingen av <button type="button" class="glossary-term" data-term="alta-vassdraget">Alta-Kautokeinovassdraget</button> på slutten av 1970-tallet og begynnelsen av 1980-tallet (<button type="button" class="glossary-term" data-term="alta-saken">Alta-saken</button>) var blant de hardeste politiske kampene i Norge etter andre verdenskrig. Utbyggingen, som sto ferdig i <strong>1987</strong>, gir i underkant av 700 GWh i året – Finnmarks største vannkraftverk, men betydelig mindre enn de største i Norge. Motstanden handlet om at oppdemmingen ville skade reinbeite, laksefiske og verdifullt biologisk mangfold.
+            </p>
+          </div>
+        </section>
+
+        <!-- 6. Sametinget og Finnmarksloven -->
+        <section id="sametinget-og-finnmarksloven" class="scroll-mt-header space-y-6">
+          <div class="border-l-4 border-nordic-600 pl-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-nordic-700">Del 5</span>
+            <h2 class="font-serif text-3xl font-bold text-stone-900 mt-1">Sametinget og Finnmarksloven</h2>
+          </div>
+
+          <div class="bg-white border border-stone-200 rounded-xl p-5 shadow-xs">
+            <p class="text-xs font-bold uppercase tracking-wider text-stone-500 mb-1.5">Kort fortalt</p>
+            <p class="text-stone-800 leading-relaxed">
+              Sametinget ble opprettet i 1989 for å ivareta samenes rettigheter, og i 1990 ble <button type="button" class="glossary-term" data-term="ilo169">ILO-konvensjon 169</button> <button type="button" class="glossary-term" data-term="ratifikasjon">ratifisert</button> i Norge. For å følge opp konvensjonen ble <button type="button" class="glossary-term" data-term="finnmarksloven">Finnmarksloven</button> vedtatt i 2005.
+            </p>
+          </div>
+
+          <div class="space-y-4 text-stone-700 leading-relaxed">
+            <p>
+              Som et resultat av samenes egen organisering – blant annet gjennom Alta-aksjonen – og økende internasjonal bevissthet om urfolksrettigheter, ble <strong>Grunnloven § 108</strong> («Sameparagrafen», opprinnelig § 110 a) vedtatt i <strong>1988</strong>. Paragrafen ble styrket i mai <strong>2023</strong> slik at den nå uttrykkelig slår fast at staten skal legge forholdene til rette for at det samiske folk, <em>som urfolk</em>, kan sikre og utvikle sitt språk, sin kultur og sitt samfunnsliv. I <strong>1989</strong> ble <strong>Sametinget</strong> opprettet som et folkevalgt, rådgivende organ. Det finnes også egne sameting i Sverige og Finland, som samarbeider på tvers av statsgrensene i <strong>Samisk parlamentarisk råd</strong>.
+            </p>
+            <p>
+              For å stemme ved sametingsvalget må man stå i <strong>Samemanntallet</strong> (i dag i underkant av 20 000 velgere). Kriteriene kombinerer et <em>subjektivt krav</em> (at man oppfatter seg selv som same) og et <em>objektivt språkkriterium</em> (at man selv, foreldre, besteforeldre eller oldeforeldre har hatt samisk som hjemmespråk). I <strong>1990</strong> ble Norge også det første landet i verden til å <button type="button" class="glossary-term" data-term="ratifikasjon">ratifisere</button> ILO-konvensjonen om urfolks rettigheter. Å ratifisere betyr at en internasjonal konvensjon gjøres til en del av landets lovverk gjennom vedtak i nasjonalforsamlingen.
+            </p>
+            <p>
+              For å følge opp konvensjonens krav om råderett over land og vann vedtok Stortinget <button type="button" class="glossary-term" data-term="finnmarksloven">Finnmarksloven</button> i <strong>2005</strong>. Loven opprettet <strong>Finnmarkseiendommen (FeFo)</strong> for å forvalte statens eiendom i Finnmark, med et styre på tre representanter valgt av Sametinget og tre valgt av fylkestinget. Ordningen har blitt kritisert av enkelte for å gi samer i Finnmark dobbel påvirkning gjennom både fylkestings- og sametingsvalget, men loven er ment å veie opp for at fravær av privat eiendomsrett historisk har gitt samene et svakere vern. Eventuelle uenigheter i styret kan bringes inn for regjeringen for endelig avgjørelse.
+            </p>
+          </div>
+        </section>
+
+        <!-- 7. En kamp mot vindmøller -->
+        <section id="vindmoller" class="scroll-mt-header space-y-6">
+          <div class="border-l-4 border-nordic-600 pl-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-nordic-700">Del 6 · Areal- og ressurskonflikt</span>
+            <h2 class="font-serif text-3xl font-bold text-stone-900 mt-1">En kamp mot vindmøller (Fosen-saken)</h2>
+          </div>
+
+          <div class="bg-white border border-stone-200 rounded-xl p-5 shadow-xs">
+            <p class="text-xs font-bold uppercase tracking-wider text-stone-500 mb-1.5">Kort fortalt</p>
+            <p class="text-stone-800 leading-relaxed">
+              Vindkraft har blitt en stadig større energikilde i Norge. I likhet med vannkraftutbygging har utbyggingen av vindkraftanlegg ført til konflikter knyttet til samenes reindrift i tradisjonelle beiteområder. Samiske reineiere fikk medhold i Høyesterett i 2021 om at utbyggingen på Fosen krenket deres rettigheter.
+            </p>
+          </div>
+
+          <figure class="overflow-hidden rounded-xl border border-stone-200 bg-white">
+            <img src="Images/fosen-konflikt.jpg" alt="Illustrasjon av vindturbiner på snødekt fjellvidde med beitende reinsdyr" class="w-full h-56 sm:h-64 object-cover" />
+            <figcaption class="px-4 py-2.5 text-xs text-stone-500 border-t border-stone-200/80">
+              Vindkraftverkene på Fosen (277 turbiner) står i viktige vinterbeiteområder for sørsamisk reindrift.
+            </figcaption>
+          </figure>
+
+          <div class="space-y-4 text-stone-700 leading-relaxed">
+            <p>
+              De siste to tiårene har mesteparten av ny kraftproduksjon i Norge kommet fra vindkraft. Vindkraftanleggene på <strong>Fosen</strong>, med totalt 277 vindturbiner, har en samlet produksjonskapasitet på <strong>3,4 TWh</strong> – nesten fem ganger så stort som Altakraftverket (0,7 TWh), og like under Norges største vannkraftverk, Tonstad kraftverk i Agder (3,8 TWh).
+            </p>
+            <p>
+              Problemet er at anleggene ødelegger for reindrift. <strong>Storheia</strong>, der det største av Fosen Vinds anlegg ligger, anses som tapt som seinvinterbeite så lenge turbinene står. De sørsamiske reineierne i Fosen reinbeitedistrikt ble først tilkjent 90 millioner kroner i erstatning for å vinterfôre reinen, men avslo summen og gikk til Høyesterett for å få kjent <button type="button" class="glossary-term" data-term="konsesjon">konsesjonen</button> ugyldig.
+            </p>
+            <p>
+              I motsetning til i Alta-saken vant reindriftssamene fram rettslig: I <strong>oktober 2021</strong> slo Høyesterett i storkammer fast at utbyggingen på <strong>Storheia og Roan</strong> var i strid med samenes konvensjonsfestede rett til kulturutøvelse (FNs konvensjon om sivile og politiske rettigheter artikkel 27), og at konsesjonene var <strong>ugyldige</strong>.
+            </p>
+          </div>
+
+          <!-- Oppdatert status Fosen -->
+          <div class="bg-white border-2 border-nordic-600/30 rounded-2xl p-6 space-y-3 shadow-xs">
+            <span class="inline-flex items-center text-xs font-semibold uppercase tracking-wider text-nordic-800 bg-nordic-100 px-3 py-1 rounded-full">
+              Utviklingen videre &amp; kompleksitet
+            </span>
+            <p class="text-sm text-stone-700 leading-relaxed">
+              Fordi vindkraftverkene fortsatte å produsere strøm etter dommen, førte saken til store demonstrasjoner i Oslo vinteren 2023. Etter statlig mekling inngikk staten og utbyggerne avtaler med <strong>Sør-Fosen sijte</strong> (desember 2023) og <strong>Nord-Fosen siida</strong> (mars 2024) som sikrer økonomisk kompensasjon og tilleggsarealer for vinterbeite mot at vindturbinene får bli stående ut konsesjonsperioden.
+            </p>
+            <p class="text-sm text-stone-700 leading-relaxed">
+              Hvor kompleks denne arealkonflikten er, ble ekstra tydelig da staten utredet å flytte opptil 2 100 rein rundt 35 mil sørover til <strong>Håmmålsfjellet–Sålekinna</strong> i Nord-Østerdalen (Os, Tolga og Engerdal) som erstatningsbeite. Planene – som blant annet innebar opptil 100 km sperregjerder – møtte massiv motstand fra bønder, hyttefolk, friluftslivsorganisasjoner, naturvernere (hensyn til villrein) og lokale reineiere, som krevde at regjeringen måtte «trykke på stoppknappen».
+            </p>
+            <p class="text-sm text-stone-700 leading-relaxed">
+              Samtidig illustrerer situasjonen i Trøndelag hvor vanskelig det er å bare fjerne vindkraften fra Fosen (3,4 TWh): Regionen sliter allerede med akutt kraftmangel. I <strong>Verdal Industripark</strong> (3 418 ansatte og 15,1 milliarder kroner i omsetning i 2025) er kraftnettet fullt – bedrifter som Franzefoss Minerals mangler strøm til å gjøre produksjonen utslippsfri, og kommunen må si nei til nye kraftkrevende etableringer. Å ta bort Fosen-kraften ville forsterket dette kraftunderskuddet kraftig.
+            </p>
+          </div>
+        </section>
+
+        <!-- 8. Natur og rovdyr -->
+        <section id="natur-og-rovdyr" class="scroll-mt-header space-y-6">
+          <div class="border-l-4 border-nordic-600 pl-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-nordic-700">Del 7</span>
+            <h2 class="font-serif text-3xl font-bold text-stone-900 mt-1">Natur, rovdyr og truet laksefiske</h2>
+          </div>
+
+          <div class="bg-white border border-stone-200 rounded-xl p-5 shadow-xs">
+            <p class="text-xs font-bold uppercase tracking-wider text-stone-500 mb-1.5">Kort fortalt</p>
+            <p class="text-stone-800 leading-relaxed">
+              Samiske interesser og naturverneres interesser er sammenfallende i noen konflikter, og langt fra hverandre i andre. Mens naturvernere vil verne rødlistede rovdyr, er de samme rovdyrene en trussel mot reinsdyr. Også tradisjonelt laksefiske er en kilde til konflikt.
+            </p>
+          </div>
+
+          <div class="grid sm:grid-cols-2 gap-6">
+            <div class="bg-white border border-stone-200 rounded-2xl p-6 space-y-3">
+              <h3 class="font-serif text-xl font-bold text-stone-900">Rovdyr og reindrift</h3>
+              <p class="text-sm text-stone-700 leading-relaxed">
+                Ikke all moderne urfolksnæring er skånsom mot naturen: På Finnmarksvidda har moderne reindrift med svært store flokker flere steder ført til <strong>overbeite og nedbeiting</strong> av det sårbare lavdekket. Samtidig gir utstrakt bruk av <strong>motoriserte kjøretøy</strong> (snøscooter, ATV og terrengkjøretøy) dype spor og hard belastning på fjell- og tundranaturen.
+              </p>
+              <p class="text-sm text-stone-700 leading-relaxed">
+                I tillegg er reindrift uforenlig med ulv i norske fjellområder – ettersom ulv kan påføre reindriften enorme tap (slik urfolk i Sakha-republikken i Sibir opplever). Derfor er den norske ulvesonen begrenset til Østlandet, sør for de tradisjonelle samiske områdene. Reineierne lever også i stadig konflikt med jerv, gaupe og kongeørn, som tar særlig mange reinkalver. Her står to sett med internasjonale konvensjoner mot hverandre: naturvernkonvensjoner for truede arter på rødlista vs. urfolkskonvensjoner om retten til tradisjonell næringsutøvelse.
+              </p>
+            </div>
+
+            <div class="bg-white border border-stone-200 rounded-2xl p-6 space-y-3">
+              <h3 class="font-serif text-xl font-bold text-stone-900">Truet laksefiske i Tana</h3>
+              <p class="text-sm text-stone-700 leading-relaxed">
+                Nest etter reindrift har fiske langs kysten og i elver vært den viktigste tradisjonelle samiske næringen. Fordi villaksbestanden er kraftig redusert, har tradisjonelt laksefiske i <strong>Tanaelva</strong> blitt forbudt flere år på rad. Sametinget har protestert fordi et totalforbud hindrer unge i å lære tradisjonelle fiskemetoder som er sentrale i samisk kultur.
+              </p>
+              <p class="text-sm text-stone-700 leading-relaxed">
+                Den største trusselen mot villaksen er sykdommer og lakselus fra <strong>oppdrettslaks</strong> – samtidig som oppdrett er Norges største eksportnæring etter olje og gass. I tillegg trues villaksen av varmere klima (som gir mer gjedde i elva) og spredning av den fremmede arten <strong>pukkellaks</strong> fra Kolahalvøya.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 9. Test deg selv & Reflekter -->
+        <section id="aktiviteter" class="scroll-mt-header space-y-6">
+          <div class="border-l-4 border-nordic-600 pl-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-nordic-700">Del 8</span>
+            <h2 class="font-serif text-3xl font-bold text-stone-900 mt-1">Test deg selv &amp; diskuter</h2>
+          </div>
+
+          <div class="bg-white border border-stone-200 rounded-2xl p-6 sm:p-8 shadow-xs space-y-6">
+            <div class="flex items-center justify-between border-b border-stone-200 pb-4">
+              <div>
+                <h3 class="font-serif text-xl font-bold text-stone-900">Kontrollspørsmål</h3>
+                <p class="text-xs text-stone-500 mt-0.5">Velg riktig svar på oppgavene under.</p>
+              </div>
+              <span id="quiz-score" class="text-xs font-semibold bg-nordic-50 text-nordic-800 px-3 py-1 rounded-full">0 / 4 riktig</span>
+            </div>
+
+            <div id="quiz-container" class="space-y-6"></div>
+          </div>
+
+          <div class="bg-amber-50/60 border border-amber-200/80 rounded-2xl p-6 sm:p-8 space-y-3">
+            <h3 class="font-serif text-xl font-bold text-amber-950">Reflekter og diskuter</h3>
+            <ol class="space-y-3 text-sm sm:text-base text-amber-950/90 list-decimal list-inside leading-relaxed">
+              <li>Hvorfor har samer status som urfolk i Norge?</li>
+              <li>Se for deg at du var til stede under utbyggingen av Alta-Kautokeinovassdraget på slutten av 1970-tallet. Ville du vært for eller mot utbyggingen? Forklar hvorfor.</li>
+              <li>Hvordan bør man løse konflikter der naturvernere vil beskytte rødlistede rovdyr, mens reineiere trenger vern mot tap av rein?</li>
+            </ol>
+          </div>
+        </section>
+
+        <!-- 10. Sammendrag & Ordliste -->
+        <section id="ordliste" class="scroll-mt-header space-y-8">
+          <div class="border-l-4 border-nordic-600 pl-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-nordic-700">Del 9</span>
+            <h2 class="font-serif text-3xl font-bold text-stone-900 mt-1">Sammendrag &amp; Ordliste</h2>
+          </div>
+
+          <div class="bg-white border border-stone-200 rounded-2xl p-6 sm:p-8 shadow-xs space-y-3">
+            <h3 class="font-serif text-xl font-bold text-stone-900 mb-2">Hovedpunkter fra kapittelet</h3>
+            <ul class="space-y-2.5 text-sm text-stone-700 leading-relaxed">
+              <li class="flex items-start gap-2.5"><span class="text-nordic-600 font-bold">✓</span><span>Samenes hjemland (<strong>Sápmi</strong>) strekker seg over nordområdene i Norge, Sverige, Finland og Russland. I dag jobber de fleste samer i samme yrker som resten av befolkningen.</span></li>
+              <li class="flex items-start gap-2.5"><span class="text-nordic-600 font-bold">✓</span><span>Tre samiske språk snakkes i Norge i dag: <strong>nordsamisk</strong> (flest), <strong>lulesamisk</strong> og <strong>sørsamisk</strong>.</span></li>
+              <li class="flex items-start gap-2.5"><span class="text-nordic-600 font-bold">✓</span><span>Staten førte en hard <strong>fornorskningspolitikk</strong> og <strong>tvangsassimilering</strong>, blant annet gjennom Jordloven av 1902 og språkforbud i skolen. Kong Harald beklaget i 1997, og Stortinget ba formelt om unnskyldning i 2024.</span></li>
+              <li class="flex items-start gap-2.5"><span class="text-nordic-600 font-bold">✓</span><span><strong>Alta-aksjonen</strong> førte til økt oppmerksomhet om samiske rettigheter, opprettelsen av <strong>Sametinget</strong> (1989), <strong>ratifikasjon</strong> av ILO-konvensjon 169 (1990) og <strong>Finnmarksloven</strong> (2005).</span></li>
+              <li class="flex items-start gap-2.5"><span class="text-nordic-600 font-bold">✓</span><span>Vindkraftutbygging på Fosen, rovdyrforvaltning og truet laksefiske i Tanaelva viser at konflikter om natur og ressurser fortsatt er høyaktuelle.</span></li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="font-serif text-2xl font-bold text-stone-900 mb-4">Viktige begreper (Ordliste)</h3>
+            <div id="glossary-grid" class="grid sm:grid-cols-2 gap-4"></div>
+          </div>
+        </section>
+
+        <!-- 11. Kilder -->
+        <section id="kilder" class="scroll-mt-header pb-16">
+          <div class="bg-stone-100 border border-stone-200 rounded-2xl p-6 sm:p-8 space-y-4">
+            <h2 class="font-serif text-2xl font-bold text-stone-900">Kilder</h2>
+            <div class="grid sm:grid-cols-2 gap-6 text-xs text-stone-600 leading-relaxed">
+              <div class="space-y-2">
+                <p class="font-semibold text-stone-800 uppercase tracking-wider">Faglige kilder</p>
+                <ul class="space-y-1.5 list-disc list-inside">
+                  <li>Samiske veivisere / SNL – oversiktsartikler om samisk historie og språk.</li>
+                  <li>Berg-Nordlie, M. &amp; Gaski, H. (2022). «Samer». <em>Store norske leksikon</em>.</li>
+                  <li>Pedersen, Steinar (2019). «Oppdelingen av det samiske territoriet» og «Jordloven for Finnmark, 1902». <em>Samiske veivisere</em>.</li>
+                  <li>H.M. Kong Harald 5. (1997, 7. oktober). «Sametinget 1997: Åpningstale».</li>
+                  <li>Berg-Nordlie, M. &amp; Tvedt, K. A. (2019). «Alta-saken». <em>Store norske leksikon</em>.</li>
+                  <li>Skogvang, S. F. (2021). «Sametingets myndighet». <em>Store norske leksikon</em>.</li>
+                  <li>Rosvold, K. A. (2022). «Fosen vind». <em>Store norske leksikon</em>.</li>
+                  <li>Wormdal, B. (2022). «Fiskestopp i en av verdens viktigste lakseelver». <em>NRK</em>.</li>
+                </ul>
+              </div>
+              <div class="space-y-2">
+                <p class="font-semibold text-stone-800 uppercase tracking-wider">Oppdaterte kilder</p>
+                <ul class="space-y-1.5 list-disc list-inside">
+                  <li>Norges Høyesterett (2021). <em>HR-2021-1975-S (Fosen-dommen)</em>.</li>
+                  <li>Energidepartementet (2023–2024). Meklingsavtaler med Sør-Fosen sijte og Nord-Fosen siida.</li>
+                  <li>Vold, Øystein Solenes (2026, 18. november). «Akutt kraftmangel i Verdal: – Parken er tom». <em>Trønder-Avisa</em>.</li>
+                  <li>Sannhets- og forsoningskommisjonen (2023). <em>Dokument 19 (2022–2023)</em>.</li>
+                  <li>Stortinget (2024). <em>Innst. 30 S (2024–2025)</em> – behandling av Sannhets- og forsoningskommisjonens rapport.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Floating Glossary Tooltip -->
+  <div id="glossary-tooltip" role="tooltip" class="hidden-tooltip fixed z-50 max-w-xs sm:max-w-sm bg-stone-900 text-stone-100 rounded-xl p-4 shadow-xl border border-stone-700/80">
+    <div class="flex items-start justify-between gap-3 mb-1">
+      <span id="tooltip-title" class="font-serif font-bold text-base text-nordic-200"></span>
+      <button id="tooltip-close" type="button" aria-label="Lukk begrepsforklaring" class="text-stone-400 hover:text-white text-xs px-1">✕</button>
+    </div>
+    <p id="tooltip-body" class="text-xs sm:text-sm text-stone-200 leading-relaxed"></p>
+  </div>
+
+  <script>
+    const GLOSSARY = {
+      'fornorskningspolitikk': {
+        title: 'Fornorskningspolitikk',
+        definition: 'Den norske statens offisielle assimileringspolitikk fra midten av 1800-tallet og langt inn i etterkrigstiden, med mål om at samer, kvener/norskfinner og skogfinner skulle gi opp sitt eget språk og kultur og bli mest mulig lik majoritetsbefolkningen.'
+      },
+      'ratifikasjon': {
+        title: 'Ratifikasjon (å ratifisere)',
+        definition: 'Betyr at en internasjonal konvensjon eller avtale blir godkjent og gjort til en rettslig forpliktende del av lovverket i et land gjennom vedtak i landets lovgivende forsamling (Stortinget i Norge).'
+      },
+      'alta-vassdraget': {
+        title: 'Alta-Kautokeinovassdraget',
+        definition: 'Et stort elve- og vassdragssystem på Finnmarksvidda som munner ut i Altafjorden. Utbyggingen av vannkraftverket i vassdraget på 1970- og 80-tallet skapte en av Norges største politiske konflikter.'
+      },
+      'alta-saken': {
+        title: 'Alta-saken',
+        definition: 'Den politiske striden og de store protestene (Alta-aksjonen) på slutten av 1970-tallet og begynnelsen av 1980-tallet mot utbyggingen av Alta-Kautokeinovassdraget, der miljøvernere og samiske organisasjoner sto sammen.'
+      },
+      'urfolk': {
+        title: 'Urfolk',
+        definition: 'Etniske grupper som har bodd i et bestemt område før statene som dekker området i dag, ble etablert. I Norge har samene status som urfolk.'
+      },
+      'assimilering': {
+        title: 'Tvangsassimilering / Assimilering',
+        definition: 'En politikk eller prosess der en minoritet eller et urfolk presses til å gi opp sitt eget språk og kultur slik at alle særtegn forsvinner og gruppen blir en del av majoritetskulturen.'
+      },
+      'ilo169': {
+        title: 'ILO-konvensjon 169',
+        definition: 'FNs internasjonale arbeidsorganisasjons konvensjon om urfolk og stammefolk (vedtatt i 1989, ratifisert av Norge i 1990 som første land i verden). Den sikrer urfolks rett til kultur, språk, tradisjonelle næringer og råderett over landområder.'
+      },
+      'finnmarksloven': {
+        title: 'Finnmarksloven',
+        definition: 'Lov vedtatt av Stortinget i 2005 for å følge opp ILO-konvensjon 169. Loven opprettet Finnmarkseiendommen (FeFo), der samiske representanter og fylkestinget sammen forvalter statlig grunn i Finnmark.'
+      },
+      'sapmi': {
+        title: 'Sápmi',
+        definition: 'Det nordsamiske navnet på samenes historiske og tradisjonelle bosettingsområde i Nord-Norge, Nord-Sverige, Nord-Finland og på Kola-halvøya i Russland (kalles Sábme på lulesamisk og Saepmie på sørsamisk).'
+      },
+      'konsesjon': {
+        title: 'Konsesjon',
+        definition: 'Offentlig tillatelse fra myndighetene til å utnytte naturressurser eller bygge og drive bestemte anlegg, for eksempel vannkraft- eller vindkraftverk.'
+      }
+    };
+
+    const glossaryGrid = document.getElementById('glossary-grid');
+    Object.entries(GLOSSARY).forEach(([key, item]) => {
+      const card = document.createElement('div');
+      card.className = 'bg-white border border-stone-200 rounded-xl p-5 shadow-xs hover:border-nordic-300 transition-colors';
+      card.innerHTML = `
+        <dt class="font-serif font-bold text-lg text-nordic-800 mb-1.5">${item.title}</dt>
+        <dd class="text-sm text-stone-700 leading-relaxed">${item.definition}</dd>
+      `;
+      glossaryGrid.appendChild(card);
+    });
+
+    // Tooltip logic
+    const tooltip = document.getElementById('glossary-tooltip');
+    const tooltipTitle = document.getElementById('tooltip-title');
+    const tooltipBody = document.getElementById('tooltip-body');
+    const tooltipClose = document.getElementById('tooltip-close');
+    let activeTrigger = null;
+    let hideTimeout = null;
+
+    function showTooltip(trigger) {
+      const entry = GLOSSARY[trigger.dataset.term];
+      if (!entry) return;
+      clearTimeout(hideTimeout);
+      activeTrigger = trigger;
+      tooltipTitle.textContent = entry.title;
+      tooltipBody.textContent = entry.definition;
+      tooltip.classList.remove('hidden-tooltip');
+      tooltip.classList.add('visible-tooltip');
+
+      const rect = trigger.getBoundingClientRect();
+      const ttRect = tooltip.getBoundingClientRect();
+      const padding = 12;
+      let left = rect.left + rect.width / 2 - ttRect.width / 2;
+      left = Math.max(padding, Math.min(left, window.innerWidth - ttRect.width - padding));
+      let top = rect.top - ttRect.height - 10;
+      if (top < padding) top = rect.bottom + 10;
+
+      tooltip.style.left = `${left}px`;
+      tooltip.style.top = `${top}px`;
+    }
+
+    function hideTooltip() {
+      tooltip.classList.remove('visible-tooltip');
+      tooltip.classList.add('hidden-tooltip');
+      activeTrigger = null;
+    }
+
+    document.querySelectorAll('.glossary-term').forEach(btn => {
+      btn.addEventListener('mouseenter', () => showTooltip(btn));
+      btn.addEventListener('focus', () => showTooltip(btn));
+      btn.addEventListener('mouseleave', () => { hideTimeout = setTimeout(hideTooltip, 150); });
+      btn.addEventListener('blur', () => { hideTimeout = setTimeout(hideTooltip, 150); });
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (activeTrigger === btn && tooltip.classList.contains('visible-tooltip')) {
+          hideTooltip();
+        } else {
+          showTooltip(btn);
+        }
+      });
+    });
+
+    tooltip.addEventListener('mouseenter', () => clearTimeout(hideTimeout));
+    tooltip.addEventListener('mouseleave', () => { hideTimeout = setTimeout(hideTooltip, 150); });
+    tooltipClose.addEventListener('click', hideTooltip);
+    document.addEventListener('click', (e) => {
+      if (!tooltip.contains(e.target) && !e.target.classList.contains('glossary-term')) {
+        hideTooltip();
+      }
+    });
+
+    // Quiz logic
+    const QUIZ_QUESTIONS = [
+      {
+        q: '1. Å bruke begrepet «lapp» om samer i dag oppfattes som…',
+        options: [
+          'En hedersbetegnelse.',
+          'Nedsettende og rasistisk.',
+          'En fornorskning av ordet same.',
+          'Et begrep som aldri har vært knyttet til den samiske befolkningen.'
+        ],
+        correct: 1,
+        feedback: 'Riktig! «Lapp» er et gammeldags ord som i dag oppfattes som nedsettende og rasistisk.'
+      },
+      {
+        q: '2. Hva er navnet på aksjonen som var mot utbyggingen av et vassdrag i Finnmark på 1970- og 1980-tallet?',
+        options: [
+          'Alta-aksjonen',
+          'Vadsø-aksjonen',
+          'Karasjok-aksjonen',
+          'Lakselv-aksjonen'
+        ],
+        correct: 0,
+        feedback: 'Riktig! Alta-aksjonen var rettet mot utbyggingen av Alta-Kautokeinovassdraget.'
+      },
+      {
+        q: '3. Hvilke tre samiske språk snakkes fortsatt i Norge i dag?',
+        options: [
+          'Østsamisk, vest-samisk og kystsamisk',
+          'Nordsamisk, lulesamisk og sørsamisk',
+          'Karesuandosamisk, pitesamisk og umesamisk',
+          'Kun nordsamisk og finsk'
+        ],
+        correct: 1,
+        feedback: 'Riktig! Av de seks gjenlevende samiske språkene snakkes nordsamisk, lulesamisk og sørsamisk i Norge.'
+      },
+      {
+        q: '4. Hvorfor ble Finnmarksloven vedtatt i 2005?',
+        options: [
+          'For å gjøre all grunn i Finnmark til privat eiendom',
+          'For å følge opp ILO-konvensjon 169 om at urfolk skal ha råderett over ressurser knyttet til land og vann',
+          'For å forby reindrift utenfor Karasjok og Kautokeino',
+          'For å erstatte Sametinget med fylkestinget'
+        ],
+        correct: 1,
+        feedback: 'Riktig! Finnmarksloven opprettet Finnmarkseiendommen (FeFo) for å gi samiske representanter medbestemmelse over statlig eiendom i Finnmark.'
+      }
+    ];
+
+    const quizContainer = document.getElementById('quiz-container');
+    const quizScoreEl = document.getElementById('quiz-score');
+    const answeredState = {};
+
+    QUIZ_QUESTIONS.forEach((item, idx) => {
+      const block = document.createElement('div');
+      block.className = 'space-y-2.5';
+      block.innerHTML = `
+        <p class="font-semibold text-stone-900 text-sm sm:text-base">${item.q}</p>
+        <div class="space-y-2">
+          ${item.options.map((opt, optIdx) => `
+            <button type="button" data-opt="${optIdx}" class="quiz-opt w-full text-left px-4 py-2.5 rounded-xl border border-stone-200 bg-stone-50/70 hover:bg-stone-100 text-sm text-stone-800 transition-colors">
+              ${opt}
+            </button>
+          `).join('')}
+        </div>
+        <p class="quiz-feedback hidden text-xs sm:text-sm rounded-lg px-3.5 py-2.5"></p>
+      `;
+      quizContainer.appendChild(block);
+
+      const opts = block.querySelectorAll('.quiz-opt');
+      const feedbackEl = block.querySelector('.quiz-feedback');
+
+      opts.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const chosen = Number(btn.dataset.opt);
+          const isCorrect = chosen === item.correct;
+          answeredState[idx] = isCorrect;
+
+          opts.forEach((o, i) => {
+            o.classList.remove('border-nordic-600', 'bg-nordic-50', 'border-red-400', 'bg-red-50', 'font-medium');
+            if (i === item.correct) {
+              o.classList.add('border-nordic-600', 'bg-nordic-50', 'font-medium');
+            } else if (i === chosen && !isCorrect) {
+              o.classList.add('border-red-400', 'bg-red-50');
+            }
+          });
+
+          feedbackEl.classList.remove('hidden', 'bg-nordic-50', 'text-nordic-900', 'bg-red-50', 'text-red-900');
+          if (isCorrect) {
+            feedbackEl.classList.add('bg-nordic-50', 'text-nordic-900');
+            feedbackEl.textContent = item.feedback;
+          } else {
+            feedbackEl.classList.add('bg-red-50', 'text-red-900');
+            feedbackEl.textContent = 'Ikke helt riktig. Se det grønne alternativet over.';
+          }
+
+          const score = Object.values(answeredState).filter(Boolean).length;
+          quizScoreEl.textContent = `${score} / ${QUIZ_QUESTIONS.length} riktig`;
+        });
+      });
+    });
+
+    // Scroll-Spy + Mobile Drawer
+    const desktopNavList = document.getElementById('desktop-nav-list');
+    const mobileNavList = document.getElementById('mobile-nav-list');
+    mobileNavList.innerHTML = desktopNavList.innerHTML + `
+      <li class="pt-3 mt-3 border-t border-stone-200">
+        <a href="urfolk.html" class="block px-3 py-2 rounded-lg text-nordic-700 font-medium hover:bg-nordic-50">← Forrige kapittel: Urfolk</a>
+      </li>
+    `;
+
+    const allNavLinks = document.querySelectorAll('.nav-link');
+    const sectionIds = Array.from(document.querySelectorAll('#desktop-nav-list .nav-link')).map(a => a.dataset.target);
+    const sections = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
+
+    function setActiveLink(id) {
+      allNavLinks.forEach(link => {
+        const isMatch = link.dataset.target === id;
+        if (isMatch) {
+          link.classList.add('bg-nordic-50', 'text-nordic-800', 'font-semibold');
+          link.classList.remove('text-stone-600');
+        } else {
+          link.classList.remove('bg-nordic-50', 'text-nordic-800', 'font-semibold');
+          link.classList.add('text-stone-600');
+        }
+      });
+    }
+
+    function updateScrollSpy() {
+      const scrollPos = window.scrollY + 140;
+      let currentId = sections[0]?.id;
+      for (const sec of sections) {
+        if (sec.offsetTop <= scrollPos) {
+          currentId = sec.id;
+        }
+      }
+      if (currentId) setActiveLink(currentId);
+
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? Math.min(100, Math.max(0, (window.scrollY / docHeight) * 100)) : 0;
+      document.getElementById('reading-progress').style.width = `${progress}%`;
+    }
+
+    window.addEventListener('scroll', updateScrollSpy, { passive: true });
+    updateScrollSpy();
+
+    const mobileDrawer = document.getElementById('mobile-drawer');
+    const openDrawer = () => mobileDrawer.classList.remove('hidden');
+    const closeDrawer = () => mobileDrawer.classList.add('hidden');
+    document.getElementById('mobile-menu-btn').addEventListener('click', openDrawer);
+    document.getElementById('mobile-drawer-close').addEventListener('click', closeDrawer);
+    document.getElementById('mobile-drawer-backdrop').addEventListener('click', closeDrawer);
+    mobileNavList.querySelectorAll('a').forEach(a => a.addEventListener('click', closeDrawer));
+  </script>
+</body>
+</html>

@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="nb" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Urfolk – Samfunnsgeografi (1.3 Urfolkenes land)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,600;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            serif: ['Source Serif 4', 'Georgia', 'serif'],
+          },
+          colors: {
+            nordic: {
+              50: '#f4f7f6',
+              100: '#e3ebe8',
+              200: '#c6d8d2',
+              600: '#1f6f66',
+              700: '#185952',
+              800: '#154742',
+              900: '#123a36',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Clean Scandinavian scrollbar & typography refinements */
+    body {
+      background-color: #fafaf9;
+      color: #1c1917;
+      font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    }
+    .scroll-mt-header {
+      scroll-margin-top: 2rem;
+    }
+    .glossary-term {
+      font-weight: 700;
+      color: #185952;
+      border-bottom: 1.5px dotted #1f6f66;
+      padding: 0 2px;
+      border-radius: 3px;
+      transition: background-color 150ms ease, color 150ms ease;
+      cursor: help;
+      text-align: left;
+    }
+    .glossary-term:hover,
+    .glossary-term:focus-visible {
+      background-color: #e3ebe8;
+      color: #123a36;
+      outline: none;
+    }
+    /* Floating tooltip */
+    #glossary-tooltip {
+      transition: opacity 150ms ease, transform 150ms ease;
+    }
+    #glossary-tooltip.hidden-tooltip {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(4px);
+    }
+    #glossary-tooltip.visible-tooltip {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body class="antialiased selection:bg-nordic-100 selection:text-nordic-900">
+
+  <!-- Top reading progress bar -->
+  <div class="fixed top-0 left-0 right-0 h-1 bg-stone-200 z-50">
+    <div id="reading-progress" class="h-full bg-nordic-600 transition-all duration-150" style="width: 0%"></div>
+  </div>
+
+  <!-- Mobile Header -->
+  <header class="lg:hidden sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-stone-200 px-4 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-lg bg-nordic-800 text-white font-serif font-bold text-xs flex items-center justify-center tracking-tight shrink-0">NN</div>
+      <div>
+        <span class="text-[11px] font-semibold uppercase tracking-wider text-nordic-700 block">Nils sin samfunnsgeografibok · 1.3</span>
+        <span class="font-serif font-bold text-lg text-stone-900 leading-tight block">Urfolk</span>
+      </div>
+    </div>
+    <button id="mobile-menu-btn" type="button" aria-label="Åpne innholdsmeny" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-stone-300 text-sm font-medium text-stone-700 hover:bg-stone-100">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      Innhold
+    </button>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div id="mobile-drawer" class="lg:hidden fixed inset-0 z-50 hidden">
+    <div id="mobile-drawer-backdrop" class="absolute inset-0 bg-stone-900/40 backdrop-blur-xs"></div>
+    <nav class="relative w-72 max-w-[85vw] h-full bg-white border-r border-stone-200 p-6 overflow-y-auto shadow-xl">
+      <div class="flex items-center justify-between mb-6 pb-4 border-b border-stone-200">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-nordic-800 text-white font-serif font-bold text-xs flex items-center justify-center tracking-tight shrink-0">NN</div>
+          <div>
+            <p class="text-[11px] font-semibold uppercase tracking-wider text-nordic-700">Nils sin samfunnsgeografibok</p>
+            <p class="font-serif font-bold text-base text-stone-900 leading-tight">Urfolk</p>
+          </div>
+        </div>
+        <button id="mobile-drawer-close" type="button" aria-label="Lukk meny" class="p-1.5 rounded-md text-stone-500 hover:bg-stone-100">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <ul class="space-y-1 text-sm" id="mobile-nav-list"></ul>
+    </nav>
+  </div>
+
+  <!-- Main Layout Wrapper -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+    <div class="lg:grid lg:grid-cols-[270px_1fr] lg:gap-12 xl:gap-16 items-start">
+
+      <!-- Left Sticky Sidebar (Scroll-Spy) -->
+      <aside class="hidden lg:block sticky top-8">
+        <div class="bg-white border border-stone-200/90 rounded-2xl p-5 shadow-xs">
+          <div class="flex items-center gap-2.5 pb-3.5 mb-3.5 border-b border-stone-200">
+            <div class="w-8 h-8 rounded-lg bg-nordic-800 text-white font-serif font-bold text-xs flex items-center justify-center tracking-tight shrink-0 shadow-xs">NN</div>
+            <span class="text-xs font-semibold text-stone-800 leading-snug">Nils sin samfunnsgeografibok</span>
+          </div>
+          <div class="pb-4 mb-4 border-b border-stone-200">
+            <span class="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-nordic-700 bg-nordic-50 px-2.5 py-1 rounded-full">
+              Kurs 1.3 · Urfolkenes land
+            </span>
+            <h2 class="font-serif text-xl font-bold text-stone-900 mt-2.5">Urfolk</h2>
+            <p class="text-xs text-stone-500 mt-1">Samfunnsgeografi · Nils sin samfunnsgeografibok</p>
+          </div>
+
+          <nav aria-label="Innholdsfortegnelse">
+            <ul id="desktop-nav-list" class="space-y-1 text-sm">
+              <li><a href="#innledning" data-target="innledning" class="nav-link block px-3 py-2 rounded-lg text-stone-600 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">1. Innledning</a></li>
+              <li><a href="#hvem-er-urfolk" data-target="hvem-er-urfolk" class="nav-link block px-3 py-2 rounded-lg text-stone-600 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">2. Hvem er urfolk?</a></li>
+              <li><a href="#kolonisering" data-target="kolonisering" class="nav-link block px-3 py-2 rounded-lg text-stone-600 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">3. Kolonisering</a></li>
+              <li><a href="#assimilering-og-motstand" data-target="assimilering-og-motstand" class="nav-link block px-3 py-2 rounded-lg text-stone-600 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">4. Assimilering &amp; fornorsking</a></li>
+              <li><a href="#sannhetskommisjonen" data-target="sannhetskommisjonen" class="nav-link block pl-6 pr-3 py-1.5 rounded-lg text-xs text-stone-500 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">↳ Sannhets- og forsoningskommisjonen</a></li>
+              <li><a href="#urfolksrettigheter" data-target="urfolksrettigheter" class="nav-link block px-3 py-2 rounded-lg text-stone-600 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">5. Urfolksrettigheter (ILO 169)</a></li>
+              <li><a href="#nasjoner-i-nasjoner" data-target="nasjoner-i-nasjoner" class="nav-link block px-3 py-2 rounded-lg text-stone-600 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">6. Nasjoner i nasjoner</a></li>
+              <li><a href="#areal-og-ressurskonflikter" data-target="areal-og-ressurskonflikter" class="nav-link block px-3 py-2 rounded-lg text-stone-600 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">7. Areal- og ressurskonflikter</a></li>
+              <li><a href="#fosen-saken" data-target="fosen-saken" class="nav-link block pl-6 pr-3 py-1.5 rounded-lg text-xs text-stone-500 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">↳ Fosen-dommen &amp; vindkraft</a></li>
+              <li><a href="#aktiviteter" data-target="aktiviteter" class="nav-link block px-3 py-2 rounded-lg text-stone-600 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">8. Test deg selv &amp; diskusjon</a></li>
+              <li><a href="#ordliste" data-target="ordliste" class="nav-link block px-3 py-2 rounded-lg text-stone-600 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">9. Sammendrag &amp; Ordliste</a></li>
+              <li><a href="#kilder" data-target="kilder" class="nav-link block px-3 py-2 rounded-lg text-stone-600 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">10. Kilder</a></li>
+            </ul>
+          </nav>
+
+          <div class="mt-5 pt-4 border-t border-stone-200 space-y-2.5">
+            <a href="index.html" class="flex items-center justify-between px-3 py-2 rounded-lg bg-stone-900 hover:bg-stone-800 text-xs font-semibold text-white transition-colors">
+              <span>🌳 Åpne Kunnskapstreet</span>
+            </a>
+            <a href="samenes-hjemland.html" class="flex items-center justify-between px-3 py-2 rounded-lg bg-nordic-50 hover:bg-nordic-100 border border-nordic-200/80 text-xs font-semibold text-nordic-800 transition-colors">
+              <span>Neste kapittel: Samenes hjemland →</span>
+            </a>
+            <div class="text-xs text-stone-500 flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-nordic-600 shrink-0"></span>
+              <span>Hold musepekeren over <strong class="text-nordic-700 font-semibold">uthevede fagbegreper</strong> for forklaring.</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Article Content -->
+      <main class="max-w-3xl space-y-14">
+
+        <!-- 1. Innledning -->
+        <section id="innledning" class="scroll-mt-header">
+          <div class="bg-white border border-stone-200 rounded-2xl p-6 sm:p-10 shadow-xs">
+            <div class="flex flex-wrap items-center gap-2 text-xs font-medium text-nordic-700 mb-4">
+              <span class="bg-nordic-50 border border-nordic-200/70 px-2.5 py-1 rounded-md">Samfunnsgeografi</span>
+              <span class="text-stone-400">/</span>
+              <span>Kurs 1.3 Urfolkenes land</span>
+            </div>
+
+            <h1 class="font-serif text-4xl sm:text-5xl font-bold tracking-tight text-stone-900 mb-4">Urfolk</h1>
+            <p class="text-lg sm:text-xl text-stone-600 leading-relaxed mb-6">
+              Hvem er urfolk, og hva kjennetegner måten urfolk lever og bor på? I dette kapittelet ser vi på hvordan kolonisering, fornorsking og moderne ressurskonflikter preger urfolks livsvilkår og rettigheter i dag.
+            </p>
+
+            <figure class="my-6 overflow-hidden rounded-xl border border-stone-200 bg-stone-50">
+              <img src="Images/urfolk-mangfold.jpg" alt="Illustrasjon av urfolks mangfoldige levemåter i Arktis, Andesfjellene og Amazonas" class="w-full h-56 sm:h-64 object-cover" />
+              <figcaption class="px-4 py-2.5 text-xs text-stone-500 border-t border-stone-200/80">
+                Urfolk over hele verden har tradisjonelt hatt en levemåte nært knyttet til naturen – fra Arktis til Andesfjellene og Amazonas.
+              </figcaption>
+            </figure>
+
+            <p class="text-stone-700 leading-relaxed mb-6">
+              <button type="button" class="glossary-term" data-term="urfolk">Urfolk</button>s tradisjonelle kultur innebærer et liv i og med naturen med mindre inngrep og endring enn det som kjennetegner de dominerende kulturene i verden. Gjennom historien har urfolk blitt utsatt for <button type="button" class="glossary-term" data-term="kolonisering">kolonisering</button> og forsøk på utslettelse, med alt fra massedrap og fordrivelser til å bli hindret i næringsutøvelse og forbud mot å bruke eget språk. I dag står mange urfolk i nye interessekonflikter om landområder, naturressurser og rettigheter.
+            </p>
+
+            <div class="grid sm:grid-cols-2 gap-4 mt-6">
+              <!-- Læringsmål -->
+              <div class="bg-stone-50 border border-stone-200 rounded-xl p-5">
+                <h3 class="text-sm font-semibold uppercase tracking-wider text-stone-800 mb-3">Du skal lære om</h3>
+                <ul class="space-y-2 text-sm text-stone-700">
+                  <li class="flex items-start gap-2">
+                    <span class="text-nordic-600 font-bold mt-0.5">•</span>
+                    <span>Urfolk, <button type="button" class="glossary-term" data-term="minoritet">minoriteter</button> og bosettingsområder</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <span class="text-nordic-600 font-bold mt-0.5">•</span>
+                    <span>Kolonisering, <button type="button" class="glossary-term" data-term="assimilering">assimilering</button> og <button type="button" class="glossary-term" data-term="fornorskningspolitikk">fornorskningspolitikk</button></span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <span class="text-nordic-600 font-bold mt-0.5">•</span>
+                    <span>Urfolks rettigheter og <button type="button" class="glossary-term" data-term="ilo169">ILO-konvensjon 169</button></span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <span class="text-nordic-600 font-bold mt-0.5">•</span>
+                    <span>Moderne areal- og ressurskonflikter (Fosen-saken og Nord-Amerika)</span>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Tenk over -->
+              <div class="bg-amber-50/70 border border-amber-200/80 rounded-xl p-5">
+                <h3 class="text-sm font-semibold uppercase tracking-wider text-amber-900 mb-3">Tenk over</h3>
+                <ol class="space-y-2 text-sm text-amber-950/90 list-decimal list-inside">
+                  <li>Hvilke urfolksgrupper kjenner du til i Norge og resten av verden?</li>
+                  <li>Hva er forskjellen på et urfolk og en nasjonal minoritet?</li>
+                  <li>Hvordan kan behovet for fornybar energi komme i konflikt med urfolks rettigheter?</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. Hvem er urfolk? -->
+        <section id="hvem-er-urfolk" class="scroll-mt-header space-y-6">
+          <div class="border-l-4 border-nordic-600 pl-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-nordic-700">Del 1</span>
+            <h2 class="font-serif text-3xl font-bold text-stone-900 mt-1">Hvem er urfolk?</h2>
+          </div>
+
+          <div class="bg-white border border-stone-200 rounded-xl p-5 shadow-xs">
+            <p class="text-xs font-bold uppercase tracking-wider text-stone-500 mb-1.5">Kort fortalt</p>
+            <p class="text-stone-800 leading-relaxed">
+              <button type="button" class="glossary-term" data-term="urfolk">Urfolk</button> betegner etniske grupper som har bodd i et bestemt område før statene som dekker området i dag, ble etablert. Mange urfolk har hatt en levemåte preget av mindre omfattende inngrep i naturen enn andre etniske grupper i samme område.
+            </p>
+          </div>
+
+          <div class="space-y-4 text-stone-700 leading-relaxed">
+            <p>
+              Forstavelsen <em>ur</em> i <button type="button" class="glossary-term" data-term="urfolk">urfolk</button> forteller oss at det handler om en gruppe mennesker som har bodd i et bestemt område lenge, siden før statene som dekker området i dag, ble etablert. Begrepet <em>folk</em> kan i dagligtale brukes om en mer eller mindre tilfeldig gruppe mennesker, men i denne sammenhengen brukes begrepet som synonym for en <button type="button" class="glossary-term" data-term="etnisk-gruppe">etnisk gruppe</button>. En etnisk gruppe beskriver en gruppe mennesker som har felles kulturelle kjennetegn – som felles språk, religion, historisk opprinnelse eller levemåte.
+            </p>
+            <p>
+              Det er viktig å skille mellom et <button type="button" class="glossary-term" data-term="urfolk">urfolk</button> og en <button type="button" class="glossary-term" data-term="minoritet">minoritet</button>. En minoritet er en folkegruppe som er i mindretall i en stat og skiller seg fra flertallsbefolkningen gjennom kultur, språk eller etnisk bakgrunn. Selv om de fleste urfolk også er minoriteter i statene de bor i, er ikke alle minoriteter urfolk. Urfolksstatusen er knyttet til historisk tilknytning til et landområde før dagens statsgrenser ble trukket. I Norge har for eksempel samene status som urfolk, mens kvener/norskfinner, skogfinner, jøder, rom og romanifolket/tatere har status som nasjonale minoriteter.
+            </p>
+          </div>
+
+          <div class="grid sm:grid-cols-2 gap-6">
+            <div class="bg-white border border-stone-200 rounded-xl p-6">
+              <h3 class="font-serif text-xl font-bold text-stone-900 mb-2">Trenger ikke ha vært der først</h3>
+              <p class="text-sm text-stone-700 leading-relaxed">
+                Mange tror at «urfolk» betyr de aller første menneskene som noen gang bodde i et område. I folkeretten handler det derimot om å ha bodd der <strong>før dagens stater og grenser ble etablert</strong> – ikke om forhistorisk innvandring. På Grønland daterer de første bosettingene seg til 2500 fvt. Da inuittene slo seg ned i nord på 1000-tallet, var det etter at vikingene hadde etablert bosettinger på sørvestkysten, og inuittene flyttet inn i sørvest først etter at de norrøne bosettingene døde ut på 1400-tallet. Like fullt er inuittene Grønlands urfolk.
+              </p>
+            </div>
+            <div class="bg-white border border-stone-200 rounded-xl p-6">
+              <h3 class="font-serif text-xl font-bold text-stone-900 mb-2">Naturbruk: tradisjon og moderne press</h3>
+              <p class="text-sm text-stone-700 leading-relaxed">
+                Tradisjonelt har urfolk hatt mindre omfattende inngrep i naturen enn majoritetsbefolkningen, og enkelte små grupper i Amazonas lever fortsatt av jakt og sanking. Samtidig er det viktig å nyansere bildet: I dag tar flere urfolk i bruk moderne teknologi som kan belaste naturen ganske hardt – for eksempel når store reinflokker i moderne samisk reindrift fører til <strong>nedbeiting</strong> av sårbare beiteområder, eller når <strong>motoriserte kjøretøy</strong> som snøscooter og ATV setter dype spor i fjellet.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. Kolonisering -->
+        <section id="kolonisering" class="scroll-mt-header space-y-6">
+          <div class="border-l-4 border-nordic-600 pl-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-nordic-700">Del 2</span>
+            <h2 class="font-serif text-3xl font-bold text-stone-900 mt-1">Kolonisering</h2>
+          </div>
+
+          <div class="bg-white border border-stone-200 rounded-xl p-5 shadow-xs">
+            <p class="text-xs font-bold uppercase tracking-wider text-stone-500 mb-1.5">Kort fortalt</p>
+            <p class="text-stone-800 leading-relaxed">
+              Urfolk har over hele verden blitt utsatt for kolonisering, drap og fordriving. Grov urett, fortsatte fordommer og rasisme er blant årsakene til at mange urfolk lever under vanskelige forhold i dag.
+            </p>
+          </div>
+
+          <div class="space-y-4 text-stone-700 leading-relaxed">
+            <p>
+              Det at en stat dominert av andre folkegrupper enn dem som opprinnelig har bodd der, tar over et landområde og begynner å utnytte ressursene i området, kalles <button type="button" class="glossary-term" data-term="kolonisering">kolonisering</button>.
+            </p>
+            <p>
+              Å ha blitt utsatt for kolonisering er en felles erfaring for folkegrupper som omtales som urfolk i dag. Derfor er det ikke bare jegere og sankere som regnes som urfolk, men også etniske grupper med lang tradisjon for jordbruk, fast bosetting og egne stater før koloniseringen. Det gjelder blant annet verdens folkerikeste urfolk, <strong>quechuafolket</strong> i Andesfjellene, som samlet utgjør mer enn ti millioner innbyggere. Før området ble kolonisert av Spania på 1500-tallet, hadde de etablert det mektige Inkariket som strakte seg fra dagens Colombia til Chile.
+            </p>
+          </div>
+
+          <div class="bg-stone-100/80 border border-stone-200 rounded-xl p-6 space-y-4">
+            <h3 class="font-serif text-xl font-bold text-stone-900">Drap, fordriving og segregering</h3>
+            <div class="space-y-3 text-sm text-stone-700 leading-relaxed">
+              <p>
+                <strong>Hispaniola (1500-tallet):</strong> Få tiår etter at spanjolene etablerte sin første koloni i Amerika på øya Hispaniola (i dag Den dominikanske republikk og Haiti), var størstedelen av urbefolkningen utryddet – både på grunn av manglende immunitet mot europeiske sykdommer og brutal utnyttelse som slaver på sukkerplantasjene.
+              </p>
+              <p>
+                <strong>Australia (1700–1930):</strong> Etter at britiske settlere ankom på slutten av 1700-tallet, ble det helt fram til 1930 begått utallige massedrap på aboriginere. Konflikter om beiteområder og husdyr utviklet seg til utryddelseskampanjer som gjorde det mulig for europeiske nybyggere å overta landet.
+              </p>
+              <p>
+                <strong>USA (1830–1887):</strong> Med <em>Indian Removal Act</em> (1830) ble rundt 60 000 mennesker fra choktaw-, creek-, chikasaw-, cherokee- og seminolefolkene tvangsflyttet vest for Mississippi til «Indian Territory» (dagens Oklahoma), og tusenvis døde underveis. Da nybyggerne ønsket også denne jorda, ble løftene brutt med <em>Dawes Act</em> i 1887. Urfolkene ble henvist til små, ressursfattige reservater – et tydelig eksempel på geografisk og rettslig <button type="button" class="glossary-term" data-term="segregering">segregering</button>, der folkegrupper holdes fysisk og sosialt atskilt fra majoritetssamfunnet.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. Assimilering, motstand og fornorsking -->
+        <section id="assimilering-og-motstand" class="scroll-mt-header space-y-6">
+          <div class="border-l-4 border-nordic-600 pl-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-nordic-700">Del 3</span>
+            <h2 class="font-serif text-3xl font-bold text-stone-900 mt-1">Assimilering, motstand og fornorsking</h2>
+          </div>
+
+          <div class="bg-white border border-stone-200 rounded-xl p-5 shadow-xs">
+            <p class="text-xs font-bold uppercase tracking-wider text-stone-500 mb-1.5">Kort fortalt</p>
+            <p class="text-stone-800 leading-relaxed">
+              Mange stater forsøkte å tvinge urfolk til å gi opp egen kultur og språk gjennom <button type="button" class="glossary-term" data-term="assimilering">assimilering</button>. Motstanden mot denne politikken – fra Wounded Knee til organiseringen i Norden – har formet dagens globale urfolksbevegelse.
+            </p>
+          </div>
+
+          <div class="space-y-4 text-stone-700 leading-relaxed">
+            <p>
+              Med <em>Dawes Act</em> i USA ble barn fra urfolksfamilier plassert på internatskoler for å lære engelsk og bli som europeiskættede amerikanere. Tilsvarende politikk for <button type="button" class="glossary-term" data-term="assimilering">assimilering</button> har blitt ført overfor urfolk i de fleste land, også mot samene i Norge. Assimilering innebærer at alle kjennetegn en etnisk gruppe har, forsvinner, og at etterkommerne ser på seg selv som tilhørende en annen etnisk gruppe (majoriteten).
+            </p>
+            <p>
+              I samfunnsgeografien skiller vi ofte mellom tre måter stater møter minoriteter og urfolk på: <button type="button" class="glossary-term" data-term="assimilering">assimilering</button> (at gruppen skal miste sitt særpreg og bli lik majoriteten), <button type="button" class="glossary-term" data-term="segregering">segregering</button> (at gruppene holdes atskilt i samfunnet) og <button type="button" class="glossary-term" data-term="integrering">integrering</button> (at gruppen deltar som likeverdige borgere i storsamfunnet samtidig som den beholder og utvikler egen kultur og språk).
+            </p>
+          </div>
+
+          <div class="bg-white border border-stone-200 rounded-xl p-6 space-y-4">
+            <h3 class="font-serif text-xl font-bold text-stone-900">Motstand og politisk bevisstgjøring</h3>
+            <figure class="overflow-hidden rounded-xl border border-stone-200 bg-stone-50">
+              <img src="Images/kolonisering-motstand.jpg" alt="Illustrasjon av urfolk på prærien i Nord-Amerika" class="w-full h-52 sm:h-60 object-cover" />
+              <figcaption class="px-4 py-2 text-xs text-stone-500 border-t border-stone-200/80">
+                Tvangsflytting og assimilering i Nord-Amerika møtte motstand og la grunnlaget for en internasjonal urfolksbevegelse.
+              </figcaption>
+            </figure>
+            <p class="text-stone-700 text-sm leading-relaxed">
+              Politikken for kolonisering og assimilering ble møtt med motstand helt fra starten. Blant lakotafolket i Sør-Dakota vokste den religiøse bevegelsen <em>Ghost Dance</em> («åndedans») fram etter Dawes Act. I 1890 ble lederen Sitting Bull skutt og drept under et forsøk på arrestasjon, og 29. desember 1890 ble nærmere 300 ubevæpnede urfolk – mange av dem kvinner og barn – drept av amerikanske soldater i massakren ved <strong>Wounded Knee</strong>.
+            </p>
+            <p class="text-stone-700 text-sm leading-relaxed">
+              På 1960-tallet ble Wounded Knee likevel en inspirasjonskilde for en ny politisk bevegelse blant urfolk, inspirert av avkoloniseringen i Asia og Afrika og borgerrettighetsbevegelsen i USA. Tanken var at urfolk må organisere seg for å kjempe for retten til land og vann, og fremheve egne kulturelle tradisjoner med stolthet. I 1968 organiserte norske samer seg i <strong>Norske Samers Riksforbund (NSR)</strong> og ble tidlig en del av dette internasjonale urfolkssamarbeidet.
+            </p>
+          </div>
+
+          <!-- Dagsaktuelt: Sannhets- og forsoningskommisjonen -->
+          <div id="sannhetskommisjonen" class="scroll-mt-header bg-nordic-50/70 border border-nordic-200 rounded-2xl p-6 sm:p-7 space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-nordic-800 bg-nordic-100 px-3 py-1 rounded-full">
+                Dagsaktuelt perspektiv · Norge (2023–2024)
+              </span>
+              <span class="text-xs font-medium text-nordic-700">Dokument 19 (2022–2023)</span>
+            </div>
+
+            <h3 class="font-serif text-2xl font-bold text-stone-900">
+              Sannhets- og forsoningskommisjonen og oppgjøret med fornorskningspolitikken
+            </h3>
+
+            <figure class="overflow-hidden rounded-xl border border-nordic-200/80 bg-white">
+              <img src="Images/sannhet-forsoning.jpg" alt="Illustrasjon som symboliserer Sannhets- og forsoningskommisjonen, Stortinget og kulturell forsoning" class="w-full h-48 sm:h-56 object-cover" />
+              <figcaption class="px-4 py-2 text-xs text-stone-500 border-t border-stone-200/80">
+                Rapporten fra Sannhets- og forsoningskommisjonen (2023) og Stortingets unnskyldning (2024) markerer et historisk oppgjør med fornorskningspolitikken.
+              </figcaption>
+            </figure>
+
+            <p class="text-stone-700 leading-relaxed text-sm sm:text-base">
+              Fra midten av 1800-tallet og langt inn i etterkrigstiden førte den norske staten en systematisk <button type="button" class="glossary-term" data-term="fornorskningspolitikk">fornorskningspolitikk</button>. Målet var aktiv <button type="button" class="glossary-term" data-term="assimilering">assimilering</button> – gjennom internatskoler, forbud mot samisk og kvensk språk i undervisningen, og krav om norsk språk for å få kjøpe statlig jord i Finnmark. Politikken rammet både <strong>samer</strong> (urfolk) og de nasjonale <button type="button" class="glossary-term" data-term="minoritet">minoritetene</button> <strong>kvener/norskfinner</strong> og <strong>skogfinner</strong>.
+            </p>
+
+            <div class="grid sm:grid-cols-2 gap-4 pt-1">
+              <div class="bg-white/90 border border-nordic-200/80 rounded-xl p-4">
+                <p class="text-xs font-bold uppercase tracking-wider text-nordic-700 mb-1">Kommisjonens rapport (1. juni 2023)</p>
+                <p class="text-sm text-stone-700 leading-relaxed">
+                  Etter fem års arbeid ledet av Dagfinn Høybråten overleverte Sannhets- og forsoningskommisjonen sin rapport til Stortinget. Over 760 personlige historier dokumenterte hvordan fornorskingen fortsatt fører til språktap, skam, helseutfordringer og tap av rettigheter og kultur på tvers av generasjoner.
+                </p>
+              </div>
+              <div class="bg-white/90 border border-nordic-200/80 rounded-xl p-4">
+                <p class="text-xs font-bold uppercase tracking-wider text-nordic-700 mb-1">Stortingets behandling (november 2024)</p>
+                <p class="text-sm text-stone-700 leading-relaxed">
+                  Den 12. november 2024 behandlet Stortinget rapporten (Innst. 30 S). Stortinget ba formelt om unnskyldning for den uretten staten begikk gjennom fornorskningspolitikken mot samer, kvener/norskfinner og skogfinner, og vedtok 17 tiltak for reell <button type="button" class="glossary-term" data-term="integrering">integrering</button>, språkstyrking og kunnskapsløft i samfunnet.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. Urfolksrettigheter -->
+        <section id="urfolksrettigheter" class="scroll-mt-header space-y-6">
+          <div class="border-l-4 border-nordic-600 pl-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-nordic-700">Del 4</span>
+            <h2 class="font-serif text-3xl font-bold text-stone-900 mt-1">Urfolksrettigheter og ILO-konvensjon 169</h2>
+          </div>
+
+          <div class="bg-white border border-stone-200 rounded-xl p-5 shadow-xs">
+            <p class="text-xs font-bold uppercase tracking-wider text-stone-500 mb-1.5">Kort fortalt</p>
+            <p class="text-stone-800 leading-relaxed">
+              I 1989 ble det forhandlet fram en internasjonal avtale som skal sikre urfolks rettigheter. Det har flere steder oppstått konflikter mellom hensynet til nye arbeidsplasser og velstand og hensynet til urfolks levemåte. Global oppvarming utgjør også en alvorlig trussel mot urfolks livsgrunnlag.
+            </p>
+          </div>
+
+          <div class="space-y-4 text-stone-700 leading-relaxed">
+            <p>
+              ILO, Den internasjonale arbeidsorganisasjonen, er en underorganisasjon av FN som arbeider for å hindre utnyttelse og skape bedre vilkår for arbeidstakere verden over. Etter andre verdenskrig vokste forståelsen for at urfolk i særlig grad har vært utsatt for økonomisk utnyttelse og undertrykkelse, og at deres spesielle levemåte krever eget vern.
+            </p>
+            <p>
+              Derfor ble <button type="button" class="glossary-term" data-term="ilo169">ILO-konvensjon 169</button> om urfolk og stammefolk i selvstendige stater vedtatt i <strong>1989</strong>. En <button type="button" class="glossary-term" data-term="konvensjon">konvensjon</button> er en folkerettslig avtale som er rettslig forpliktende for statene som ratifiserer den. Norge var det første landet som ratifiserte avtalen i <strong>1990</strong>, og til sammen har 23 land ratifisert den.
+            </p>
+            <p>
+              Målet med konvensjonen er å sikre at urfolk får opprettholde livsgrunnlaget knyttet til tradisjonelle næringer og ta vare på egne kulturelle tradisjoner, samt beskytte urfolksgrupper mot tvangsmessig <button type="button" class="glossary-term" data-term="assimilering">assimilering</button>.
+            </p>
+          </div>
+
+          <!-- Interactive ILO pillars -->
+          <div class="bg-white border border-stone-200 rounded-2xl p-6 shadow-xs">
+            <h3 class="font-serif text-lg font-bold text-stone-900 mb-1">Hva sier ILO-konvensjon 169?</h3>
+            <p class="text-xs text-stone-500 mb-4">Klikk på fanene for å se sentrale rettigheter i konvensjonen:</p>
+            <div class="flex flex-wrap gap-2 mb-4" role="tablist">
+              <button type="button" class="ilo-tab px-4 py-2 rounded-lg text-sm font-semibold bg-nordic-700 text-white transition-colors" data-ilo="sprak">Språk</button>
+              <button type="button" class="ilo-tab px-4 py-2 rounded-lg text-sm font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 transition-colors" data-ilo="utdanning">Utdanning</button>
+              <button type="button" class="ilo-tab px-4 py-2 rounded-lg text-sm font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 transition-colors" data-ilo="land">Landområder</button>
+            </div>
+            <div id="ilo-content" class="bg-stone-50 border border-stone-200/80 rounded-xl p-4 text-sm text-stone-700 leading-relaxed">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <div class="space-y-4 text-stone-700 leading-relaxed">
+            <p>
+              Selv om det er lett å anerkjenne prinsippet om at urfolk har rett til å bevare råderett over landområdene de er avhengige av, har det vist seg vanskelig i praksis når prosjekter kan skape velstand og arbeidsplasser. Fordi urfolks tradisjonelle levemåte er knyttet til skånsom utnyttelse av relativt uberørt natur, står urfolksforkjempere og miljø- og naturvernere ofte på samme side.
+            </p>
+            <p>
+              <strong>Global oppvarming</strong> er dessuten en direkte trussel mot urfolks livsgrunnlag: for inuitter som er avhengige av iskanten til fangst av sel og hval og har infrastruktur på tiningstruet permafrost; for urfolk i Australia og tropiske strøk som rammes av hyppigere tørke og flom; og for samene gjennom usikre konsekvenser for reindrift og kyst- og elvefiske.
+            </p>
+          </div>
+        </section>
+
+        <!-- 6. Nasjoner i nasjoner -->
+        <section id="nasjoner-i-nasjoner" class="scroll-mt-header space-y-6">
+          <div class="border-l-4 border-nordic-600 pl-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-nordic-700">Del 5</span>
+            <h2 class="font-serif text-3xl font-bold text-stone-900 mt-1">Nasjoner i nasjoner</h2>
+          </div>
+
+          <div class="bg-white border border-stone-200 rounded-xl p-5 shadow-xs">
+            <p class="text-xs font-bold uppercase tracking-wider text-stone-500 mb-1.5">Kort fortalt</p>
+            <p class="text-stone-800 leading-relaxed">
+              Ordet <em>nasjon</em> brukes ofte når vi snakker om en stat. Begrepet kan også betegne urfolk som lever innenfor en stats grenser, men som har en opplevelse av å være et politisk fellesskap.
+            </p>
+          </div>
+
+          <div class="space-y-4 text-stone-700 leading-relaxed">
+            <p>
+              Diskusjonen om urfolks rettigheter har ført til at flere urfolk i dag definerer seg selv som <button type="button" class="glossary-term" data-term="nasjon-i-nasjonen">nasjoner i nasjonen</button>. Mens begrepet <button type="button" class="glossary-term" data-term="etnisk-gruppe">etnisk gruppe</button> beskriver observerbare kulturelle fellestrekk, vektlegger begrepene <em>folk</em> og <em>nasjon</em> at medlemmene selv opplever seg som et kulturelt og politisk fellesskap med rett til selvstyre og egen identitet.
+            </p>
+            <p>
+              Når vi snakker om «det norske folket», inkluderer vi alle som bor fast i Norge – uavhengig av om de er etnisk norske, samer eller har annen etnisk bakgrunn. Samtidig brukes nasjonsbegrepet om urfolk som lever innenfor eller på tvers av statsgrenser (som Sápmi i Norge, Sverige, Finland og Russland). Dette trenger ikke å stå i motsetning til å være en del av statens nasjonsfellesskap: Ved å definere seg som en nasjon i nasjonen kan det bli lettere å fremme egne interesser og oppnå reell deltakelse og <button type="button" class="glossary-term" data-term="integrering">integrering</button> i staten.
+            </p>
+          </div>
+        </section>
+
+        <!-- 7. Areal- og ressurskonflikter -->
+        <section id="areal-og-ressurskonflikter" class="scroll-mt-header space-y-8">
+          <div class="border-l-4 border-nordic-600 pl-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-nordic-700">Del 6 · Moderne samfunnsutvikling</span>
+            <h2 class="font-serif text-3xl font-bold text-stone-900 mt-1">Areal- og ressurskonflikter</h2>
+          </div>
+
+          <!-- Dagsaktuelt hovedeksempel: Fosen-saken -->
+          <div id="fosen-saken" class="scroll-mt-header bg-white border-2 border-nordic-600/30 rounded-2xl p-6 sm:p-8 shadow-sm space-y-5">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-nordic-800 bg-nordic-100 px-3 py-1 rounded-full">
+                Hovedeksempel · Norge (2021–2024)
+              </span>
+              <span class="text-xs font-medium text-stone-500">Fornybar energi vs. reindrift</span>
+            </div>
+
+            <h3 class="font-serif text-2xl sm:text-3xl font-bold text-stone-900">
+              Fosen-saken: Når grønn omstilling møter urfolks rettigheter
+            </h3>
+
+            <figure class="overflow-hidden rounded-xl border border-stone-200 bg-stone-50">
+              <img src="Images/fosen-konflikt.jpg" alt="Illustrasjon av vindturbiner på snødekt fjellvidde med beitende reinsdyr" class="w-full h-56 sm:h-64 object-cover" />
+              <figcaption class="px-4 py-2.5 text-xs text-stone-500 border-t border-stone-200/80">
+                Vindkraftutbygging i vinterbeiteområder på Fosen har blitt selve symbolet på konflikten mellom fornybar energi og urfolks kulturutøvelse.
+              </figcaption>
+            </figure>
+
+            <p class="text-stone-700 leading-relaxed">
+              <strong>Fosen-dommen</strong> er det tydeligste norske eksempelet på interessekonflikten mellom storsamfunnets arealbehov for fornybar energi og urfolks rettigheter til kulturutøvelse. På Fosenhalvøya i Trøndelag ble Europas største landbaserte vindkraftanlegg bygget ut i viktige vinterbeiteområder for sørsamisk reindrift.
+            </p>
+
+            <div class="grid sm:grid-cols-3 gap-4">
+              <div class="bg-stone-50 border border-stone-200 rounded-xl p-4">
+                <p class="text-xs font-bold uppercase tracking-wider text-nordic-700 mb-1">1. Høyesterettsdommen (2021)</p>
+                <p class="text-xs sm:text-sm text-stone-700 leading-relaxed">
+                  11. oktober 2021 slo Høyesterett i storkammer fast at konsesjonen for vindkraftverkene på Storheia og Roan var <strong>ugyldig</strong>. Utbyggingen krenket reindriftssamenes rett til kulturutøvelse etter FNs konvensjon om sivile og politiske rettigheter (SP) artikkel 27.
+                </p>
+              </div>
+              <div class="bg-stone-50 border border-stone-200 rounded-xl p-4">
+                <p class="text-xs font-bold uppercase tracking-wider text-nordic-700 mb-1">2. Protester og «grønn kolonialisme»</p>
+                <p class="text-xs sm:text-sm text-stone-700 leading-relaxed">
+                  Til tross for dommen fortsatte vindturbinene å produsere strøm. Vinteren 2023 førte dette til store demonstrasjoner i Oslo. Samiske aktivister brukte begrepet <em>«grønn kolonialisme»</em> om hvordan utbygging for det grønne skiftet skjer på bekostning av urfolks arealer.
+                </p>
+              </div>
+              <div class="bg-stone-50 border border-stone-200 rounded-xl p-4">
+                <p class="text-xs font-bold uppercase tracking-wider text-nordic-700 mb-1">3. Mekling og avtaler (2023–2024)</p>
+                <p class="text-xs sm:text-sm text-stone-700 leading-relaxed">
+                  I desember 2023 (Sør-Fosen sijte) og mars 2024 (Nord-Fosen siida) ble det inngått meklingsavtaler mellom staten, utbyggerne og reinbeitedistriktene. Avtalene gir økonomisk erstatning og tilleggsareal for vinterbeite, mens vindkraftverkene får stå ut konsesjonsperioden.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-amber-50/70 border border-amber-200/80 rounded-xl p-4 text-sm text-amber-950/90 leading-relaxed space-y-2">
+              <p><strong>Den «umulige» løsningen – når arealkonflikter flytter på seg:</strong> Som del av meklingen har staten utredet å skaffe nytt vinterbeite ved å flytte opptil 2 100 Fosen-rein rundt 35 mil sørover til <strong>Håmmålsfjellet–Sålekinna</strong> i Nord-Østerdalen (Os, Tolga og Engerdal). Dette har utløst sterk motstand fra både bønder, hyttefolk, friluftsliv (bl.a. mot opptil 100 km sperregjerder), naturvernere (hensyn til villrein) og lokale reineiere – som har bedt regjeringen «trykke på stoppknappen».</p>
+              <p><strong>Kraftmangelen i Trøndelag:</strong> Samtidig ville det å rive vindturbinene på Fosen (3,4 TWh) rammet en region som allerede har akutt kraftunderskudd. I <strong>Verdal Industripark</strong> (over 3 400 ansatte og 15,1 mrd. kr i omsetning) er det allerede tomt for ny kraft i nettet: industribedrifter som Franzefoss Minerals får ikke nok strøm til å gjøre produksjonen utslippsfri, og kommunen må si nei til nye kraftkrevende etableringer.</p>
+              <p><strong>Samfunnsgeografisk kjernekonflikt:</strong> Fosen-saken viser dermed et trilemma mellom urfolks rettigheter etter <button type="button" class="glossary-term" data-term="ilo169">ILO-konvensjon 169</button> og menneskerettighetene, knapphet på alternative utmarksarealer, og storsamfunnets behov for fornybar kraft til arbeidsplasser og utslippskutt.</p>
+            </div>
+          </div>
+
+          <!-- Oljeutvinning og oljeledninger i Nord-Amerika -->
+          <div class="bg-white border border-stone-200 rounded-2xl p-6 sm:p-8 shadow-xs space-y-4">
+            <span class="inline-block text-xs font-semibold uppercase tracking-wider text-stone-500">Internasjonalt eksempel · Nord-Amerika</span>
+            <h3 class="font-serif text-2xl font-bold text-stone-900">Oljeutvinning og oljeledninger</h3>
+
+            <p class="text-stone-700 leading-relaxed">
+              Også i Nord-Amerika har ressursutvinning stilt klima-, naturvern- og urfolksinteresser opp mot moderne velstand:
+            </p>
+
+            <div class="grid sm:grid-cols-2 gap-4 pt-2">
+              <div class="bg-stone-50 border border-stone-200 rounded-xl p-5">
+                <h4 class="font-semibold text-stone-900 mb-2">Oljesand i Alberta, Canada</h4>
+                <p class="text-sm text-stone-700 leading-relaxed">
+                  Rundt 23 000 mennesker tilhørende urbefolkningen bor i området der det siden begynnelsen av 2000-tallet er utvunnet olje fra oljeholdig sand. Utgravingene skaper enorme krater, og kjemikalieutslipp forurenser vannet der urfolk fanger fisk og vilt. Samtidig har utvinningen gjort Canada til verdens fjerde største oljeprodusent og skapt arbeidsplasser i et område preget av arbeidsledighet og fattigdom.
+                </p>
+              </div>
+              <div class="bg-stone-50 border border-stone-200 rounded-xl p-5">
+                <h4 class="font-semibold text-stone-900 mb-2">Standing Rock &amp; Keystone XL, USA</h4>
+                <p class="text-sm text-stone-700 leading-relaxed">
+                  Utbyggingen av oljerørledningen <strong>Dakota Access Pipeline</strong> førte til massive protester i 2016–2017, særlig i urfolksreservatet Standing Rock, på grunn av frykt for landskapsendringer og vannforurensning (ledningen har vært i drift siden 2017). Planene om rørledningen <strong>Keystone XL</strong> gjennom urfolksområder i Sør-Dakota ble derimot møtt med så sterk motstand at utbyggingen ble avbrutt i 2021.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 8. Test deg selv & Reflekter -->
+        <section id="aktiviteter" class="scroll-mt-header space-y-6">
+          <div class="border-l-4 border-nordic-600 pl-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-nordic-700">Del 7</span>
+            <h2 class="font-serif text-3xl font-bold text-stone-900 mt-1">Test deg selv &amp; diskuter</h2>
+          </div>
+
+          <!-- Interactive Quiz -->
+          <div class="bg-white border border-stone-200 rounded-2xl p-6 sm:p-8 shadow-xs space-y-6">
+            <div class="flex items-center justify-between border-b border-stone-200 pb-4">
+              <div>
+                <h3 class="font-serif text-xl font-bold text-stone-900">Kontrollspørsmål</h3>
+                <p class="text-xs text-stone-500 mt-0.5">Velg riktig svar på oppgavene under.</p>
+              </div>
+              <span id="quiz-score" class="text-xs font-semibold bg-nordic-50 text-nordic-800 px-3 py-1 rounded-full">0 / 4 riktig</span>
+            </div>
+
+            <div id="quiz-container" class="space-y-6"></div>
+          </div>
+
+          <!-- Reflekter og diskuter -->
+          <div class="bg-amber-50/60 border border-amber-200/80 rounded-2xl p-6 sm:p-8 space-y-3">
+            <h3 class="font-serif text-xl font-bold text-amber-950">Reflekter og diskuter</h3>
+            <ol class="space-y-3 text-sm sm:text-base text-amber-950/90 list-decimal list-inside leading-relaxed">
+              <li>Noen urfolk definerer seg i dag som <em>nasjoner i nasjoner</em>. Hvilke fordeler kan det gi å definere seg på den måten? Kan det være noen ulemper?</li>
+              <li>Både i USA, Canada og Australia er omfanget av alkohol- og narkotikamisbruk høyere blant urfolk enn i resten av befolkningen. Hvordan kan dette henge sammen med historisk kolonisering og assimilering, og hvilke konsekvenser har det for nye generasjoner?</li>
+              <li><strong>Fosen-dilemmaet:</strong> Hvordan bør Norge veie hensynet til grønn omstilling (behovet for mer fornybar kraft) opp mot urfolks rett til kulturutøvelse og reindrift?</li>
+            </ol>
+          </div>
+        </section>
+
+        <!-- 9. Sammendrag & Ordliste -->
+        <section id="ordliste" class="scroll-mt-header space-y-8">
+          <div class="border-l-4 border-nordic-600 pl-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-nordic-700">Del 8</span>
+            <h2 class="font-serif text-3xl font-bold text-stone-900 mt-1">Sammendrag &amp; Ordliste</h2>
+          </div>
+
+          <!-- Sammendrag -->
+          <div class="bg-white border border-stone-200 rounded-2xl p-6 sm:p-8 shadow-xs space-y-3">
+            <h3 class="font-serif text-xl font-bold text-stone-900 mb-2">Hovedpunkter fra kapittelet</h3>
+            <ul class="space-y-2.5 text-sm text-stone-700 leading-relaxed">
+              <li class="flex items-start gap-2.5"><span class="text-nordic-600 font-bold">✓</span><span><strong>Urfolk</strong> er etniske grupper som har bodd i et område før dagens stater ble etablert, ofte med en mer skånsom naturbruk.</span></li>
+              <li class="flex items-start gap-2.5"><span class="text-nordic-600 font-bold">✓</span><span>Urfolk verden over har vært utsatt for <strong>kolonisering</strong>, drap, fordriving, <strong>segregering</strong> (f.eks. reservater) og tvungen <strong>assimilering</strong>.</span></li>
+              <li class="flex items-start gap-2.5"><span class="text-nordic-600 font-bold">✓</span><span>I Norge dokumenterte <strong>Sannhets- og forsoningskommisjonen</strong> (2023) konsekvensene av <strong>fornorskningspolitikken</strong> mot samer, kvener/norskfinner og skogfinner, og Stortinget ba formelt om unnskyldning i 2024.</span></li>
+              <li class="flex items-start gap-2.5"><span class="text-nordic-600 font-bold">✓</span><span><strong>ILO-konvensjon 169</strong> (1989, ratifisert av Norge i 1990) skal sikre urfolks rettigheter til språk, utdanning, kultur og landområder.</span></li>
+              <li class="flex items-start gap-2.5"><span class="text-nordic-600 font-bold">✓</span><span><strong>Fosen-dommen</strong> (2021) og oljekonfliktene i Nord-Amerika viser at urfolks landrettigheter fortsatt utfordres av både fossil og fornybar energiutbygging.</span></li>
+            </ul>
+          </div>
+
+          <!-- Ordliste -->
+          <div>
+            <h3 class="font-serif text-2xl font-bold text-stone-900 mb-4">Viktige fagbegreper (Ordliste)</h3>
+            <div id="glossary-grid" class="grid sm:grid-cols-2 gap-4">
+              <!-- Populated by JS from the single source of truth -->
+            </div>
+          </div>
+        </section>
+
+        <!-- 10. Kilder -->
+        <section id="kilder" class="scroll-mt-header pb-16">
+          <div class="bg-stone-100 border border-stone-200 rounded-2xl p-6 sm:p-8 space-y-4">
+            <h2 class="font-serif text-2xl font-bold text-stone-900">Kilder</h2>
+            <div class="grid sm:grid-cols-2 gap-6 text-xs text-stone-600 leading-relaxed">
+              <div class="space-y-2">
+                <p class="font-semibold text-stone-800 uppercase tracking-wider">Internasjonale og faglige kilder</p>
+                <ul class="space-y-1.5 list-disc list-inside">
+                  <li>FN / ILO (1989). <em>Konvensjon nr. 169 om urfolk og stammefolk i selvstendige stater</em>.</li>
+                  <li>Britannicas redaksjon (2016). «Quechua». <em>Encyclopedia Britannica</em>.</li>
+                  <li>Allam, L. &amp; Evershed, N. (2019). «The killing times: the massacres of Aboriginal people Australia must confront». <em>The Guardian</em>.</li>
+                  <li>Siverts, H. (2017). «Indianerterritoriet». <em>Store norske leksikon</em>.</li>
+                  <li>Larsen, A. K. &amp; Eriksen, T. E. «Hvilke konsekvenser får klimaendringene for reindrifta?». Framsenteret.</li>
+                  <li>Kusnetz, N. (2021). «The Deep Toll of Tar Sands on Canada’s Indigenous People». <em>Undark</em>.</li>
+                </ul>
+              </div>
+              <div class="space-y-2">
+                <p class="font-semibold text-stone-800 uppercase tracking-wider">Oppdaterte norske kilder</p>
+                <ul class="space-y-1.5 list-disc list-inside">
+                  <li>Norges Høyesterett (2021). <em>HR-2021-1975-S (Fosen-dommen)</em>.</li>
+                  <li>Energidepartementet (2023–2024). Meklingsavtaler mellom Sør-Fosen sijte, Nord-Fosen siida og vindkraftaktørene.</li>
+                  <li>Vold, Øystein Solenes (2026, 18. november). «Akutt kraftmangel i Verdal: – Parken er tom». <em>Trønder-Avisa</em>.</li>
+                  <li>Sannhets- og forsoningskommisjonen (2023). <em>Sannhet og forsoning – grunnlag for et oppgjør med fornorskingspolitikk og urett mot samer, kvener/norskfinner og skogfinner</em>. Dokument 19 (2022–2023).</li>
+                  <li>Stortinget (2024). <em>Innst. 30 S (2024–2025)</em> – Kontroll- og konstitusjonskomiteens innstilling og Stortingets vedtak av 12. november 2024.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Floating Glossary Tooltip -->
+  <div id="glossary-tooltip" role="tooltip" class="hidden-tooltip fixed z-50 max-w-xs sm:max-w-sm bg-stone-900 text-stone-100 rounded-xl p-4 shadow-xl border border-stone-700/80">
+    <div class="flex items-start justify-between gap-3 mb-1">
+      <span id="tooltip-title" class="font-serif font-bold text-base text-nordic-200"></span>
+      <button id="tooltip-close" type="button" aria-label="Lukk begrepsforklaring" class="text-stone-400 hover:text-white text-xs px-1">✕</button>
+    </div>
+    <p id="tooltip-body" class="text-xs sm:text-sm text-stone-200 leading-relaxed"></p>
+  </div>
+
+  <script>
+    // 1. Single source of truth for glossary terms (tooltip + ordliste)
+    const GLOSSARY = {
+      'urfolk': {
+        title: 'Urfolk',
+        definition: 'Etniske grupper som har bodd i et bestemt område før statene som dekker området i dag, ble etablert. Mange urfolk har hatt en levemåte preget av mindre omfattende inngrep i naturen enn andre etniske grupper i samme område.'
+      },
+      'minoritet': {
+        title: 'Minoritet',
+        definition: 'En gruppe mennesker i et land som er i mindretall og skiller seg fra flertallsbefolkningen gjennom for eksempel språk, kultur, religion eller etnisk opprinnelse. I Norge har samene status som urfolk, mens jøder, kvener/norskfinner, rom, romanifolket/tatere og skogfinner er nasjonale minoriteter.'
+      },
+      'assimilering': {
+        title: 'Assimilering',
+        definition: 'Innebærer at alle kulturelle og språklige kjennetegn en etnisk gruppe har, forsvinner, og at etterkommerne av dem som en gang tilhørte gruppa, ser på seg selv som tilhørende en annen etnisk gruppe (majoriteten).'
+      },
+      'segregering': {
+        title: 'Segregering',
+        definition: 'At ulike folkegrupper holdes atskilt fra hverandre i samfunnet – fysisk, geografisk, sosialt eller rettslig – for eksempel gjennom egne bostedsområder (reservater), skoler eller ulike rettigheter.'
+      },
+      'integrering': {
+        title: 'Integrering',
+        definition: 'At minoriteter eller urfolk blir en fullverdig og likeverdig del av storsamfunnet (i arbeidsliv, utdanning og politikk), samtidig som de får beholde og utvikle sin egen kultur, sitt språk og sin identitet.'
+      },
+      'fornorskningspolitikk': {
+        title: 'Fornorskningspolitikk',
+        definition: 'Den norske statens offisielle assimileringspolitikk fra ca. 1850 og langt inn i etterkrigstiden, rettet mot samer, kvener/norskfinner og skogfinner, med mål om at de skulle gi opp eget språk og kultur og bli «norske».'
+      },
+      'ilo169': {
+        title: 'ILO-konvensjon 169',
+        definition: 'FNs internasjonale arbeidsorganisasjons konvensjon om urfolk og stammefolk i selvstendige stater (vedtatt i 1989, ratifisert av Norge i 1990). Den er rettslig forpliktende og skal sikre urfolks rett til tradisjonelle næringer, språk, kultur og råderett over landområder, samt beskytte mot tvungen assimilering.'
+      },
+      'kolonisering': {
+        title: 'Kolonisering',
+        definition: 'Det at en stat dominert av andre folkegrupper enn dem som opprinnelig har bodd der, tar over et landområde og begynner å utnytte ressursene i området.'
+      },
+      'etnisk-gruppe': {
+        title: 'Etnisk gruppe',
+        definition: 'En gruppe mennesker som har felles kulturelle kjennetegn. I mange tilfeller er felles språk det viktigste kjennetegnet, i andre tilfeller religion, historisk opprinnelse eller levemåte.'
+      },
+      'konvensjon': {
+        title: 'Konvensjon',
+        definition: 'En internasjonal avtale som omfatter flere forhold, og som regnes som rettslig forpliktende for statene som har underskrevet og ratifisert avtalen.'
+      },
+      'nasjon-i-nasjonen': {
+        title: 'Nasjon i nasjonen',
+        definition: 'Når et urfolk eller en etnisk gruppe definerer seg som et eget kulturelt og politisk fellesskap med rett til selvstyre innenfor en stats grenser, uten at det står i motsetning til å være en del av statens nasjonsfellesskap.'
+      }
+    };
+
+    // Populate Ordliste grid
+    const glossaryGrid = document.getElementById('glossary-grid');
+    Object.entries(GLOSSARY).forEach(([key, item]) => {
+      const card = document.createElement('div');
+      card.className = 'bg-white border border-stone-200 rounded-xl p-5 shadow-xs hover:border-nordic-300 transition-colors';
+      card.innerHTML = `
+        <dt class="font-serif font-bold text-lg text-nordic-800 mb-1.5">${item.title}</dt>
+        <dd class="text-sm text-stone-700 leading-relaxed">${item.definition}</dd>
+      `;
+      glossaryGrid.appendChild(card);
+    });
+
+    // 2. Tooltip behavior (hover on desktop + click/tap on touch & keyboard)
+    const tooltip = document.getElementById('glossary-tooltip');
+    const tooltipTitle = document.getElementById('tooltip-title');
+    const tooltipBody = document.getElementById('tooltip-body');
+    const tooltipClose = document.getElementById('tooltip-close');
+    let activeTrigger = null;
+    let hideTimeout = null;
+
+    function showTooltip(trigger) {
+      const key = trigger.dataset.term;
+      const entry = GLOSSARY[key];
+      if (!entry) return;
+
+      clearTimeout(hideTimeout);
+      activeTrigger = trigger;
+      tooltipTitle.textContent = entry.title;
+      tooltipBody.textContent = entry.definition;
+
+      tooltip.classList.remove('hidden-tooltip');
+      tooltip.classList.add('visible-tooltip');
+
+      const rect = trigger.getBoundingClientRect();
+      const ttRect = tooltip.getBoundingClientRect();
+      const padding = 12;
+
+      let left = rect.left + rect.width / 2 - ttRect.width / 2;
+      left = Math.max(padding, Math.min(left, window.innerWidth - ttRect.width - padding));
+
+      let top = rect.top - ttRect.height - 10;
+      if (top < padding) {
+        top = rect.bottom + 10;
+      }
+
+      tooltip.style.left = `${left}px`;
+      tooltip.style.top = `${top}px`;
+    }
+
+    function hideTooltip() {
+      tooltip.classList.remove('visible-tooltip');
+      tooltip.classList.add('hidden-tooltip');
+      activeTrigger = null;
+    }
+
+    document.querySelectorAll('.glossary-term').forEach(btn => {
+      btn.addEventListener('mouseenter', () => showTooltip(btn));
+      btn.addEventListener('focus', () => showTooltip(btn));
+      btn.addEventListener('mouseleave', () => {
+        hideTimeout = setTimeout(hideTooltip, 150);
+      });
+      btn.addEventListener('blur', () => {
+        hideTimeout = setTimeout(hideTooltip, 150);
+      });
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (activeTrigger === btn && tooltip.classList.contains('visible-tooltip')) {
+          hideTooltip();
+        } else {
+          showTooltip(btn);
+        }
+      });
+    });
+
+    tooltip.addEventListener('mouseenter', () => clearTimeout(hideTimeout));
+    tooltip.addEventListener('mouseleave', () => {
+      hideTimeout = setTimeout(hideTooltip, 150);
+    });
+    tooltipClose.addEventListener('click', hideTooltip);
+    document.addEventListener('click', (e) => {
+      if (!tooltip.contains(e.target) && !e.target.classList.contains('glossary-term')) {
+        hideTooltip();
+      }
+    });
+
+    // 3. Interactive ILO-konvensjon 169 tabs
+    const ILO_DATA = {
+      sprak: '<strong>Språk:</strong> Urfolk har rett til å bevare, bruke og utvikle sitt eget språk. Der det er praktisk mulig, skal barn lære å lese og skrive på sitt eget urfolksspråk, og staten skal legge til rette for at urfolk kan forstå og gjøre seg forstått i offentlige og rettslige prosesser.',
+      utdanning: '<strong>Utdanning:</strong> Utdanningsprogrammer for urfolk skal utformes i samarbeid med dem selv og ta hensyn til deres historie, kunnskaper, verdier og tradisjoner. Lærebøker i storsamfunnet skal gi en rettferdig og saklig framstilling av urfolks kultur og historie.',
+      land: '<strong>Landområder:</strong> Urfolks rett til eierskap og besittelse over landområdene de tradisjonelt har brukt, skal anerkjennes. Stater plikter å konsultere urfolk før naturressurser på deres områder utnyttes eller større inngrep (som kraftutbygging eller gruvedrift) settes i gang.'
+    };
+
+    const iloContent = document.getElementById('ilo-content');
+    const iloTabs = document.querySelectorAll('.ilo-tab');
+    function setIloTab(key) {
+      iloContent.innerHTML = ILO_DATA[key];
+      iloTabs.forEach(tab => {
+        const isActive = tab.dataset.ilo === key;
+        tab.className = isActive
+          ? 'ilo-tab px-4 py-2 rounded-lg text-sm font-semibold bg-nordic-700 text-white transition-colors'
+          : 'ilo-tab px-4 py-2 rounded-lg text-sm font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 transition-colors';
+      });
+    }
+    iloTabs.forEach(tab => tab.addEventListener('click', () => setIloTab(tab.dataset.ilo)));
+    setIloTab('sprak');
+
+    // 4. Interactive Quiz
+    const QUIZ_QUESTIONS = [
+      {
+        q: '1. Hva menes med et urfolk?',
+        options: [
+          'En etnisk minoritet som nylig har flyttet til et land eller område',
+          'En etnisk gruppe som har bodd i et område før statene som dekker området i dag, ble etablert',
+          'Det aller første folket som noen gang satte sin fot i et område',
+          'Folkegruppen som bodde i byen Ur i Mesopotamia'
+        ],
+        correct: 1,
+        feedback: 'Riktig! Urfolk defineres av at de bodde i området før dagens stater ble etablert – de trenger ikke nødvendigvis å ha vært de aller første menneskene der (som eksempelet med inuittene på Grønland viser).'
+      },
+      {
+        q: '2. Hvilken av disse er IKKE et av formålene med ILO-konvensjon 169?',
+        options: [
+          'Å sikre at urfolk får faste representanter i parlamentet til staten de bor i',
+          'Å sørge for at urfolk kan fortsette sine tradisjonelle næringer',
+          'Å beskytte urfolk mot tvungen assimilering',
+          'Å sørge for at urfolks kulturelle tradisjoner bevares'
+        ],
+        correct: 0,
+        feedback: 'Riktig! ILO-konvensjon 169 krever ikke faste plasser i statens parlament, men sikrer rett til tradisjonelle næringer, språk, kultur og beskyttelse mot tvungen assimilering.'
+      },
+      {
+        q: '3. Hva slo Høyesterett fast i Fosen-dommen (2021)?',
+        options: [
+          'At vindkraft alltid går foran reindrift fordi fornybar energi er viktig for klimaet',
+          'At konsesjonen for vindkraftverkene på Storheia og Roan var ugyldig fordi den krenket reindriftssamenes rett til kulturutøvelse',
+          'At alle vindturbiner i Norge må rives innen 2025',
+          'At samene ikke har rettigheter etter FNs konvensjon om sivile og politiske rettigheter'
+        ],
+        correct: 1,
+        feedback: 'Riktig! Høyesterett i storkammer slo fast at utbyggingen brøt med SP artikkel 27 om retten til kulturutøvelse, noe som gjorde konsesjonen ugyldig.'
+      },
+      {
+        q: '4. Hvilke tre grupper omfattet Sannhets- og forsoningskommisjonens rapport (2023)?',
+        options: [
+          'Samer, islendinger og grønlendere',
+          'Samer, kvener/norskfinner og skogfinner',
+          'Samer, rom og jøder',
+          'Kun reindriftssamer i Finnmark'
+        ],
+        correct: 1,
+        feedback: 'Riktig! Kommisjonen gransket fornorskningspolitikken og uretten mot både samer (urfolk) og de nasjonale minoritetene kvener/norskfinner og skogfinner.'
+      }
+    ];
+
+    const quizContainer = document.getElementById('quiz-container');
+    const quizScoreEl = document.getElementById('quiz-score');
+    const answeredState = {};
+
+    QUIZ_QUESTIONS.forEach((item, idx) => {
+      const block = document.createElement('div');
+      block.className = 'space-y-2.5';
+      block.innerHTML = `
+        <p class="font-semibold text-stone-900 text-sm sm:text-base">${item.q}</p>
+        <div class="space-y-2" data-q="${idx}">
+          ${item.options.map((opt, optIdx) => `
+            <button type="button" data-opt="${optIdx}" class="quiz-opt w-full text-left px-4 py-2.5 rounded-xl border border-stone-200 bg-stone-50/70 hover:bg-stone-100 text-sm text-stone-800 transition-colors">
+              ${opt}
+            </button>
+          `).join('')}
+        </div>
+        <p class="quiz-feedback hidden text-xs sm:text-sm rounded-lg px-3.5 py-2.5"></p>
+      `;
+      quizContainer.appendChild(block);
+
+      const opts = block.querySelectorAll('.quiz-opt');
+      const feedbackEl = block.querySelector('.quiz-feedback');
+
+      opts.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const chosen = Number(btn.dataset.opt);
+          const isCorrect = chosen === item.correct;
+          answeredState[idx] = isCorrect;
+
+          opts.forEach((o, i) => {
+            o.classList.remove('border-nordic-600', 'bg-nordic-50', 'border-red-400', 'bg-red-50');
+            if (i === item.correct) {
+              o.classList.add('border-nordic-600', 'bg-nordic-50', 'font-medium');
+            } else if (i === chosen && !isCorrect) {
+              o.classList.add('border-red-400', 'bg-red-50');
+            }
+          });
+
+          feedbackEl.classList.remove('hidden', 'bg-nordic-50', 'text-nordic-900', 'bg-red-50', 'text-red-900');
+          if (isCorrect) {
+            feedbackEl.classList.add('bg-nordic-50', 'text-nordic-900');
+            feedbackEl.textContent = item.feedback;
+          } else {
+            feedbackEl.classList.add('bg-red-50', 'text-red-900');
+            feedbackEl.textContent = 'Ikke helt riktig. Se det grønne alternativet over og prøv gjerne å lese avsnittet på nytt.';
+          }
+
+          const score = Object.values(answeredState).filter(Boolean).length;
+          quizScoreEl.textContent = `${score} / ${QUIZ_QUESTIONS.length} riktig`;
+        });
+      });
+    });
+
+    // 5. Scroll-Spy + Mobile Menu + Reading Progress
+    const desktopNavList = document.getElementById('desktop-nav-list');
+    const mobileNavList = document.getElementById('mobile-nav-list');
+    mobileNavList.innerHTML = desktopNavList.innerHTML;
+
+    const allNavLinks = document.querySelectorAll('.nav-link');
+    const sectionIds = Array.from(document.querySelectorAll('#desktop-nav-list .nav-link')).map(a => a.dataset.target);
+    const sections = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
+
+    function setActiveLink(id) {
+      allNavLinks.forEach(link => {
+        const isMatch = link.dataset.target === id;
+        if (isMatch) {
+          link.classList.add('bg-nordic-50', 'text-nordic-800', 'font-semibold');
+          link.classList.remove('text-stone-600', 'text-stone-500');
+        } else {
+          link.classList.remove('bg-nordic-50', 'text-nordic-800', 'font-semibold');
+          if (link.classList.contains('text-xs')) {
+            link.classList.add('text-stone-500');
+          } else {
+            link.classList.add('text-stone-600');
+          }
+        }
+      });
+    }
+
+    function updateScrollSpy() {
+      const scrollPos = window.scrollY + 140;
+      let currentId = sections[0]?.id;
+      for (const sec of sections) {
+        if (sec.offsetTop <= scrollPos) {
+          currentId = sec.id;
+        }
+      }
+      if (currentId) setActiveLink(currentId);
+
+      // Reading progress bar
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? Math.min(100, Math.max(0, (window.scrollY / docHeight) * 100)) : 0;
+      document.getElementById('reading-progress').style.width = `${progress}%`;
+    }
+
+    window.addEventListener('scroll', updateScrollSpy, { passive: true });
+    updateScrollSpy();
+
+    // Mobile drawer controls
+    const mobileDrawer = document.getElementById('mobile-drawer');
+    const openDrawer = () => mobileDrawer.classList.remove('hidden');
+    const closeDrawer = () => mobileDrawer.classList.add('hidden');
+    document.getElementById('mobile-menu-btn').addEventListener('click', openDrawer);
+    document.getElementById('mobile-drawer-close').addEventListener('click', closeDrawer);
+    document.getElementById('mobile-drawer-backdrop').addEventListener('click', closeDrawer);
+    mobileNavList.querySelectorAll('a').forEach(a => a.addEventListener('click', closeDrawer));
+  </script>
+</body>
+</html>
