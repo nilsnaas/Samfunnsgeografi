@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="nb" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Norge: Fra energinasjon til materialstormakt – Samfunnsgeografi</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,600;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            serif: ['Source Serif 4', 'Georgia', 'serif'],
+          },
+          colors: {
+            nordic: {
+              50: '#f4f7f6',
+              100: '#e3ebe8',
+              200: '#c6d8d2',
+              600: '#1f6f66',
+              700: '#185952',
+              800: '#154742',
+              900: '#123a36',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #fafaf9;
+      color: #1c1917;
+      font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    }
+    .scroll-mt-header { scroll-margin-top: 2rem; }
+    .glossary-term {
+      font-weight: 700;
+      color: #185952;
+      border-bottom: 1.5px dotted #1f6f66;
+      padding: 0 2px;
+      border-radius: 3px;
+      transition: background-color 150ms ease, color 150ms ease;
+      cursor: help;
+      text-align: left;
+    }
+    .glossary-term:hover,
+    .glossary-term:focus-visible {
+      background-color: #e3ebe8;
+      color: #123a36;
+      outline: none;
+    }
+    #glossary-tooltip { transition: opacity 150ms ease, transform 150ms ease; }
+    #glossary-tooltip.hidden-tooltip { opacity: 0; pointer-events: none; transform: translateY(4px); }
+    #glossary-tooltip.visible-tooltip { opacity: 1; pointer-events: auto; transform: translateY(0); }
+    @media print {
+      aside, header, #mobile-drawer, #reading-progress, #glossary-tooltip, .no-print { display: none !important; }
+      body { background: #fff !important; color: #000 !important; }
+      main { max-width: 100% !important; }
+      section { break-inside: avoid-page; }
+    }
+  </style>
+</head>
+<body class="antialiased selection:bg-nordic-100 selection:text-nordic-900">
+
+  <!-- Top reading progress bar -->
+  <div class="fixed top-0 left-0 right-0 h-1 bg-stone-200 z-50">
+    <div id="reading-progress" class="h-full bg-nordic-600 transition-all duration-150" style="width: 0%"></div>
+  </div>
+
+  <!-- Mobile Header -->
+  <header class="lg:hidden sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-stone-200 px-4 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-lg bg-nordic-800 text-white font-serif font-bold text-xs flex items-center justify-center tracking-tight shrink-0">NN</div>
+      <div>
+        <span class="text-[11px] font-semibold uppercase tracking-wider text-nordic-700 block">Nils sin samfunnsgeografibok</span>
+        <span class="font-serif font-bold text-base text-stone-900 leading-tight block">Materialstormakt</span>
+      </div>
+    </div>
+    <button id="mobile-menu-btn" type="button" aria-label="Åpne innholdsmeny" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-stone-300 text-sm font-medium text-stone-700 hover:bg-stone-100">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      Innhold
+    </button>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div id="mobile-drawer" class="lg:hidden fixed inset-0 z-50 hidden">
+    <div id="mobile-drawer-backdrop" class="absolute inset-0 bg-stone-900/40 backdrop-blur-xs"></div>
+    <nav class="relative w-72 max-w-[85vw] h-full bg-white border-r border-stone-200 p-6 overflow-y-auto shadow-xl">
+      <div class="flex items-center justify-between mb-6 pb-4 border-b border-stone-200">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-nordic-800 text-white font-serif font-bold text-xs flex items-center justify-center tracking-tight shrink-0">NN</div>
+          <div>
+            <p class="text-[11px] font-semibold uppercase tracking-wider text-nordic-700">Nils sin samfunnsgeografibok</p>
+            <p class="font-serif font-bold text-base text-stone-900 leading-tight">Materialstormakt</p>
+          </div>
+        </div>
+        <button id="mobile-drawer-close" type="button" aria-label="Lukk meny" class="p-1.5 rounded-md text-stone-500 hover:bg-stone-100">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <ul class="space-y-1 text-sm" id="mobile-nav-list"></ul>
+    </nav>
+  </div>
+
+  <!-- Main Layout Wrapper -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+    <div class="lg:grid lg:grid-cols-[270px_1fr] lg:gap-12 xl:gap-16 items-start">
+
+      <!-- Left Sticky Sidebar (Scroll-Spy) -->
+      <aside class="hidden lg:block sticky top-5">
+        <div class="bg-white border border-stone-200/90 rounded-2xl p-3.5 shadow-xs">
+          <div class="flex items-center gap-2 pb-2.5 mb-2.5 border-b border-stone-200">
+            <div class="w-7 h-7 rounded-md bg-nordic-800 text-white font-serif font-bold text-[11px] flex items-center justify-center tracking-tight shrink-0">NN</div>
+            <div class="min-w-0">
+              <span class="text-[11px] font-semibold text-stone-800 block truncate">Nils sin samfunnsgeografibok</span>
+              <span class="text-[10px] font-medium text-nordic-700 block">Materialstormakt</span>
+            </div>
+          </div>
+
+          <nav aria-label="Innholdsfortegnelse">
+            <ul id="desktop-nav-list" class="space-y-0.5 text-xs">
+              <li><a href="#innledning" data-target="innledning" class="nav-link block px-2.5 py-1.5 rounded-md text-stone-600 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">1. Innledning</a></li>
+              <li><a href="#geopolitikk" data-target="geopolitikk" class="nav-link block px-2.5 py-1.5 rounded-md text-stone-600 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">2. Råvaremangel &amp; geopolitikk</a></li>
+              <li><a href="#fensfeltet" data-target="fensfeltet" class="nav-link block px-2.5 py-1.5 rounded-md text-stone-600 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">3. Fensfeltet (REE)</a></li>
+              <li><a href="#havbunn" data-target="havbunn" class="nav-link block px-2.5 py-1.5 rounded-md text-stone-600 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">4. Havbunnsmineraler</a></li>
+              <li><a href="#dalane" data-target="dalane" class="nav-link block px-2.5 py-1.5 rounded-md text-stone-600 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">5. Dalane (Fosfat &amp; batterier)</a></li>
+              <li><a href="#verdikjeder" data-target="verdikjeder" class="nav-link block px-2.5 py-1.5 rounded-md text-stone-600 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">6. Verdikjeder &amp; maktposisjon</a></li>
+              <li><a href="#aktiviteter" data-target="aktiviteter" class="nav-link block px-2.5 py-1.5 rounded-md text-stone-600 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">7. Test deg selv &amp; diskusjon</a></li>
+              <li><a href="#ordliste" data-target="ordliste" class="nav-link block px-2.5 py-1.5 rounded-md text-stone-600 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">8. Sammendrag &amp; Ordliste</a></li>
+              <li><a href="#kilder" data-target="kilder" class="nav-link block px-2.5 py-1.5 rounded-md text-stone-600 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">9. Kilder</a></li>
+            </ul>
+          </nav>
+
+          <div class="mt-3 pt-2.5 border-t border-stone-200 space-y-1.5">
+            <button type="button" onclick="window.print()" class="w-full flex items-center justify-center gap-1.5 px-2.5 py-1.5 rounded-md bg-nordic-700 hover:bg-nordic-800 text-[11px] font-semibold text-white transition-colors">
+              <span>📄 Last ned som PDF</span>
+            </button>
+            <div class="grid grid-cols-2 gap-1">
+              <a href="index.html" class="flex items-center justify-center px-2 py-1.5 rounded-md bg-stone-900 hover:bg-stone-800 text-[11px] font-medium text-white transition-colors">🌳 Tre</a>
+              <a href="urfolk.html" class="flex items-center justify-center px-2 py-1.5 rounded-md bg-nordic-50 hover:bg-nordic-100 border border-nordic-200/80 text-[11px] font-medium text-nordic-800 transition-colors">1. Urfolk</a>
+              <a href="samenes-hjemland.html" class="flex items-center justify-center px-2 py-1.5 rounded-md bg-nordic-50 hover:bg-nordic-100 border border-nordic-200/80 text-[11px] font-medium text-nordic-800 transition-colors text-center leading-tight">2. Samenes hjemland</a>
+              <span class="flex items-center justify-center px-2 py-1.5 rounded-md bg-nordic-100 text-[11px] font-semibold text-nordic-900 text-center leading-tight">3. Mineraler</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Article Content -->
+      <main class="max-w-3xl space-y-14">
+
+        <!-- 1. Innledning -->
+        <section id="innledning" class="scroll-mt-header">
+          <div class="bg-white border border-stone-200 rounded-2xl p-6 sm:p-10 shadow-xs">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+              <div class="flex flex-wrap items-center gap-2 text-xs font-medium text-nordic-700">
+                <span class="bg-nordic-50 border border-nordic-200/70 px-2.5 py-1 rounded-md">Samfunnsgeografi</span>
+                <span class="text-stone-400">/</span>
+                <span>Naturressurser &amp; Geopolitikk</span>
+              </div>
+              <button type="button" onclick="window.print()" class="no-print inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-nordic-700 hover:bg-nordic-800 text-xs font-semibold text-white transition-colors shadow-xs">
+                <span>📄 Last ned kapittel som PDF</span>
+              </button>
+            </div>
+
+            <h1 class="font-serif text-4xl sm:text-5xl font-bold tracking-tight text-stone-900 mb-4">Norge: Fra energinasjon til materialstormakt</h1>
+            <p class="text-lg sm:text-xl text-stone-600 leading-relaxed mb-6">
+              Verdens behov for energi og råvarer er i fundamental endring. Hvordan kan tre unike mineralforekomster – på Fensfeltet, på havbunnen og i Dalane – redefinere Norges økonomiske og strategiske rolle i Europa?
+            </p>
+
+            <p class="text-stone-700 leading-relaxed mb-6">
+              I over femti år har olje og gass gjort Norge til en europeisk energinasjon. Når Europa skal gjennomføre det grønne skiftet og samtidig redusere sin sårbarhet overfor autoritære regimer, trengs det enorme mengder <button type="button" class="glossary-term" data-term="kritiske-mineraler">kritiske mineraler</button> til elbiler, vindturbiner, strømnett, batterier og matproduksjon. Norge sitter på tre av Europas mest strategiske forekomster.
+            </p>
+
+            <div class="grid sm:grid-cols-2 gap-4 mt-6">
+              <div class="bg-stone-50 border border-stone-200 rounded-xl p-5">
+                <h3 class="text-sm font-semibold uppercase tracking-wider text-stone-800 mb-3">Du skal lære om</h3>
+                <ul class="space-y-2 text-sm text-stone-700">
+                  <li class="flex items-start gap-2"><span class="text-nordic-600 font-bold mt-0.5">•</span><span>Hvorfor det grønne skiftet skaper akutt råvaremangel og ny <button type="button" class="glossary-term" data-term="geopolitikk">geopolitikk</button></span></li>
+                  <li class="flex items-start gap-2"><span class="text-nordic-600 font-bold mt-0.5">•</span><span>Tre norske ressurser: Fensfeltet, havbunnsmineraler og Dalane</span></li>
+                  <li class="flex items-start gap-2"><span class="text-nordic-600 font-bold mt-0.5">•</span><span>Miljøkonflikter i dyphavet og debatten om <button type="button" class="glossary-term" data-term="moratorium">moratorium</button></span></li>
+                  <li class="flex items-start gap-2"><span class="text-nordic-600 font-bold mt-0.5">•</span><span>Hvorfor bearbeiding og nye <button type="button" class="glossary-term" data-term="verdikjede">verdikjeder</button> gir større verdi enn råvareeksport</span></li>
+                </ul>
+              </div>
+
+              <div class="bg-amber-50/70 border border-amber-200/80 rounded-xl p-5">
+                <h3 class="text-sm font-semibold uppercase tracking-wider text-amber-900 mb-3">Tenk over</h3>
+                <ol class="space-y-2 text-sm text-amber-950/90 list-decimal list-inside">
+                  <li>Hvorfor trenger en elbil og en vindturbin mye mer mineraler enn fossil energi?</li>
+                  <li>Bør Norge hente opp mineraler fra havbunnen hvis miljøkonsekvensene er usikre?</li>
+                  <li>Hva er forskjellen på å selge råstein til utlandet og å bygge industri i Norge?</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. Råvaremangel & geopolitikk -->
+        <section id="geopolitikk" class="scroll-mt-header space-y-6">
+          <div class="border-l-4 border-nordic-600 pl-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-nordic-700">Del 1</span>
+            <h2 class="font-serif text-3xl font-bold text-stone-900 mt-1">Det grønne skiftets propp og geopolitikk</h2>
+          </div>
+
+          <div class="bg-white border border-stone-200 rounded-xl p-5 shadow-xs">
+            <p class="text-xs font-bold uppercase tracking-wider text-stone-500 mb-1.5">Kort fortalt</p>
+            <p class="text-stone-800 leading-relaxed">
+              Verden har forpliktet seg til en elektrisk framtid, men mangler byggeklossene. Det internasjonale energibyrået (IEA) anslår at etterspørselen etter kritiske mineraler må <strong>seksdobles innen 2040</strong> for å nå klimamålene – samtidig som Kina dominerer verdikjedene.
+            </p>
+          </div>
+
+          <!-- Clean SVG Infographic: 6x Trakt -->
+          <div class="bg-white border border-stone-200 rounded-2xl p-6 shadow-xs">
+            <h3 class="font-serif text-lg font-bold text-stone-900 mb-1">Grønne ambisjoner møter råvaremangel</h3>
+            <p class="text-xs text-stone-500 mb-4">Modell fra kilden: Elektrifisering krever langt mer mineraler enn dagens produksjon leverer.</p>
+            <div class="grid sm:grid-cols-[1.2fr_1fr] gap-6 items-center">
+              <svg viewBox="0 0 360 220" class="w-full h-auto" aria-label="Trakt som viser grønne ambisjoner som møter kritisk råvaremangel">
+                <rect x="20" y="14" width="320" height="24" rx="6" fill="#e3ebe8" stroke="#185952" stroke-width="1.5"/>
+                <text x="180" y="30" text-anchor="middle" font-size="11" font-weight="700" fill="#123a36" font-family="Inter, sans-serif">GRØNNE AMBISJONER (Elbil · Vind · Sol · Batteri)</text>
+                <path d="M 35 42 L 325 42 L 210 135 L 210 170 L 150 170 L 150 135 Z" fill="#f4f7f6" stroke="#185952" stroke-width="2"/>
+                <path d="M 135 42 L 225 42 L 195 135 L 195 170 L 165 170 L 165 135 Z" fill="#185952" opacity="0.88"/>
+                <circle cx="168" cy="186" r="5" fill="#d97706"/>
+                <circle cx="186" cy="192" r="4" fill="#185952"/>
+                <circle cx="177" cy="202" r="4.5" fill="#d97706"/>
+                <text x="180" y="216" text-anchor="middle" font-size="11" font-weight="700" fill="#9a3412" font-family="Inter, sans-serif">KRITISK RÅVAREMANGEL</text>
+              </svg>
+              <div class="bg-nordic-50 border border-nordic-200 rounded-xl p-5 text-center sm:text-left">
+                <span class="font-serif text-5xl font-bold text-nordic-800 block">6×</span>
+                <p class="text-sm text-stone-700 mt-2 leading-relaxed">
+                  <strong>IEA</strong> anslår at etterspørselen etter kritiske mineraler vil <strong>seksdobles innen 2040</strong> for å nå globale klimamål.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-4 text-stone-700 leading-relaxed">
+            <p>
+              Etter gasskrisen med Russland i 2022 har EU fått nulltoleranse for å havne i en ny, farlig avhengighet. I dag kontrollerer <strong>Kina</strong> størstedelen av både utvinning og <button type="button" class="glossary-term" data-term="prosessering">prosessering</button> av <button type="button" class="glossary-term" data-term="ree">sjeldne jordarter (REE)</button> og permanentmagneter – materialer som er helt avgjørende for europeisk høyteknologi og forsvarsindustri.
+            </p>
+            <p>
+              Samtidig er Europa avhengig av import av <button type="button" class="glossary-term" data-term="fosfat">fosfat</button> fra Marokko, Russland og Kina for sin matsikkerhet. Som svar vedtok EU i 2024 loven <strong>Critical Raw Materials Act (CRMA)</strong>, med mål om at Europa innen 2030 skal utvinne minst 10 %, prosessere 40 % og resirkulere 25 % av eget forbruk av strategiske råvarer – og ikke være avhengig av ett enkelt tredjeland for mer enn 65 %.
+            </p>
+          </div>
+
+          <div class="bg-nordic-50/70 border border-nordic-200 rounded-xl p-4 text-xs sm:text-sm text-nordic-900">
+            <p class="font-bold uppercase tracking-wider text-nordic-800 text-[11px] mb-1">⚡ Super-sammendrag · Råvaremangel &amp; geopolitikk</p>
+            <p>Det grønne skiftet krever seks ganger mer kritiske mineraler innen 2040. Etter Russlands gasskutt vil EU bryte Kinas monopol på sjeldne jordarter og redusere importavhengigheten av fosfat gjennom økt europeisk produksjon.</p>
+          </div>
+        </section>
+
+        <!-- 3. Ressurs 1: Fensfeltet -->
+        <section id="fensfeltet" class="scroll-mt-header space-y-6">
+          <div class="border-l-4 border-nordic-600 pl-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-nordic-700">Del 2 · Ressurs 1</span>
+            <h2 class="font-serif text-3xl font-bold text-stone-900 mt-1">Fensfeltet: Sjeldne jordarter i Telemark</h2>
+          </div>
+
+          <div class="grid sm:grid-cols-2 gap-4">
+            <figure class="overflow-hidden rounded-xl border border-stone-200 bg-white">
+              <img src="Images/sjeldne-jordarter.jpg" alt="Prøver av sjeldne jordartsoksider" class="w-full h-44 object-cover" />
+              <figcaption class="px-3 py-2 text-xs text-stone-500 border-t border-stone-200/80">
+                Sjeldne jordartsoksider (REE). Foto: Wikimedia Commons (åpen lisens).
+              </figcaption>
+            </figure>
+            <figure class="overflow-hidden rounded-xl border border-stone-200 bg-white">
+              <img src="Images/nome-telemark.jpg" alt="Nome kommune i Telemark" class="w-full h-44 object-cover" />
+              <figcaption class="px-3 py-2 text-xs text-stone-500 border-t border-stone-200/80">
+                Nome i Telemark, der Fensfeltet ligger. Foto: Wikimedia Commons (åpen lisens).
+              </figcaption>
+            </figure>
+          </div>
+
+          <div class="space-y-4 text-stone-700 leading-relaxed">
+            <p>
+              På <strong>Fensfeltet</strong> i Nome kommune i Telemark ligger <strong>Europas største bekreftede forekomst av <button type="button" class="glossary-term" data-term="ree">sjeldne jordarter (REE)</button></strong>. Feltet er rikt på nøkkelmetallene <strong>neodym</strong> og <strong>praseodym</strong>, som brukes til å lage kraftige permanentmagneter i <strong>elbilmotorer</strong>, <strong>vindturbiner</strong> og forsvarsteknologi. Uten disse stopper Europas grønne industri opp.
+            </p>
+            <p>
+              <strong>Oppdaterte funntall (2024–2026):</strong> I 2024 anslo selskapet <em>Rare Earths Norway</em> forekomsten på sin del av feltet til 8,8 millioner tonn sjeldne jordartsoksider. Etter nye boringer ble dette i <strong>mars 2026</strong> oppjustert til hele <strong>15,9 millioner tonn</strong> (i tillegg kommer rundt 1,2 millioner tonn hos Saga Rare Earths). Selskapet planlegger underjordisk gruvedrift («Invisible Mine») med tilbakefylling av masser for å skåne lokalmiljøet og naturen rundt Norsjø. Målet er å kunne dekke opptil 10 % av Europas behov allerede fra 2030-tallet.
+            </p>
+          </div>
+
+          <div class="bg-nordic-50/70 border border-nordic-200 rounded-xl p-4 text-xs sm:text-sm text-nordic-900">
+            <p class="font-bold uppercase tracking-wider text-nordic-800 text-[11px] mb-1">⚡ Super-sammendrag · Fensfeltet</p>
+            <p>Fensfeltet i Telemark er Europas største forekomst av sjeldne jordarter (oppjustert til 15,9 mill. tonn i 2026), helt avgjørende for magneter i elbiler og vindturbiner og for å bryte Kinas monopol.</p>
+          </div>
+        </section>
+
+        <!-- 4. Ressurs 2: Havbunnsmineraler -->
+        <section id="havbunn" class="scroll-mt-header space-y-6">
+          <div class="border-l-4 border-nordic-600 pl-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-nordic-700">Del 3 · Ressurs 2</span>
+            <h2 class="font-serif text-3xl font-bold text-stone-900 mt-1">Havbunnsmineraler på norsk sokkel</h2>
+          </div>
+
+          <figure class="overflow-hidden rounded-xl border border-stone-200 bg-white">
+            <img src="Images/black-smoker.jpg" alt="Hydrotermisk skorstein (black smoker) på havbunnen" class="w-full h-56 sm:h-64 object-cover" />
+            <figcaption class="px-4 py-2 text-xs text-stone-500 border-t border-stone-200/80">
+              Hydrotermisk skorstein («black smoker») på dyphavsbunnen – slike områder danner rike sulfidforekomster, men huser også sårbare økosystemer. Foto: NOAA / Wikimedia Commons (Public Domain).
+            </figcaption>
+          </figure>
+
+          <div class="space-y-4 text-stone-700 leading-relaxed">
+            <p>
+              På dyphavsbunnen i Norskehavet og Grønlandshavet finnes massive sulfider og manganskorper rike på <strong>kobber, sink, kobolt og gull</strong>. Slike basemetaller trengs i enorme mengder til batterier og utbygging av strømnett, og verden styrer mot et stort underskudd på kobber. Rystad Energy har anslått en teoretisk bruttoverdi på rundt <strong>1 000 milliarder kroner</strong> (og rundt 20 milliarder kroner i årlig netto verdiskaping i et høyt scenario).
+            </p>
+            <p>
+              <strong>Politisk strid og miljøkonflikt:</strong> I januar 2024 vedtok et flertall på Stortinget (Ap, Sp, Høyre og FrP) å åpne deler av sokkelen for en kartleggings- og letefase. Men forskere, miljøbevegelsen (WWF, Naturvernforbundet) og EU har advart sterkt mot ukjent miljørisiko for sårbare dyphavsøkosystemer og presset på for et internasjonalt <button type="button" class="glossary-term" data-term="moratorium">moratorium</button> (midlertidig forbud). Etter budsjettforhandlinger med SV (2024–2025) ble den første konsesjonsrunden utsatt og satt på politisk pause, samtidig som myndighetene har jobbet videre med miljøforskrifter.
+            </p>
+          </div>
+
+          <div class="bg-nordic-50/70 border border-nordic-200 rounded-xl p-4 text-xs sm:text-sm text-nordic-900">
+            <p class="font-bold uppercase tracking-wider text-nordic-800 text-[11px] mb-1">⚡ Super-sammendrag · Havbunnsmineraler</p>
+            <p>Norsk sokkel har enorme mengder kobber og kobolt, men stor usikkerhet rundt dyphavsnaturen har ført til press fra EU og miljøvernere om et moratorium og politisk utsettelse av konsesjonsrunden.</p>
+          </div>
+        </section>
+
+        <!-- 5. Ressurs 3: Dalane -->
+        <section id="dalane" class="scroll-mt-header space-y-6">
+          <div class="border-l-4 border-nordic-600 pl-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-nordic-700">Del 4 · Ressurs 3</span>
+            <h2 class="font-serif text-3xl font-bold text-stone-900 mt-1">Dalane: Mat- og energisikkerhet i Rogaland</h2>
+          </div>
+
+          <figure class="overflow-hidden rounded-xl border border-stone-200 bg-white">
+            <img src="Images/jossingfjord-dalane.jpg" alt="Fjell- og fjordlandskap i Jøssingfjord i Dalane, Rogaland" class="w-full h-56 sm:h-64 object-cover" />
+            <figcaption class="px-4 py-2 text-xs text-stone-500 border-t border-stone-200/80">
+              Jøssingfjord i Dalane-regionen i Rogaland, kjent for sine rike mineralforekomster. Foto: Wikimedia Commons (åpen lisens).
+            </figcaption>
+          </figure>
+
+          <div class="space-y-4 text-stone-700 leading-relaxed">
+            <p>
+              I <strong>Dalane</strong>-regionen i Rogaland (Bjerkreim-Sokndal / Storeknuten) undersøker selskapet <em>Norge Mining</em> det som kan være verdens største forekomst av <button type="button" class="glossary-term" data-term="fosfat">fosfat</button>, <strong>titan</strong> og <button type="button" class="glossary-term" data-term="vanadium">vanadium</button>. Tidlige geologiske anslag på <strong>70 milliarder tonn</strong> gjelder det totale volumet av stein i hele bergartskroppen, mens de konkrete, sertifiserte malmressursene det jobbes med (som Storeknuten) utgjør flere milliarder tonn.
+            </p>
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div class="bg-white border border-stone-200 rounded-xl p-5">
+                <h3 class="font-serif text-lg font-bold text-stone-900 mb-1.5">🌾 Matsikkerhet (Fosfat)</h3>
+                <p class="text-sm text-stone-700 leading-relaxed">
+                  Fosfat er uerstattelig i kunstgjødsel for global matproduksjon, og er også en nøkkelkomponent i moderne LFP-batterier. Å utvinne fosfat i Norge kan gi Europa økt <button type="button" class="glossary-term" data-term="forsyningssikkerhet">forsyningssikkerhet</button> og redusere avhengigheten av Marokko og Russland.
+                </p>
+              </div>
+              <div class="bg-white border border-stone-200 rounded-xl p-5">
+                <h3 class="font-serif text-lg font-bold text-stone-900 mb-1.5">🔋 Energisikkerhet (Vanadium &amp; Titan)</h3>
+                <p class="text-sm text-stone-700 leading-relaxed">
+                  Vanadium styrker stål og spås en stor framtid i stasjonære batterier for lagring av sol- og vindkraft. Titan brukes i fly, vindturbiner og høyteknologi. Også i Dalane er det lokal debatt om arealbruk, miljø og deponering.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-nordic-50/70 border border-nordic-200 rounded-xl p-4 text-xs sm:text-sm text-nordic-900">
+            <p class="font-bold uppercase tracking-wider text-nordic-800 text-[11px] mb-1">⚡ Super-sammendrag · Dalane</p>
+            <p>Dalane i Rogaland har enorme forekomster av fosfat (kunstgjødsel og LFP-batterier), titan og vanadium (stasjonære batterier) – avgjørende for både europeisk matsikkerhet og energilagring.</p>
+          </div>
+        </section>
+
+        <!-- 6. Verdikjeder & maktposisjon -->
+        <section id="verdikjeder" class="scroll-mt-header space-y-6">
+          <div class="border-l-4 border-nordic-600 pl-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-nordic-700">Del 5</span>
+            <h2 class="font-serif text-3xl font-bold text-stone-900 mt-1">Tre typer kritikalitet &amp; nye verdikjeder</h2>
+          </div>
+
+          <!-- SVG: Tre typer kritikalitet + Verdikjede -->
+          <div class="grid sm:grid-cols-2 gap-6">
+            <div class="bg-white border border-stone-200 rounded-2xl p-5 shadow-xs">
+              <h3 class="font-serif text-lg font-bold text-stone-900 mb-2">Tre typer kritikalitet</h3>
+              <svg viewBox="0 0 300 240" class="w-full h-auto">
+                <circle cx="150" cy="120" r="110" fill="#185952" opacity="0.9"/>
+                <circle cx="150" cy="108" r="78" fill="#0f4c81" stroke="#fff" stroke-width="1.5"/>
+                <circle cx="150" cy="88" r="46" fill="#b45309" stroke="#fff" stroke-width="1.5"/>
+                <text x="150" y="82" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">Dalane (Fosfat)</text>
+                <text x="150" y="96" text-anchor="middle" font-size="8.5" fill="#fef3c7">Eksistensielt kritisk</text>
+                <text x="150" y="150" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">Fensfeltet (REE)</text>
+                <text x="150" y="164" text-anchor="middle" font-size="8.5" fill="#dbeafe">Teknologisk kritisk</text>
+                <text x="150" y="198" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">Havbunnsmineraler</text>
+                <text x="150" y="211" text-anchor="middle" font-size="8.5" fill="#d1fae5">Volum-kritisk (kobber/sink)</text>
+              </svg>
+            </div>
+
+            <div class="bg-white border border-stone-200 rounded-2xl p-5 shadow-xs flex flex-col justify-between">
+              <div>
+                <h3 class="font-serif text-lg font-bold text-stone-900 mb-2">Fra råstein til høyteknologi</h3>
+                <p class="text-xs text-stone-600 mb-4">Den største verdiskapingen ligger ikke i å eksportere råstein, men i å bygge industri i Norge:</p>
+              </div>
+              <div class="space-y-2.5 text-xs">
+                <div class="bg-stone-50 border border-stone-200 rounded-lg p-3 flex items-center justify-between">
+                  <span><strong>Trinn 1:</strong> Utvinne malm i gruve</span>
+                  <span class="font-bold text-stone-600 bg-stone-200 px-2 py-0.5 rounded">Verdi: X</span>
+                </div>
+                <div class="bg-nordic-50 border border-nordic-200 rounded-lg p-3 flex items-center justify-between">
+                  <span><strong>Trinn 2:</strong> Separere og prosessere metaller</span>
+                  <span class="font-bold text-nordic-800 bg-nordic-200 px-2 py-0.5 rounded">Verdi: 5X</span>
+                </div>
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 flex items-center justify-between">
+                  <span><strong>Trinn 3:</strong> Produsere magneter og batterier</span>
+                  <span class="font-bold text-amber-900 bg-amber-200 px-2 py-0.5 rounded">Verdi: 20X</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-4 text-stone-700 leading-relaxed">
+            <p>
+              Sammen danner de tre ressursene en unik portefølje: Dalane er <strong>eksistensielt kritisk</strong> (mat og batterier), Fensfeltet er <strong>teknologisk kritisk</strong> (magneter), og havbunnsmineraler er <strong>volum-kritiske</strong> (kobber til elektrifisering).
+            </p>
+            <p>
+              Hvis Norge klarer å kombinere ren vannkraft med bearbeiding av egne mineraler, kan landet gå fra å være Europas gassleverandør til å bli EUs uunnværlige strategiske partner for både <strong>energi og materialer</strong> – med høyere sikkerhetspolitisk innflytelse og nye industriarbeidsplasser i hele verdikjeden.
+            </p>
+          </div>
+
+          <div class="bg-nordic-50/70 border border-nordic-200 rounded-xl p-4 text-xs sm:text-sm text-nordic-900">
+            <p class="font-bold uppercase tracking-wider text-nordic-800 text-[11px] mb-1">⚡ Super-sammendrag · Verdikjeder &amp; maktposisjon</p>
+            <p>Den største gevinsten ligger i å bearbeide mineraler til metaller (5× verdi) og ferdige magneter/batterier (20× verdi) i Norge. Slik kan Norge bli EUs viktigste partner for både energi og kritiske materialer.</p>
+          </div>
+        </section>
+
+        <!-- 7. Test deg selv & Reflekter -->
+        <section id="aktiviteter" class="scroll-mt-header space-y-6">
+          <div class="border-l-4 border-nordic-600 pl-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-nordic-700">Del 6</span>
+            <h2 class="font-serif text-3xl font-bold text-stone-900 mt-1">Test deg selv &amp; diskuter</h2>
+          </div>
+
+          <div class="bg-white border border-stone-200 rounded-2xl p-6 sm:p-8 shadow-xs space-y-6">
+            <div class="flex items-center justify-between border-b border-stone-200 pb-4">
+              <div>
+                <h3 class="font-serif text-xl font-bold text-stone-900">Kontrollspørsmål</h3>
+                <p class="text-xs text-stone-500 mt-0.5">Velg riktig svar på oppgavene under.</p>
+              </div>
+              <span id="quiz-score" class="text-xs font-semibold bg-nordic-50 text-nordic-800 px-3 py-1 rounded-full">0 / 4 riktig</span>
+            </div>
+            <div id="quiz-container" class="space-y-6"></div>
+          </div>
+
+          <div class="bg-amber-50/60 border border-amber-200/80 rounded-2xl p-6 sm:p-8 space-y-3">
+            <h3 class="font-serif text-xl font-bold text-amber-950">Reflekter og diskuter</h3>
+            <ol class="space-y-3 text-sm sm:text-base text-amber-950/90 list-decimal list-inside leading-relaxed">
+              <li>Bør Norge åpne for gruvedrift på havbunnen for å skaffe kobber og kobolt til det grønne skiftet, eller bør vi innføre et moratorium slik EU og miljøbevegelsen krever?</li>
+              <li>Hvilke fordeler og ulemper kan gruvedrift på Fensfeltet og i Dalane få for lokalsamfunnene i Nome og Rogaland?</li>
+              <li>Sammenlign med <a href="urfolk.html#fosen-saken" class="underline font-semibold">Fosen-saken i kapittel 1</a>: Hvilke likheter ser du mellom konflikten om vindkraft og konflikten om mineralutvinning?</li>
+            </ol>
+          </div>
+        </section>
+
+        <!-- 8. Sammendrag & Ordliste -->
+        <section id="ordliste" class="scroll-mt-header space-y-8">
+          <div class="border-l-4 border-nordic-600 pl-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-nordic-700">Del 7</span>
+            <h2 class="font-serif text-3xl font-bold text-stone-900 mt-1">Sammendrag &amp; Ordliste</h2>
+          </div>
+
+          <div class="bg-white border border-stone-200 rounded-2xl p-6 sm:p-8 shadow-xs space-y-3">
+            <h3 class="font-serif text-xl font-bold text-stone-900 mb-2">Hovedpunkter fra kapittelet</h3>
+            <ul class="space-y-2.5 text-sm text-stone-700 leading-relaxed">
+              <li class="flex items-start gap-2.5"><span class="text-nordic-600 font-bold">✓</span><span>IEA anslår at etterspørselen etter kritiske mineraler seksdobles innen 2040, og EU ønsker å bryte Kinas dominans gjennom Critical Raw Materials Act.</span></li>
+              <li class="flex items-start gap-2.5"><span class="text-nordic-600 font-bold">✓</span><span><strong>Fensfeltet</strong> i Telemark har Europas største forekomst av sjeldne jordarter (15,9 mill. tonn REE-oksider), viktige for elbiler og vindturbiner.</span></li>
+              <li class="flex items-start gap-2.5"><span class="text-nordic-600 font-bold">✓</span><span><strong>Havbunnsmineraler</strong> på norsk sokkel rommer store mengder kobber og kobolt, men konsesjonsrunden er satt på politisk pause på grunn av miljørisiko og strid om moratorium.</span></li>
+              <li class="flex items-start gap-2.5"><span class="text-nordic-600 font-bold">✓</span><span><strong>Dalane</strong> i Rogaland har store forekomster av fosfat (matsikkerhet), titan og vanadium (energilagring).</span></li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="font-serif text-2xl font-bold text-stone-900 mb-4">Viktige fagbegreper (Ordliste)</h3>
+            <div id="glossary-grid" class="grid sm:grid-cols-2 gap-4"></div>
+          </div>
+        </section>
+
+        <!-- 9. Kilder -->
+        <section id="kilder" class="scroll-mt-header pb-16 space-y-6">
+          <div class="no-print bg-white border border-stone-200 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex flex-wrap items-center gap-2">
+              <a href="index.html" class="px-3 py-1.5 rounded-lg bg-stone-900 hover:bg-stone-800 text-xs font-semibold text-white transition-colors">🌳 Kunnskapstreet</a>
+              <a href="urfolk.html" class="px-3 py-1.5 rounded-lg bg-nordic-50 hover:bg-nordic-100 border border-nordic-200 text-xs font-semibold text-nordic-800 transition-colors">1. Urfolk</a>
+              <a href="samenes-hjemland.html" class="px-3 py-1.5 rounded-lg bg-nordic-50 hover:bg-nordic-100 border border-nordic-200 text-xs font-semibold text-nordic-800 transition-colors">← 2. Samenes hjemland</a>
+              <span class="px-3 py-1.5 rounded-lg bg-nordic-100 text-xs font-semibold text-nordic-900">3. Mineraler</span>
+            </div>
+            <button type="button" onclick="window.print()" class="px-3.5 py-1.5 rounded-lg bg-nordic-700 hover:bg-nordic-800 text-xs font-semibold text-white transition-colors">📄 Last ned som PDF</button>
+          </div>
+
+          <div class="bg-stone-100 border border-stone-200 rounded-2xl p-6 sm:p-8 space-y-4">
+            <h2 class="font-serif text-2xl font-bold text-stone-900">Kilder</h2>
+            <div class="grid sm:grid-cols-2 gap-6 text-xs text-stone-600 leading-relaxed">
+              <div class="space-y-2">
+                <p class="font-semibold text-stone-800 uppercase tracking-wider">Faglige og offentlige kilder</p>
+                <ul class="space-y-1.5 list-disc list-inside">
+                  <li>Presentasjon: <em>Norge: Fra Energinasjon til Materialstormakt</em> (vedlagt kildegrunnlag).</li>
+                  <li>Norges geologiske undersøkelse (NGU) – oversikter over kritiske mineraler på Fensfeltet og i Dalane.</li>
+                  <li>Stortinget &amp; Energidepartementet (2024–2025). Vedtak og forskrifter om havbunnsmineraler på norsk sokkel.</li>
+                  <li>EU (2024). <em>Critical Raw Materials Act (CRMA)</em>.</li>
+                </ul>
+              </div>
+              <div class="space-y-2">
+                <p class="font-semibold text-stone-800 uppercase tracking-wider">Analyser og nyhetskilder</p>
+                <ul class="space-y-1.5 list-disc list-inside">
+                  <li>International Energy Agency (IEA). <em>The Role of Critical Minerals in Clean Energy Transitions</em>.</li>
+                  <li>Teknisk Ukeblad / Geo365 (2024–2026). Oppdaterte ressursestimater for Rare Earths Norway (Fensfeltet) og Norge Mining (Dalane).</li>
+                  <li>Rystad Energy &amp; Menon Economics – verdianslag for norske mineralressurser.</li>
+                  <li>Wikimedia Commons / NOAA – åpne lisensierte fotografier.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Floating Glossary Tooltip -->
+  <div id="glossary-tooltip" role="tooltip" class="hidden-tooltip fixed z-50 max-w-xs sm:max-w-sm bg-stone-900 text-stone-100 rounded-xl p-4 shadow-xl border border-stone-700/80">
+    <div class="flex items-start justify-between gap-3 mb-1">
+      <span id="tooltip-title" class="font-serif font-bold text-base text-nordic-200"></span>
+      <button id="tooltip-close" type="button" aria-label="Lukk begrepsforklaring" class="text-stone-400 hover:text-white text-xs px-1">✕</button>
+    </div>
+    <p id="tooltip-body" class="text-xs sm:text-sm text-stone-200 leading-relaxed"></p>
+  </div>
+
+  <script>
+    const GLOSSARY = {
+      'kritiske-mineraler': {
+        title: 'Kritiske mineraler',
+        definition: 'Råvarer og metaller som er avgjørende for moderne teknologi, det grønne skiftet og samfunnssikkerhet, og der tilgangen er sårbar fordi få land kontrollerer produksjonen.'
+      },
+      'ree': {
+        title: 'Sjeldne jordarter (REE)',
+        definition: 'En gruppe på 17 metaller (blant annet neodym og praseodym) som er helt nødvendige for å lage kraftige permanentmagneter i elbilmotorer, vindturbiner og forsvarsteknologi.'
+      },
+      'prosessering': {
+        title: 'Prosessering',
+        definition: 'Industriell bearbeiding og separering av råmalm til rene metaller og kjemiske forbindelser som kan brukes i produksjon. Kina kontrollerer i dag størstedelen av verdens prosessering av sjeldne jordarter.'
+      },
+      'moratorium': {
+        title: 'Moratorium',
+        definition: 'Et midlertidig forbud eller en planlagt pause mot en aktivitet – for eksempel kravet fra miljøvernere og EU om å vente med gruvedrift på havbunnen til miljøkonsekvensene er bedre kjent.'
+      },
+      'fosfat': {
+        title: 'Fosfat',
+        definition: 'Et uerstattelig mineral i kunstgjødsel for global matproduksjon, og en viktig komponent i moderne LFP-batterier (litium-jern-fosfat).'
+      },
+      'vanadium': {
+        title: 'Vanadium',
+        definition: 'Et strategisk metall som brukes til å gjøre stål sterkere og i store stasjonære batterier for å lagre strøm fra sol- og vindkraft.'
+      },
+      'verdikjede': {
+        title: 'Verdikjede',
+        definition: 'Alle leddene fra en råvare utvinnes i naturen, via prosessering og bearbeiding, til ferdige produkter som magneter og batterier selges til forbrukeren.'
+      },
+      'forsyningssikkerhet': {
+        title: 'Forsyningssikkerhet',
+        definition: 'At et land eller en region har trygg og stabil tilgang på viktige varer som mat, energi og råvarer, uten å være sårbar for politisk press eller kriser i enkeltland.'
+      },
+      'geopolitikk': {
+        title: 'Geopolitikk',
+        definition: 'Samspillet mellom geografi, naturressurser og internasjonal politisk makt – for eksempel hvordan kontroll over mineraler gir strategisk innflytelse.'
+      }
+    };
+
+    const glossaryGrid = document.getElementById('glossary-grid');
+    Object.values(GLOSSARY).forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'bg-white border border-stone-200 rounded-xl p-5 shadow-xs hover:border-nordic-300 transition-colors';
+      card.innerHTML = `
+        <dt class="font-serif font-bold text-lg text-nordic-800 mb-1.5">${item.title}</dt>
+        <dd class="text-sm text-stone-700 leading-relaxed">${item.definition}</dd>
+      `;
+      glossaryGrid.appendChild(card);
+    });
+
+    const tooltip = document.getElementById('glossary-tooltip');
+    const tooltipTitle = document.getElementById('tooltip-title');
+    const tooltipBody = document.getElementById('tooltip-body');
+    const tooltipClose = document.getElementById('tooltip-close');
+    let activeTrigger = null;
+    let hideTimeout = null;
+
+    function showTooltip(trigger) {
+      const entry = GLOSSARY[trigger.dataset.term];
+      if (!entry) return;
+      clearTimeout(hideTimeout);
+      activeTrigger = trigger;
+      tooltipTitle.textContent = entry.title;
+      tooltipBody.textContent = entry.definition;
+      tooltip.classList.remove('hidden-tooltip');
+      tooltip.classList.add('visible-tooltip');
+      const rect = trigger.getBoundingClientRect();
+      const ttRect = tooltip.getBoundingClientRect();
+      let left = Math.max(12, Math.min(rect.left + rect.width / 2 - ttRect.width / 2, window.innerWidth - ttRect.width - 12));
+      let top = rect.top - ttRect.height - 10;
+      if (top < 12) top = rect.bottom + 10;
+      tooltip.style.left = `${left}px`;
+      tooltip.style.top = `${top}px`;
+    }
+    function hideTooltip() {
+      tooltip.classList.remove('visible-tooltip');
+      tooltip.classList.add('hidden-tooltip');
+      activeTrigger = null;
+    }
+
+    document.querySelectorAll('.glossary-term').forEach(btn => {
+      btn.addEventListener('mouseenter', () => showTooltip(btn));
+      btn.addEventListener('focus', () => showTooltip(btn));
+      btn.addEventListener('mouseleave', () => { hideTimeout = setTimeout(hideTooltip, 150); });
+      btn.addEventListener('blur', () => { hideTimeout = setTimeout(hideTooltip, 150); });
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (activeTrigger === btn && tooltip.classList.contains('visible-tooltip')) hideTooltip();
+        else showTooltip(btn);
+      });
+    });
+    tooltip.addEventListener('mouseenter', () => clearTimeout(hideTimeout));
+    tooltip.addEventListener('mouseleave', () => { hideTimeout = setTimeout(hideTooltip, 150); });
+    tooltipClose.addEventListener('click', hideTooltip);
+    document.addEventListener('click', (e) => {
+      if (!tooltip.contains(e.target) && !e.target.classList.contains('glossary-term')) hideTooltip();
+    });
+
+    const QUIZ_QUESTIONS = [
+      {
+        q: '1. Hvor mye anslår IEA at etterspørselen etter kritiske mineraler vil øke innen 2040 for å nå klimamålene?',
+        options: ['Den vil dobles (2×)', 'Den vil seksdobles (6×)', 'Den vil holde seg stabil', 'Den vil halveres'],
+        correct: 1,
+        feedback: 'Riktig! IEA anslår at etterspørselen etter kritiske mineraler vil seksdobles innen 2040.'
+      },
+      {
+        q: '2. Hvilke sjeldne jordarter på Fensfeltet er spesielt viktige for permanentmagneter i elbiler og vindturbiner?',
+        options: ['Gull og sølv', 'Neodym og praseodym', 'Jern og bly', 'Natrium og kalium'],
+        correct: 1,
+        feedback: 'Riktig! Neodym og praseodym er nøkkelmetaller i permanentmagneter for elbilmotorer og vindturbiner.'
+      },
+      {
+        q: '3. Hvorfor har EU og miljøorganisasjoner bedt om et moratorium på havbunnsmineraler?',
+        options: [
+          'Fordi det ikke finnes metaller på havbunnen',
+          'Fordi det er stor usikkerhet om miljøkonsekvensene for sårbare dyphavsøkosystemer',
+          'Fordi Norge ikke har lov til å forske i Norskehavet',
+          'Fordi kobber ikke trengs til elektrifisering'
+        ],
+        correct: 1,
+        feedback: 'Riktig! Et moratorium er et midlertidig forbud mens man skaffer mer kunnskap om sårbare dyphavsøkosystemer.'
+      },
+      {
+        q: '4. Hvor i verdikjeden ligger den største økonomiske verdiskapingen ifølge materialstrategien?',
+        options: [
+          'Å eksportere ubehandlet råstein rett fra gruven (X)',
+          'Å separere metaller (5X) og produsere ferdige magneter og batterier (20X)',
+          'Å la mineralene ligge urørt uten industri',
+          'Å importere ferdige magneter fra Kina'
+        ],
+        correct: 1,
+        feedback: 'Riktig! Jo lenger ut i verdikjeden Norge bearbeider råvarene, desto større blir verdiskapingen og antall arbeidsplasser.'
+      }
+    ];
+
+    const quizContainer = document.getElementById('quiz-container');
+    const quizScoreEl = document.getElementById('quiz-score');
+    const answeredState = {};
+
+    QUIZ_QUESTIONS.forEach((item, idx) => {
+      const block = document.createElement('div');
+      block.className = 'space-y-2.5';
+      block.innerHTML = `
+        <p class="font-semibold text-stone-900 text-sm sm:text-base">${item.q}</p>
+        <div class="space-y-2">
+          ${item.options.map((opt, optIdx) => `
+            <button type="button" data-opt="${optIdx}" class="quiz-opt w-full text-left px-4 py-2.5 rounded-xl border border-stone-200 bg-stone-50/70 hover:bg-stone-100 text-sm text-stone-800 transition-colors">
+              ${opt}
+            </button>
+          `).join('')}
+        </div>
+        <p class="quiz-feedback hidden text-xs sm:text-sm rounded-lg px-3.5 py-2.5"></p>
+      `;
+      quizContainer.appendChild(block);
+
+      const opts = block.querySelectorAll('.quiz-opt');
+      const feedbackEl = block.querySelector('.quiz-feedback');
+      opts.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const chosen = Number(btn.dataset.opt);
+          const isCorrect = chosen === item.correct;
+          answeredState[idx] = isCorrect;
+          opts.forEach((o, i) => {
+            o.classList.remove('border-nordic-600', 'bg-nordic-50', 'border-red-400', 'bg-red-50', 'font-medium');
+            if (i === item.correct) o.classList.add('border-nordic-600', 'bg-nordic-50', 'font-medium');
+            else if (i === chosen && !isCorrect) o.classList.add('border-red-400', 'bg-red-50');
+          });
+          feedbackEl.classList.remove('hidden', 'bg-nordic-50', 'text-nordic-900', 'bg-red-50', 'text-red-900');
+          if (isCorrect) {
+            feedbackEl.classList.add('bg-nordic-50', 'text-nordic-900');
+            feedbackEl.textContent = item.feedback;
+          } else {
+            feedbackEl.classList.add('bg-red-50', 'text-red-900');
+            feedbackEl.textContent = 'Ikke helt riktig. Se det grønne alternativet over.';
+          }
+          const score = Object.values(answeredState).filter(Boolean).length;
+          quizScoreEl.textContent = `${score} / ${QUIZ_QUESTIONS.length} riktig`;
+        });
+      });
+    });
+
+    const desktopNavList = document.getElementById('desktop-nav-list');
+    const mobileNavList = document.getElementById('mobile-nav-list');
+    mobileNavList.innerHTML = desktopNavList.innerHTML + `
+      <li class="pt-3 mt-3 border-t border-stone-200 space-y-1.5">
+        <button type="button" onclick="window.print()" class="w-full text-left px-3 py-2 rounded-lg bg-nordic-700 text-white font-semibold">📄 Last ned som PDF</button>
+        <a href="index.html" class="block px-3 py-2 rounded-lg bg-stone-900 text-white font-medium">🌳 Kunnskapstreet</a>
+        <a href="urfolk.html" class="block px-3 py-2 rounded-lg text-nordic-700 font-medium hover:bg-nordic-50">1. Urfolk</a>
+        <a href="samenes-hjemland.html" class="block px-3 py-2 rounded-lg text-nordic-700 font-medium hover:bg-nordic-50">2. Samenes hjemland</a>
+      </li>
+    `;
+
+    const allNavLinks = document.querySelectorAll('.nav-link');
+    const sectionIds = Array.from(document.querySelectorAll('#desktop-nav-list .nav-link')).map(a => a.dataset.target);
+    const sections = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
+
+    function setActiveLink(id) {
+      allNavLinks.forEach(link => {
+        const isMatch = link.dataset.target === id;
+        if (isMatch) {
+          link.classList.add('bg-nordic-50', 'text-nordic-800', 'font-semibold');
+          link.classList.remove('text-stone-600');
+        } else {
+          link.classList.remove('bg-nordic-50', 'text-nordic-800', 'font-semibold');
+          link.classList.add('text-stone-600');
+        }
+      });
+    }
+
+    function updateScrollSpy() {
+      const scrollPos = window.scrollY + 140;
+      let currentId = sections[0]?.id;
+      for (const sec of sections) {
+        if (sec.offsetTop <= scrollPos) currentId = sec.id;
+      }
+      if (currentId) setActiveLink(currentId);
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? Math.min(100, Math.max(0, (window.scrollY / docHeight) * 100)) : 0;
+      document.getElementById('reading-progress').style.width = `${progress}%`;
+    }
+
+    window.addEventListener('scroll', updateScrollSpy, { passive: true });
+    updateScrollSpy();
+
+    const mobileDrawer = document.getElementById('mobile-drawer');
+    const openDrawer = () => mobileDrawer.classList.remove('hidden');
+    const closeDrawer = () => mobileDrawer.classList.add('hidden');
+    document.getElementById('mobile-menu-btn').addEventListener('click', openDrawer);
+    document.getElementById('mobile-drawer-close').addEventListener('click', closeDrawer);
+    document.getElementById('mobile-drawer-backdrop').addEventListener('click', closeDrawer);
+    mobileNavList.querySelectorAll('a').forEach(a => a.addEventListener('click', closeDrawer));
+
+    if (new URLSearchParams(window.location.search).get('print') === '1') {
+      window.addEventListener('load', () => setTimeout(() => window.print(), 300));
+    }
+  </script>
+</body>
+</html>
