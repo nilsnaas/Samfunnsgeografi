@@ -77,6 +77,21 @@
       main { max-width: 100% !important; }
       section { break-inside: avoid-page; }
     }
+    /* Dark Mode for Classic Reading View */
+    html.dark-mode body { background-color: #0b111e !important; color: #e2e8f0 !important; }
+    html.dark-mode header, html.dark-mode aside > div, html.dark-mode #mobile-drawer nav { background-color: #111827 !important; border-color: rgba(148,163,184,0.18) !important; }
+    html.dark-mode .bg-white { background-color: #111827 !important; border-color: rgba(148,163,184,0.18) !important; }
+    html.dark-mode .bg-stone-50, html.dark-mode .bg-stone-100, html.dark-mode .bg-stone-100\/80 { background-color: #1e293b !important; border-color: rgba(148,163,184,0.18) !important; }
+    html.dark-mode .bg-nordic-50, html.dark-mode .bg-nordic-50\/70 { background-color: rgba(16,185,129,0.1) !important; border-color: rgba(16,185,129,0.28) !important; }
+    html.dark-mode .bg-amber-50\/60, html.dark-mode .bg-amber-50\/70 { background-color: rgba(245,158,11,0.1) !important; border-color: rgba(245,158,11,0.28) !important; }
+    html.dark-mode .text-stone-900, html.dark-mode .text-stone-800 { color: #f1f5f9 !important; }
+    html.dark-mode .text-stone-700, html.dark-mode .text-stone-600 { color: #cbd5e1 !important; }
+    html.dark-mode .text-stone-500 { color: #94a3b8 !important; }
+    html.dark-mode .text-nordic-900, html.dark-mode .text-nordic-800, html.dark-mode .text-nordic-700 { color: #6ee7b7 !important; }
+    html.dark-mode .text-amber-950, html.dark-mode .text-amber-950\/90, html.dark-mode .text-amber-900 { color: #fde68a !important; }
+    html.dark-mode .glossary-term { color: #34d399 !important; border-bottom-color: #10b981 !important; }
+    html.dark-mode .glossary-term:hover { background-color: rgba(16,185,129,0.18) !important; }
+    html.dark-mode .border-stone-200, html.dark-mode .border-stone-200\/80, html.dark-mode .border-stone-200\/90 { border-color: rgba(148,163,184,0.18) !important; }
   </style>
 </head>
 <body class="antialiased selection:bg-nordic-100 selection:text-nordic-900">
@@ -95,10 +110,13 @@
         <span class="font-serif font-bold text-lg text-stone-900 leading-tight block">Urfolk</span>
       </div>
     </div>
-    <button id="mobile-menu-btn" type="button" aria-label="Åpne innholdsmeny" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-stone-300 text-sm font-medium text-stone-700 hover:bg-stone-100">
+    <div class="flex items-center gap-2">
+      <button type="button" onclick="toggleClassicTheme()" aria-label="Bytt mørk/lys modus" class="theme-toggle-btn p-1.5 rounded-lg border border-stone-300 text-sm hover:bg-stone-100">🌙</button>
+      <button id="mobile-menu-btn" type="button" aria-label="Åpne innholdsmeny" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-stone-300 text-sm font-medium text-stone-700 hover:bg-stone-100">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
       Innhold
     </button>
+    </div>
   </header>
 
   <!-- Mobile Drawer -->
@@ -128,12 +146,15 @@
       <!-- Left Sticky Sidebar (Scroll-Spy) -->
       <aside class="hidden lg:block sticky top-5">
         <div class="bg-white border border-stone-200/90 rounded-2xl p-3.5 shadow-xs">
-          <div class="flex items-center gap-2 pb-2.5 mb-2.5 border-b border-stone-200">
-            <div class="w-7 h-7 rounded-md bg-nordic-800 text-white font-serif font-bold text-[11px] flex items-center justify-center tracking-tight shrink-0">NN</div>
-            <div class="min-w-0">
-              <span class="text-[11px] font-semibold text-stone-800 block truncate">Nils sin samfunnsgeografibok</span>
-              <span class="text-[10px] font-medium text-nordic-700 block">Urfolk</span>
+          <div class="flex items-center justify-between gap-2 pb-2.5 mb-2.5 border-b border-stone-200">
+            <div class="flex items-center gap-2 min-w-0">
+              <div class="w-7 h-7 rounded-md bg-nordic-800 text-white font-serif font-bold text-[11px] flex items-center justify-center tracking-tight shrink-0">NN</div>
+              <div class="min-w-0">
+                <span class="text-[11px] font-semibold text-stone-800 block truncate">Nils sin samfunnsgeografibok</span>
+                <span class="text-[10px] font-medium text-nordic-700 block">Urfolk</span>
+              </div>
             </div>
+            <button type="button" onclick="toggleClassicTheme()" title="Bytt mørk/lys modus" class="theme-toggle-btn p-1.5 rounded-md border border-stone-200 text-xs hover:bg-stone-100 shrink-0">🌙</button>
           </div>
 
           <nav aria-label="Innholdsfortegnelse">
@@ -578,7 +599,7 @@
 
             <div class="bg-amber-50/70 border border-amber-200/80 rounded-xl p-4 text-sm text-amber-950/90 leading-relaxed space-y-2">
               <p><strong>Den «umulige» løsningen – når arealkonflikter flytter på seg:</strong> Som del av meklingen har staten utredet å skaffe nytt vinterbeite ved å flytte opptil 2 100 Fosen-rein rundt 35 mil sørover til <strong>Håmmålsfjellet–Sålekinna</strong> i Nord-Østerdalen (Os, Tolga og Engerdal). Dette har utløst sterk motstand fra både bønder, hyttefolk, friluftsliv (bl.a. mot opptil 100 km sperregjerder), naturvernere (hensyn til villrein) og lokale reineiere – som har bedt regjeringen «trykke på stoppknappen».</p>
-              <p><strong>Kraftmangelen i Trøndelag:</strong> Samtidig ville det å rive vindturbinene på Fosen (3,4 TWh) rammet en region som allerede har akutt kraftunderskudd. I <strong>Verdal Industripark</strong> (over 3 400 ansatte og 15,1 mrd. kr i omsetning) er det allerede tomt for ny kraft i nettet: industribedrifter som Franzefoss Minerals får ikke nok strøm til å gjøre produksjonen utslippsfri, og kommunen må si nei til nye kraftkrevende etableringer.</p>
+              <p><strong>Kraftmangelen i Trøndelag:</strong> Samtidig ville det å rive vindturbinene på Fosen (3,4 TWh) rammet en region som allerede har akutt kraftunderskudd. I <strong>Verdal Industripark</strong> (over 3 400 ansatte og 15,1 mrd. kr i omsetning) er det allerede tomt for ny kraft i nettet: industribedrifter som Franzefoss Minerals får ikke nok strøm til å gjøre produksjonen utslippsfri, og kommunen må si nei til nye kraftkrevende etableringer (<a href="ressurser.html#paradokset" class="underline font-semibold hover:text-nordic-800">les mer om Norges kraft- og ressursparadoks i kapittel 4 →</a>).</p>
               <p><strong>Samfunnsgeografisk kjernekonflikt:</strong> Fosen-saken viser dermed et trilemma mellom urfolks rettigheter etter <button type="button" class="glossary-term" data-term="ilo169">ILO-konvensjon 169</button> og menneskerettighetene, knapphet på alternative utmarksarealer, og storsamfunnets behov for fornybar kraft til arbeidsplasser og utslippskutt. <a href="samenes-hjemland.html#vindmoller" class="inline-block mt-1 font-semibold text-amber-950 underline hover:text-nordic-800">Se også sammenligningen med Altakraftverket og Tonstad i kapittel 2 →</a></p>
             </div>
           </div>
@@ -609,7 +630,7 @@
           </div>
           <div class="bg-nordic-50/70 border border-nordic-200 rounded-xl p-4 text-xs sm:text-sm text-nordic-900">
             <p class="font-bold uppercase tracking-wider text-nordic-800 text-[11px] mb-1">⚡ Super-sammendrag · Areal- og ressurskonflikter</p>
-            <p>Både fornybar energi (Fosen-vindkraft vs. reindrift, erstatningsbeite i Nord-Østerdalen og kraftmangel i Trøndelag) og fossil energi (oljesand i Canada og Standing Rock i USA) viser at energiutbygging ofte kolliderer med urfolks rettigheter.</p>
+            <p>Både fornybar energi (Fosen-vindkraft vs. reindrift, erstatningsbeite i Nord-Østerdalen og kraftmangel i Trøndelag) og fossil energi (oljesand i Canada og Standing Rock i USA) viser at energiutbygging ofte kolliderer med urfolks rettigheter. <a href="mineraler.html" class="underline font-semibold">Se også kapittel 3 om kritiske mineraler</a> og <a href="ressurser.html#berggrunn" class="underline font-semibold">kapittel 4 om gruvedrift og sjødeponi →</a></p>
           </div>
         </section>
 
@@ -1045,6 +1066,18 @@
     if (new URLSearchParams(window.location.search).get('print') === '1') {
       window.addEventListener('load', () => setTimeout(() => window.print(), 300));
     }
+
+    // Classic Dark Mode toggle (persisted)
+    function applyClassicTheme(dark) {
+      document.documentElement.classList.toggle('dark-mode', dark);
+      document.querySelectorAll('.theme-toggle-btn').forEach(b => b.textContent = dark ? '☀️' : '🌙');
+    }
+    function toggleClassicTheme() {
+      const next = !document.documentElement.classList.contains('dark-mode');
+      localStorage.setItem('samfgeo_classic_dark', next ? '1' : '0');
+      applyClassicTheme(next);
+    }
+    if (localStorage.getItem('samfgeo_classic_dark') === '1') applyClassicTheme(true);
   </script>
 </body>
 </html>

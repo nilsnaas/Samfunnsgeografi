@@ -195,6 +195,12 @@
         <button type="button" data-filter="sapmi" class="chapter-pill px-3 py-1 rounded-full border border-slate-500/25 text-sec hover:border-slate-400/50 transition-colors flex items-center gap-1.5">
           <span class="w-2 h-2 rounded-full bg-sky-400"></span>Samenes hjemland
         </button>
+        <button type="button" data-filter="mineraler" class="chapter-pill px-3 py-1 rounded-full border border-slate-500/25 text-sec hover:border-slate-400/50 transition-colors flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-amber-400"></span>Mineraler
+        </button>
+        <button type="button" data-filter="ressurser" class="chapter-pill px-3 py-1 rounded-full border border-slate-500/25 text-sec hover:border-slate-400/50 transition-colors flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-rose-400"></span>Ressursparadokset
+        </button>
       </div>
 
       <div class="flex flex-wrap items-center gap-1.5 text-[11px]">
@@ -234,8 +240,8 @@
 
       <!-- Interactive Pan/Zoom Stage -->
       <div id="tree-viewport" class="flex-1 relative cursor-grab active:cursor-grabbing overflow-hidden">
-        <div id="tree-world" class="absolute top-0 left-0 origin-top-left" style="width: 1000px; height: 760px;">
-          <svg id="tree-edges" class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 1000 760"></svg>
+        <div id="tree-world" class="absolute top-0 left-0 origin-top-left" style="width: 1280px; height: 760px;">
+          <svg id="tree-edges" class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 1280 760"></svg>
           <div id="tree-nodes" class="absolute inset-0"></div>
         </div>
       </div>
@@ -832,6 +838,161 @@
         },
         reflection: 'Hvordan kan myndighetene balansere hensynet til truet villaks, samisk fiskekultur og lønnsomheten i norsk oppdrettsnæring?',
         goal: 'Kunne drøfte situasjoner der urfolksinteresser og naturverninteresser står mot hverandre.'
+      },
+      {
+        id: 'n11',
+        chapter: 'ressurser',
+        type: 'hovedstamme',
+        icon: '⚡',
+        x: 965, y: 440,
+        parents: ['n1'],
+        period: 'Nåtid',
+        part: 'Del 5 · Norges Ressursparadoks',
+        title: 'Norges Ressursparadoks',
+        subtitle: '98 % fornybar strøm skjuler at 45 % (124 TWh) av totalt energiforbruk er fossilt',
+        image: 'Images/vemork-1935.jpg',
+        caption: 'Vemork kraftverk (1935, Public Domain). Vannkraften gir 90 % av strømmen, men olje og gass driver fortsatt 45 % av totalt energiforbruk.',
+        enkel: `
+          <p>Norge har <strong>90 % vannkraft</strong> (98 % fornybar strøm) og 88 % elbilandel – men hele <strong>45 % av Norges totale energiforbruk</strong> (~124 TWh) er fortsatt fossilt (sokkelplattformer, tungtransport, skipsfart og industri).</p>
+          <p><a href="ressurser.html" class="underline font-semibold text-emerald-400">Åpne hele kapittel 4: Norges Ressursparadoks →</a></p>
+        `,
+        full: `
+          <p>En ${g('urfolk', 'ressurs')} er alt vi kan bruke for å skaffe oss noe vi trenger – både naturressurser (fornybare, betinget fornybare og ikke-fornybare) og menneskelige ressurser (kunnskap og teknologi).</p>
+          <p>Selv om <strong>90 % av strømmen</strong> kommer fra vannkraft (140 TWh) og 98 % er fornybar, viser Norges totale energiregnskap et paradoks: <strong>45 % (ca. 124 TWh)</strong> kommer fra fossile kilder som driver oljeplattformer, tungtransport, skipsfart og industri. Å elektrifisere dette krever både mer ren kraft og enorme mengder kritiske mineraler. <a href="ressurser.html" class="underline font-semibold text-emerald-400">Les hele kapittel 4 →</a></p>
+        `,
+        caseHtml: `
+          <div class="elevated-surface border rounded-xl p-4 space-y-2 text-sm">
+            <p class="text-xs font-bold uppercase tracking-wider text-emerald-400">Nøkkeltall · Ressursparadokset</p>
+            <p><strong>90 % vannkraft:</strong> Ca. 140 TWh fra ~1 780 kraftverk.</p>
+            <p><strong>45 % fossilt forbruk:</strong> Ca. 124 TWh; over 80 % av utslippene kommer fra sokkel, transport og industri.</p>
+          </div>
+        `,
+        quiz: {
+          q: 'Hvor stor andel av Norges totale energiforbruk kommer fortsatt fra fossile kilder?',
+          options: ['Kun 2 %', 'Omtrent 15 %', 'Hele 45 % (ca. 124 TWh)', 'Over 90 %'],
+          correct: 2,
+          feedback: 'Riktig! Strømmen er 98 % fornybar, men 45 % av det totale energiforbruket er fossilt.'
+        },
+        reflection: 'Hvorfor er det viktig å skille mellom «strøm» og «total energi» når vi diskuterer Norges klimaregnskap?',
+        goal: 'Forstå Norges ressursparadoks og sammenhengen mellom elektrifisering, kraftbehov og mineraler.'
+      },
+      {
+        id: 'n12',
+        chapter: 'ressurser',
+        type: 'fordypning',
+        icon: '🌲',
+        x: 1140, y: 280,
+        parents: ['n11'],
+        period: '1960 – i dag',
+        part: 'Fordypning · Jord, skog & hav',
+        title: 'Olje, naturstein, jord, skog & hav',
+        subtitle: 'Fra Oljefondet og larvikitt til 3 % matjord, 40 % skog og lakseoppdrett',
+        image: 'Images/statfjord-a.jpg',
+        caption: 'Statfjord A i Nordsjøen. Petroleum, berggrunn, skog, jordbruk og havbruk danner grunnlaget for norsk velferd.',
+        enkel: `
+          <p>Petroleum gir 30 % av statens inntekter og Oljefondet (> 20 000 mrd. kr). I tillegg gir berggrunnen larvikitt og skifer, mens kun <strong>3 %</strong> er dyrket mark, <strong>40 %</strong> er skog, og havet gir både villfisk og oppdrettslaks.</p>
+          <p><a href="ressurser.html#gronne-ressurser" class="underline font-semibold text-emerald-400">Les mer i kapittel 4 →</a></p>
+        `,
+        full: `
+          <p>Petroleumsnæringen står for rundt <strong>30 % av statens inntekter</strong> (2024) og 210 000 arbeidsplasser, og har bygget et Oljefond på over 20 000 milliarder kroner. Samtidig gir norsk berggrunn verdifulle byggesteiner som <strong>larvikitt</strong> (nasjonalbergart) og <strong>skifer</strong>.</p>
+          <p>Blant de betinget fornybare ressursene er kun <strong>3 % av landet dyrket mark</strong>, nesten <strong>40 % skog</strong> (viktig karbonlager og leveområde for truede arter), og havområdene våre gir både kvotestyrt villfisk og verdens største eksport av oppdrettslaks. <a href="ressurser.html#gronne-ressurser" class="underline font-semibold text-emerald-400">Les hele kapittel 4 →</a></p>
+        `,
+        caseHtml: `
+          <div class="elevated-surface border rounded-xl p-4 space-y-2 text-sm">
+            <p class="text-xs font-bold uppercase tracking-wider text-sky-400">Norges ressursportefølje</p>
+            <p><strong>Ikke-fornybare:</strong> Olje, gass, kull (Svalbard), larvikitt, skifer, mineraler.</p>
+            <p><strong>Betinget fornybare:</strong> Matjord (3 %), skog (40 %), fisk og havbruk.</p>
+          </div>
+        `,
+        quiz: {
+          q: 'Hvor stor andel av Norges landareal er dyrket mark?',
+          options: ['Ca. 40 %', 'Ca. 20 %', 'Kun 3 %', 'Over 50 %'],
+          correct: 2,
+          feedback: 'Riktig! Kun 3 % er dyrket mark, noe som gjør vern av matjord avgjørende for matsikkerheten.'
+        },
+        reflection: 'Hvordan kan vi forvalte betinget fornybare ressurser som matjord, skog og fisk slik at de varer for framtidige generasjoner?',
+        goal: 'Kjenne bredden i Norges ressurser i berggrunn, jord, skog og hav.'
+      },
+      {
+        id: 'n13',
+        chapter: 'mineraler',
+        type: 'hovedstamme',
+        icon: '💎',
+        x: 965, y: 225,
+        parents: ['n11'],
+        period: '2024 – 2040',
+        part: 'Del 6 · Materialstormakt',
+        title: 'Fra energinasjon til materialstormakt',
+        subtitle: 'Fensfeltet (15,9 mill. tonn REE) og Dalane (fosfat & vanadium) i Europas grønne skifte',
+        image: 'Images/sjeldne-jordarter.jpg',
+        caption: 'Sjeldne jordartsoksider (REE). Fensfeltet i Telemark og Dalane i Rogaland kan gjøre Norge til EUs viktigste materialpartner.',
+        enkel: `
+          <p>IEA anslår <strong>6× høyere etterspørsel</strong> etter kritiske mineraler innen 2040. Norge har <strong>Fensfeltet</strong> (Europas største forekomst av sjeldne jordarter, 15,9 mill. tonn) og <strong>Dalane</strong> (fosfat til mat/batterier og vanadium).</p>
+          <p><a href="mineraler.html" class="underline font-semibold text-emerald-400">Åpne hele kapittel 3: Materialstormakt →</a></p>
+        `,
+        full: `
+          <p>Etter gasskrisen med Russland vil EU bryte Kinas monopol på sjeldne jordarter (REE) gjennom <em>Critical Raw Materials Act</em>. På <strong>Fensfeltet</strong> i Telemark ligger Europas største forekomst av REE (oppjustert til 15,9 mill. tonn i 2026) – essensielt for magneter i elbiler og vindturbiner.</p>
+          <p>I <strong>Dalane</strong> (Rogaland) finnes enorme forekomster av <strong>fosfat</strong> (kunstgjødsel og LFP-batterier), titan og <strong>vanadium</strong> (stasjonære batterier). Den største gevinsten ligger i å bygge hele verdikjeden i Norge – fra råmalm (X) til metaller (5X) og ferdige magneter/batterier (20X). <a href="mineraler.html" class="underline font-semibold text-emerald-400">Les hele kapittel 3 →</a></p>
+        `,
+        caseHtml: `
+          <div class="elevated-surface border rounded-xl p-4 space-y-2 text-sm">
+            <p class="text-xs font-bold uppercase tracking-wider text-emerald-400">Verdikjede-trappen</p>
+            <p><strong>Trinn 1:</strong> Utvinne malm (Verdi: X) → <strong>Trinn 2:</strong> Separere metaller (5X) → <strong>Trinn 3:</strong> Produsere magneter/batterier (20X).</p>
+          </div>
+        `,
+        quiz: {
+          q: 'Hvorfor er Fensfeltet i Telemark så strategisk viktig for Europa?',
+          options: [
+            'Fordi det inneholder verdens største kullgruve',
+            'Fordi det er Europas største forekomst av sjeldne jordarter (neodym/praseodym) til magneter i elbiler og vindturbiner',
+            'Fordi det produserer kunstgjødsel av tang',
+            'Fordi det ligger på havbunnen'
+          ],
+          correct: 1,
+          feedback: 'Riktig! Fensfeltet kan dekke opptil 10 % av Europas behov og redusere avhengigheten av Kina.'
+        },
+        reflection: 'Hva kreves for at Norge skal klare å bygge fabrikker for metallseparering og batterier, og ikke bare eksportere råstein?',
+        goal: 'Forstå hvorfor kritiske mineraler og bearbeidede verdikjeder gir Norge en ny geopolitisk rolle.'
+      },
+      {
+        id: 'n14',
+        chapter: 'mineraler',
+        type: 'motperspektiv',
+        icon: '🌊',
+        x: 1080, y: 95,
+        parents: ['n13', 'n9'],
+        period: '2024 – i dag',
+        part: 'Motperspektiv · Natur & Bærekraft',
+        title: 'Havbunn, sjødeponi & bærekraft',
+        subtitle: 'Når behovet for grønne mineraler møter dyphavsvern, fjorder og samiske rettigheter',
+        image: 'Images/black-smoker.jpg',
+        caption: 'Hydrotermisk skorstein på havbunnen (NOAA / Public Domain). Utvinning av mineraler møter sterke miljø- og arealkonflikter.',
+        enkel: `
+          <p>Grønne mineraler krever naturinngrep: På norsk sokkel er konsesjonsrunden for <strong>havbunnsmineraler</strong> satt på pause etter press om <strong>moratorium</strong>. På land skaper <strong>sjødeponi i Førdefjorden</strong> og kobbergruve i <strong>Repparfjorden</strong> (samisk reindrift) sterke konflikter – parallelt med Fosen-saken.</p>
+        `,
+        full: `
+          <p>Behovet for kobber, kobolt, titan og sjeldne jordarter utløser harde målkonflikter. Stortinget åpnet for letefase etter <strong>havbunnsmineraler</strong> i januar 2024, men stor usikkerhet rundt dyphavsøkosystemer, EUs skepsis og budsjettforlik med SV satte konsesjonsrunden på politisk pause (debatten om <strong>moratorium</strong>).</p>
+          <p>På land har <strong>sjødeponi</strong> av gruveavfall i Førdefjorden skapt strid med miljøvern og fiskeri, mens kobbergruveplaner i <strong>Repparfjorden</strong> kolliderer med samisk reindrift – akkurat som vindkraften i <strong>Fosen-saken</strong>. Veien mot bærekraft krever derfor sirkulær økonomi og vanskelige kompromisser. <a href="mineraler.html#havbunn" class="underline font-semibold text-emerald-400">Les mer i kapittel 3 →</a></p>
+        `,
+        caseHtml: `
+          <div class="elevated-surface border rounded-xl p-4 space-y-2 text-sm">
+            <p class="text-xs font-bold uppercase tracking-wider text-rose-400">Fellesnevner på tvers av kapitlene</p>
+            <p><strong>Fosen (vindkraft)</strong>, <strong>Repparfjorden (kobber)</strong>, <strong>Førdefjorden (sjødeponi)</strong> og <strong>havbunnsmineraler</strong> handler alle om samme dilemma: grønn omstilling vs. lokal natur og urfolksrettigheter.</p>
+          </div>
+        `,
+        quiz: {
+          q: 'Hva er hovedårsaken til at mange krever et moratorium (midlertidig forbud) mot gruvedrift på havbunnen?',
+          options: [
+            'At det ikke finnes kobber på havbunnen',
+            'Stor usikkerhet om miljøkonsekvensene for sårbare dyphavsøkosystemer',
+            'At Norge ikke har skip til å lete',
+            'At EU ikke ønsker grønn omstilling'
+          ],
+          correct: 1,
+          feedback: 'Riktig! Manglende kunnskap om sårbare dyphavsøkosystemer gjør at EU og miljøvernere krever pause/moratorium.'
+        },
+        reflection: 'Hvilke likheter ser du mellom Fosen-saken (kapittel 1–2) og konfliktene om havbunnsmineraler, Førdefjorden og Repparfjorden (kapittel 3–4)?',
+        goal: 'Kunne binde sammen urfolksrettigheter, naturvern og det grønne skiftets mineralbehov i en helhetlig analyse.'
       }
     ];
 
@@ -891,9 +1052,9 @@
       const vpW = treeViewport.clientWidth;
       const vpH = treeViewport.clientHeight;
       if (!vpW || !vpH) return;
-      scale = Math.min(vpW / 920, vpH / 760, 0.95);
-      scale = Math.max(0.45, scale);
-      panX = (vpW - 920 * scale) / 2;
+      scale = Math.min(vpW / 1240, vpH / 760, 0.92);
+      scale = Math.max(0.38, scale);
+      panX = (vpW - 1240 * scale) / 2;
       panY = (vpH - 760 * scale) / 2 + 10;
       applyTransform();
     }
@@ -934,10 +1095,11 @@
         <!-- Soft Nordic Canopy Clouds -->
         <ellipse cx="280" cy="240" rx="230" ry="180" fill="url(#canopy-left)" />
         <ellipse cx="700" cy="250" rx="240" ry="190" fill="url(#canopy-right)" />
-        <ellipse cx="500" cy="140" rx="260" ry="130" fill="url(#canopy-top)" />
+        <ellipse cx="1040" cy="240" rx="210" ry="175" fill="url(#canopy-left)" />
+        <ellipse cx="560" cy="140" rx="340" ry="130" fill="url(#canopy-top)" />
 
         <!-- Subtle Ground / Moss Horizon -->
-        <path d="M 80 710 Q 500 685 920 710" fill="none" stroke="rgba(16, 185, 129, 0.22)" stroke-width="2" stroke-dasharray="4 6" />
+        <path d="M 60 710 Q 640 680 1220 710" fill="none" stroke="rgba(16, 185, 129, 0.22)" stroke-width="2" stroke-dasharray="4 6" />
 
         <!-- Organic Roots spreading from n1 (500, 610) -->
         <path d="M 500 615 C 485 665, 430 695, 340 722" fill="none" stroke="url(#trunk-grad)" stroke-width="10" stroke-linecap="round" opacity="0.75" />
@@ -1017,7 +1179,7 @@
             <div class="flex items-center justify-between gap-1.5 mb-1.5">
               <div class="flex items-center gap-1.5 min-w-0">
                 <span class="text-sm leading-none">${node.icon || '📌'}</span>
-                <span class="text-[10px] font-semibold uppercase tracking-wider text-sec truncate">${node.chapter === 'urfolk' ? 'Urfolk' : 'Sápmi'}</span>
+                <span class="text-[10px] font-semibold uppercase tracking-wider text-sec truncate">${node.chapter === 'urfolk' ? 'Urfolk' : node.chapter === 'sapmi' ? 'Sápmi' : node.chapter === 'mineraler' ? 'Mineraler' : 'Ressurser'}</span>
               </div>
               ${isVisited ? '<span class="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px] font-bold flex items-center justify-center shrink-0" title="Utforsket">✓</span>' : ''}
             </div>
@@ -1150,6 +1312,8 @@
         renderTree();
         if (activeFilter === 'urfolk') selectNode('n1');
         if (activeFilter === 'sapmi') selectNode('n6');
+        if (activeFilter === 'mineraler') selectNode('n13');
+        if (activeFilter === 'ressurser') selectNode('n11');
         if (activeFilter === 'all') fitOverview();
       });
     });

@@ -75,6 +75,20 @@
       main { max-width: 100% !important; }
       section { break-inside: avoid-page; }
     }
+    html.dark-mode body { background-color: #0b111e !important; color: #e2e8f0 !important; }
+    html.dark-mode header, html.dark-mode aside > div, html.dark-mode #mobile-drawer nav { background-color: #111827 !important; border-color: rgba(148,163,184,0.18) !important; }
+    html.dark-mode .bg-white { background-color: #111827 !important; border-color: rgba(148,163,184,0.18) !important; }
+    html.dark-mode .bg-stone-50, html.dark-mode .bg-stone-100, html.dark-mode .bg-stone-100\/80 { background-color: #1e293b !important; border-color: rgba(148,163,184,0.18) !important; }
+    html.dark-mode .bg-nordic-50, html.dark-mode .bg-nordic-50\/70 { background-color: rgba(16,185,129,0.1) !important; border-color: rgba(16,185,129,0.28) !important; }
+    html.dark-mode .bg-amber-50\/60, html.dark-mode .bg-amber-50\/70 { background-color: rgba(245,158,11,0.1) !important; border-color: rgba(245,158,11,0.28) !important; }
+    html.dark-mode .text-stone-900, html.dark-mode .text-stone-800 { color: #f1f5f9 !important; }
+    html.dark-mode .text-stone-700, html.dark-mode .text-stone-600 { color: #cbd5e1 !important; }
+    html.dark-mode .text-stone-500 { color: #94a3b8 !important; }
+    html.dark-mode .text-nordic-900, html.dark-mode .text-nordic-800, html.dark-mode .text-nordic-700 { color: #6ee7b7 !important; }
+    html.dark-mode .text-amber-950, html.dark-mode .text-amber-950\/90, html.dark-mode .text-amber-900 { color: #fde68a !important; }
+    html.dark-mode .glossary-term { color: #34d399 !important; border-bottom-color: #10b981 !important; }
+    html.dark-mode .glossary-term:hover { background-color: rgba(16,185,129,0.18) !important; }
+    html.dark-mode .border-stone-200, html.dark-mode .border-stone-200\/80, html.dark-mode .border-stone-200\/90 { border-color: rgba(148,163,184,0.18) !important; }
   </style>
 </head>
 <body class="antialiased selection:bg-nordic-100 selection:text-nordic-900">
@@ -93,10 +107,13 @@
         <span class="font-serif font-bold text-lg text-stone-900 leading-tight block">Samenes hjemland</span>
       </div>
     </div>
-    <button id="mobile-menu-btn" type="button" aria-label="Åpne innholdsmeny" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-stone-300 text-sm font-medium text-stone-700 hover:bg-stone-100">
+    <div class="flex items-center gap-2">
+      <button type="button" onclick="toggleClassicTheme()" aria-label="Bytt mørk/lys modus" class="theme-toggle-btn p-1.5 rounded-lg border border-stone-300 text-sm hover:bg-stone-100">🌙</button>
+      <button id="mobile-menu-btn" type="button" aria-label="Åpne innholdsmeny" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-stone-300 text-sm font-medium text-stone-700 hover:bg-stone-100">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
       Innhold
     </button>
+    </div>
   </header>
 
   <!-- Mobile Drawer -->
@@ -126,12 +143,15 @@
       <!-- Left Sticky Sidebar (Scroll-Spy) -->
       <aside class="hidden lg:block sticky top-5">
         <div class="bg-white border border-stone-200/90 rounded-2xl p-3.5 shadow-xs">
-          <div class="flex items-center gap-2 pb-2.5 mb-2.5 border-b border-stone-200">
-            <div class="w-7 h-7 rounded-md bg-nordic-800 text-white font-serif font-bold text-[11px] flex items-center justify-center tracking-tight shrink-0">NN</div>
-            <div class="min-w-0">
-              <span class="text-[11px] font-semibold text-stone-800 block truncate">Nils sin samfunnsgeografibok</span>
-              <span class="text-[10px] font-medium text-nordic-700 block">Urfolk · Samenes hjemland</span>
+          <div class="flex items-center justify-between gap-2 pb-2.5 mb-2.5 border-b border-stone-200">
+            <div class="flex items-center gap-2 min-w-0">
+              <div class="w-7 h-7 rounded-md bg-nordic-800 text-white font-serif font-bold text-[11px] flex items-center justify-center tracking-tight shrink-0">NN</div>
+              <div class="min-w-0">
+                <span class="text-[11px] font-semibold text-stone-800 block truncate">Nils sin samfunnsgeografibok</span>
+                <span class="text-[10px] font-medium text-nordic-700 block">Urfolk · Samenes hjemland</span>
+              </div>
             </div>
+            <button type="button" onclick="toggleClassicTheme()" title="Bytt mørk/lys modus" class="theme-toggle-btn p-1.5 rounded-md border border-stone-200 text-xs hover:bg-stone-100 shrink-0">🌙</button>
           </div>
 
           <nav aria-label="Innholdsfortegnelse">
@@ -431,7 +451,7 @@
 
           <div class="space-y-4 text-stone-700 leading-relaxed">
             <p>
-              Skal verden unngå global oppvarming ut over to grader, må forbruket av fossil energi ned, samtidig som milliarder av mennesker trenger energi. Da må energiforbruket kuttes eller produksjonen av fornybar energi økes. Vannkraft og vindkraft er de fornybare energiformene der Norge har størst potensial – men begge innebærer naturinngrep. Fordi reindriften trenger store arealer i de minst bebodde delene av landet, har samiske interesser gjentatte ganger kollidert med kraftutbygging.
+              Skal verden unngå global oppvarming ut over to grader, må forbruket av fossil energi ned, samtidig som milliarder av mennesker trenger energi. Da må energiforbruket kuttes eller produksjonen av fornybar energi økes. Vannkraft og vindkraft er de fornybare energiformene der Norge har størst potensial – men begge innebærer naturinngrep (<a href="ressurser.html#paradokset" class="underline font-medium text-nordic-800 hover:text-nordic-900">se Norges Ressursparadoks i kapittel 4 →</a>). Fordi reindriften trenger store arealer i de minst bebodde delene av landet, har samiske interesser gjentatte ganger kollidert med kraftutbygging – og også med gruveprosjekter som kobbergruven i Repparfjorden (<a href="ressurser.html#berggrunn" class="underline font-medium text-nordic-800 hover:text-nordic-900">les mer i kapittel 4 →</a>).
             </p>
             <p>
               Striden om utbyggingen av <button type="button" class="glossary-term" data-term="alta-vassdraget">Alta-Kautokeinovassdraget</button> på slutten av 1970-tallet og begynnelsen av 1980-tallet (<button type="button" class="glossary-term" data-term="alta-saken">Alta-saken</button>) var blant de hardeste politiske kampene i Norge etter andre verdenskrig. Utbyggingen, som sto ferdig i <strong>1987</strong>, gir i underkant av 700 GWh i året – Finnmarks største vannkraftverk, men betydelig mindre enn de største i Norge. Motstanden handlet om at oppdemmingen ville skade reinbeite, laksefiske og verdifullt biologisk mangfold.
@@ -578,7 +598,7 @@
                 Nest etter reindrift har fiske langs kysten og i elver vært den viktigste tradisjonelle samiske næringen. Fordi villaksbestanden er kraftig redusert, har tradisjonelt laksefiske i <strong>Tanaelva</strong> blitt forbudt flere år på rad. Sametinget har protestert fordi et totalforbud hindrer unge i å lære tradisjonelle fiskemetoder som er sentrale i samisk kultur.
               </p>
               <p class="text-sm text-stone-700 leading-relaxed">
-                Den største trusselen mot villaksen er sykdommer og lakselus fra <strong>oppdrettslaks</strong> – samtidig som oppdrett er Norges største eksportnæring etter olje og gass. I tillegg trues villaksen av varmere klima (som gir mer gjedde i elva) og spredning av den fremmede arten <strong>pukkellaks</strong> fra Kolahalvøya.
+                Den største trusselen mot villaksen er sykdommer og lakselus fra <strong>oppdrettslaks</strong> – samtidig som oppdrett er Norges største eksportnæring etter olje og gass (<a href="ressurser.html#gronne-ressurser" class="underline font-medium text-nordic-800 hover:text-nordic-900">les mer om havbruk i kapittel 4 →</a>). I tillegg trues villaksen av varmere klima (som gir mer gjedde i elva) og spredning av den fremmede arten <strong>pukkellaks</strong> fra Kolahalvøya.
               </p>
             </div>
           </div>
@@ -970,6 +990,17 @@
     if (new URLSearchParams(window.location.search).get('print') === '1') {
       window.addEventListener('load', () => setTimeout(() => window.print(), 300));
     }
+
+    function applyClassicTheme(dark) {
+      document.documentElement.classList.toggle('dark-mode', dark);
+      document.querySelectorAll('.theme-toggle-btn').forEach(b => b.textContent = dark ? '☀️' : '🌙');
+    }
+    function toggleClassicTheme() {
+      const next = !document.documentElement.classList.contains('dark-mode');
+      localStorage.setItem('samfgeo_classic_dark', next ? '1' : '0');
+      applyClassicTheme(next);
+    }
+    if (localStorage.getItem('samfgeo_classic_dark') === '1') applyClassicTheme(true);
   </script>
 </body>
 </html>
