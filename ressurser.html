@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="nb" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Norges naturressurser &amp; Ressursparadokset – Samfunnsgeografi</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,600;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            serif: ['Source Serif 4', 'Georgia', 'serif'],
+          },
+          colors: {
+            nordic: {
+              50: '#f4f7f6',
+              100: '#e3ebe8',
+              200: '#c6d8d2',
+              600: '#1f6f66',
+              700: '#185952',
+              800: '#154742',
+              900: '#123a36',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #fafaf9;
+      color: #1c1917;
+      font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    }
+    .scroll-mt-header { scroll-margin-top: 2rem; }
+    .glossary-term {
+      font-weight: 700;
+      color: #185952;
+      border-bottom: 1.5px dotted #1f6f66;
+      padding: 0 2px;
+      border-radius: 3px;
+      transition: background-color 150ms ease, color 150ms ease;
+      cursor: help;
+      text-align: left;
+    }
+    .glossary-term:hover,
+    .glossary-term:focus-visible {
+      background-color: #e3ebe8;
+      color: #123a36;
+      outline: none;
+    }
+    #glossary-tooltip { transition: opacity 150ms ease, transform 150ms ease; }
+    #glossary-tooltip.hidden-tooltip { opacity: 0; pointer-events: none; transform: translateY(4px); }
+    #glossary-tooltip.visible-tooltip { opacity: 1; pointer-events: auto; transform: translateY(0); }
+    @media print {
+      aside, header, #mobile-drawer, #reading-progress, #glossary-tooltip, .no-print { display: none !important; }
+      body { background: #fff !important; color: #000 !important; }
+      main { max-width: 100% !important; }
+      section { break-inside: avoid-page; }
+    }
+  </style>
+</head>
+<body class="antialiased selection:bg-nordic-100 selection:text-nordic-900">
+
+  <!-- Top reading progress bar -->
+  <div class="fixed top-0 left-0 right-0 h-1 bg-stone-200 z-50">
+    <div id="reading-progress" class="h-full bg-nordic-600 transition-all duration-150" style="width: 0%"></div>
+  </div>
+
+  <!-- Mobile Header -->
+  <header class="lg:hidden sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-stone-200 px-4 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-lg bg-nordic-800 text-white font-serif font-bold text-xs flex items-center justify-center tracking-tight shrink-0">NN</div>
+      <div>
+        <span class="text-[11px] font-semibold uppercase tracking-wider text-nordic-700 block">Nils sin samfunnsgeografibok</span>
+        <span class="font-serif font-bold text-base text-stone-900 leading-tight block">Ressursparadokset</span>
+      </div>
+    </div>
+    <button id="mobile-menu-btn" type="button" aria-label="Åpne innholdsmeny" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-stone-300 text-sm font-medium text-stone-700 hover:bg-stone-100">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      Innhold
+    </button>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div id="mobile-drawer" class="lg:hidden fixed inset-0 z-50 hidden">
+    <div id="mobile-drawer-backdrop" class="absolute inset-0 bg-stone-900/40 backdrop-blur-xs"></div>
+    <nav class="relative w-72 max-w-[85vw] h-full bg-white border-r border-stone-200 p-6 overflow-y-auto shadow-xl">
+      <div class="flex items-center justify-between mb-6 pb-4 border-b border-stone-200">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-nordic-800 text-white font-serif font-bold text-xs flex items-center justify-center tracking-tight shrink-0">NN</div>
+          <div>
+            <p class="text-[11px] font-semibold uppercase tracking-wider text-nordic-700">Nils sin samfunnsgeografibok</p>
+            <p class="font-serif font-bold text-base text-stone-900 leading-tight">Ressursparadokset</p>
+          </div>
+        </div>
+        <button id="mobile-drawer-close" type="button" aria-label="Lukk meny" class="p-1.5 rounded-md text-stone-500 hover:bg-stone-100">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <ul class="space-y-1 text-sm" id="mobile-nav-list"></ul>
+    </nav>
+  </div>
+
+  <!-- Main Layout Wrapper -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+    <div class="lg:grid lg:grid-cols-[270px_1fr] lg:gap-12 xl:gap-16 items-start">
+
+      <!-- Left Sticky Sidebar (Scroll-Spy) -->
+      <aside class="hidden lg:block sticky top-5">
+        <div class="bg-white border border-stone-200/90 rounded-2xl p-3.5 shadow-xs">
+          <div class="flex items-center gap-2 pb-2.5 mb-2.5 border-b border-stone-200">
+            <div class="w-7 h-7 rounded-md bg-nordic-800 text-white font-serif font-bold text-[11px] flex items-center justify-center tracking-tight shrink-0">NN</div>
+            <div class="min-w-0">
+              <span class="text-[11px] font-semibold text-stone-800 block truncate">Nils sin samfunnsgeografibok</span>
+              <span class="text-[10px] font-medium text-nordic-700 block">Norges naturressurser</span>
+            </div>
+          </div>
+
+          <nav aria-label="Innholdsfortegnelse">
+            <ul id="desktop-nav-list" class="space-y-0.5 text-xs">
+              <li><a href="#innledning" data-target="innledning" class="nav-link block px-2.5 py-1.5 rounded-md text-stone-600 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">1. Ressurser &amp; næringsliv</a></li>
+              <li><a href="#paradokset" data-target="paradokset" class="nav-link block px-2.5 py-1.5 rounded-md text-stone-600 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">2. Det fossile paradokset</a></li>
+              <li><a href="#energi" data-target="energi" class="nav-link block px-2.5 py-1.5 rounded-md text-stone-600 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">3. Olje, vind, sol &amp; bio</a></li>
+              <li><a href="#berggrunn" data-target="berggrunn" class="nav-link block px-2.5 py-1.5 rounded-md text-stone-600 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">4. Berggrunn &amp; sjødeponi</a></li>
+              <li><a href="#gronne-ressurser" data-target="gronne-ressurser" class="nav-link block px-2.5 py-1.5 rounded-md text-stone-600 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">5. Jord, skog &amp; hav</a></li>
+              <li><a href="#baerekraft" data-target="baerekraft" class="nav-link block px-2.5 py-1.5 rounded-md text-stone-600 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">6. Bærekraft &amp; balansegang</a></li>
+              <li><a href="#aktiviteter" data-target="aktiviteter" class="nav-link block px-2.5 py-1.5 rounded-md text-stone-600 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">7. Test deg selv &amp; diskusjon</a></li>
+              <li><a href="#ordliste" data-target="ordliste" class="nav-link block px-2.5 py-1.5 rounded-md text-stone-600 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">8. Sammendrag &amp; Ordliste</a></li>
+              <li><a href="#kilder" data-target="kilder" class="nav-link block px-2.5 py-1.5 rounded-md text-stone-600 hover:text-stone-900 hover:bg-stone-100/70 transition-colors">9. Kilder</a></li>
+            </ul>
+          </nav>
+
+          <div class="mt-3 pt-2.5 border-t border-stone-200 space-y-1.5">
+            <button type="button" onclick="window.print()" class="w-full flex items-center justify-center gap-1.5 px-2.5 py-1.5 rounded-md bg-nordic-700 hover:bg-nordic-800 text-[11px] font-semibold text-white transition-colors">
+              <span>📄 Last ned som PDF</span>
+            </button>
+            <div class="grid grid-cols-2 gap-1">
+              <a href="index.html" class="flex items-center justify-center px-2 py-1.5 rounded-md bg-stone-900 hover:bg-stone-800 text-[11px] font-medium text-white transition-colors">🌳 Tre</a>
+              <a href="urfolk.html" class="flex items-center justify-center px-2 py-1.5 rounded-md bg-nordic-50 hover:bg-nordic-100 border border-nordic-200/80 text-[11px] font-medium text-nordic-800 transition-colors">1. Urfolk</a>
+              <a href="samenes-hjemland.html" class="flex items-center justify-center px-2 py-1.5 rounded-md bg-nordic-50 hover:bg-nordic-100 border border-nordic-200/80 text-[11px] font-medium text-nordic-800 transition-colors text-center leading-tight">2. Samenes hjemland</a>
+              <a href="mineraler.html" class="flex items-center justify-center px-2 py-1.5 rounded-md bg-nordic-50 hover:bg-nordic-100 border border-nordic-200/80 text-[11px] font-medium text-nordic-800 transition-colors">3. Mineraler</a>
+              <span class="col-span-2 flex items-center justify-center px-2 py-1.5 rounded-md bg-nordic-100 text-[11px] font-semibold text-nordic-900">4. Ressursparadokset</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Article Content -->
+      <main class="max-w-3xl space-y-14">
+
+        <!-- 1. Innledning & Ressursbegrepet -->
+        <section id="innledning" class="scroll-mt-header space-y-6">
+          <div class="bg-white border border-stone-200 rounded-2xl p-6 sm:p-10 shadow-xs">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+              <div class="flex flex-wrap items-center gap-2 text-xs font-medium text-nordic-700">
+                <span class="bg-nordic-50 border border-nordic-200/70 px-2.5 py-1 rounded-md">Samfunnsgeografi</span>
+                <span class="text-stone-400">/</span>
+                <span>Naturressurser &amp; Bærekraft</span>
+              </div>
+              <button type="button" onclick="window.print()" class="no-print inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-nordic-700 hover:bg-nordic-800 text-xs font-semibold text-white transition-colors shadow-xs">
+                <span>📄 Last ned kapittel som PDF</span>
+              </button>
+            </div>
+
+            <h1 class="font-serif text-4xl sm:text-5xl font-bold tracking-tight text-stone-900 mb-4">Norges Ressursparadoks</h1>
+            <p class="text-lg sm:text-xl text-stone-600 leading-relaxed mb-6">
+              Velferd bygget på naturressurser – en kontinuerlig balansegang mellom økonomi, energi, matproduksjon, klima og natur.
+            </p>
+
+            <p class="text-stone-700 leading-relaxed mb-6">
+              En <button type="button" class="glossary-term" data-term="ressurs">ressurs</button> er alt vi kan bruke for å skaffe oss noe vi trenger. Dette inkluderer både <strong>naturressurser</strong> (det som finnes i naturen) og <strong>menneskelige ressurser</strong> (kunnskap og teknologi som gjør en naturforekomst utnyttbar). Norges velstand er uløselig knyttet til vår evne til å utnytte naturressurser – fra fisk og skog, til vannkraften som industrialiserte landet, og olje og gass som skapte Oljefondet.
+            </p>
+
+            <!-- Inndeling av naturressurser -->
+            <div class="grid sm:grid-cols-3 gap-3 mb-6">
+              <div class="bg-emerald-50/70 border border-emerald-200/80 rounded-xl p-4">
+                <p class="text-xs font-bold uppercase tracking-wider text-emerald-900 mb-1">♾️ Fornybare</p>
+                <p class="text-xs text-stone-700 leading-relaxed">Tar kort tid å fornye og blir ikke oppbrukt (sol, vind, vannkraft).</p>
+              </div>
+              <div class="bg-amber-50/70 border border-amber-200/80 rounded-xl p-4">
+                <p class="text-xs font-bold uppercase tracking-wider text-amber-900 mb-1">🌱 Betinget fornybare</p>
+                <p class="text-xs text-stone-700 leading-relaxed">Fornyes hvis de forvaltes riktig, men kan ødelegges (matjord, skog, fisk).</p>
+              </div>
+              <div class="bg-stone-100 border border-stone-200 rounded-xl p-4">
+                <p class="text-xs font-bold uppercase tracking-wider text-stone-800 mb-1">🔋 Ikke-fornybare</p>
+                <p class="text-xs text-stone-700 leading-relaxed">Lagerressurser som dannes svært sakte (olje, gass, kull, mineraler).</p>
+              </div>
+            </div>
+
+            <!-- Sektorer & Lokaliseringsfaktorer -->
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div class="bg-stone-50 border border-stone-200 rounded-xl p-5 space-y-2">
+                <h3 class="text-sm font-semibold uppercase tracking-wider text-stone-800">Næringslivets tre sektorer</h3>
+                <ul class="text-xs sm:text-sm text-stone-700 space-y-1.5">
+                  <li><strong><button type="button" class="glossary-term" data-term="primaernaering">Primærnæring</button>:</strong> Utnytter naturen direkte (jordbruk, skogbruk, fiske).</li>
+                  <li><strong><button type="button" class="glossary-term" data-term="sekundaernaering">Sekundærnæring</button>:</strong> Bearbeider råvarer (industri, bergverk, kraftforsyning).</li>
+                  <li><strong><button type="button" class="glossary-term" data-term="tertiaernaering">Tertiærnæring</button>:</strong> Tjenesteyting, handel, undervisning og transport (her jobber de fleste i dag).</li>
+                </ul>
+              </div>
+              <div class="bg-stone-50 border border-stone-200 rounded-xl p-5 space-y-2">
+                <h3 class="text-sm font-semibold uppercase tracking-wider text-stone-800"><button type="button" class="glossary-term" data-term="lokaliseringsfaktorer">Lokaliseringsfaktorer</button></h3>
+                <ul class="text-xs sm:text-sm text-stone-700 space-y-1.5">
+                  <li><strong>Råvarer:</strong> Nærhet til ressursen (viktigst for primærnæring og gruvedrift).</li>
+                  <li><strong>Energi:</strong> Nærhet til rimelig, ren strøm (avgjørende for norsk kraftkrevende industri).</li>
+                  <li><strong>Marked:</strong> Nærhet til kundene (viktigst for tjenester og handel).</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-nordic-50/70 border border-nordic-200 rounded-xl p-4 text-xs sm:text-sm text-nordic-900">
+            <p class="font-bold uppercase tracking-wider text-nordic-800 text-[11px] mb-1">⚡ Super-sammendrag · Ressurser &amp; næringsliv</p>
+            <p>Naturressurser deles inn i fornybare, betinget fornybare og ikke-fornybare ressurser. Teknologi og lokaliseringsfaktorer (råvarer, energi og marked) avgjør hvor og hvordan ressursene utnyttes.</p>
+          </div>
+        </section>
+
+        <!-- 2. Det fossile paradokset -->
+        <section id="paradokset" class="scroll-mt-header space-y-6">
+          <div class="border-l-4 border-nordic-600 pl-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-nordic-700">Del 1</span>
+            <h2 class="font-serif text-3xl font-bold text-stone-900 mt-1">Vannkraftnasjonen og det fossile paradokset</h2>
+          </div>
+
+          <figure class="overflow-hidden rounded-xl border border-stone-200 bg-white">
+            <img src="Images/vemork-1935.jpg" alt="Vemork vannkraftverk ved Rjukan, fotografert av Anders Beer Wilse i 1935" class="w-full h-56 sm:h-64 object-cover" />
+            <figcaption class="px-4 py-2 text-xs text-stone-500 border-t border-stone-200/80">
+              Vemork kraftverk i 1935 – vannkraften la grunnlaget for Norges industrialisering. Foto: Anders Beer Wilse / Wikimedia Commons (Public Domain).
+            </figcaption>
+          </figure>
+
+          <div class="space-y-4 text-stone-700 leading-relaxed">
+            <p>
+              Norge har perfekte naturgitte forutsetninger for <strong>vannkraft</strong>: store høydeforskjeller, mye nedbør (særlig på Vestlandet) og fjell som gir mulighet for regulerbare vannmagasiner. Rundt <strong>90 % av strømproduksjonen</strong> kommer fra vannkraft (ca. 140 TWh fra rundt 1 780 kraftverk), og inkludert vindkraft er hele <strong>98 % av norsk strøm fornybar</strong>. Når vannet faller fra stor høyde gjennom rør (trykksjakt), driver vannets bevegelsesenergi en turbin og en generator som produserer elektrisk strøm.
+            </p>
+            <p>
+              Med en elbilandel på <strong>88 % blant nye personbiler</strong> (verdensrekord) framstår Norge som en grønn foregangsnasjon. Men bildet er ufullstendig – fordi <strong>strøm og total energi ikke er det samme</strong>.
+            </p>
+          </div>
+
+          <!-- SVG Comparison: 90% strøm vs 45% totalt fossilt forbruk -->
+          <div class="bg-white border border-stone-200 rounded-2xl p-6 shadow-xs">
+            <h3 class="font-serif text-lg font-bold text-stone-900 mb-1">Norges paradoks: Grønn strøm, men 45 % fossil totalenergi</h3>
+            <p class="text-xs text-stone-500 mb-4">Når vi regner med drivstoff til transport, industri og offshore-plattformer, er nesten halvparten av energibruken fossil.</p>
+            <div class="grid sm:grid-cols-2 gap-6 items-center">
+              <div class="bg-emerald-50/70 border border-emerald-200 rounded-xl p-5 text-center">
+                <p class="font-serif text-4xl font-bold text-nordic-800">90–98 %</p>
+                <p class="text-xs font-bold uppercase tracking-wider text-nordic-700 mt-1">Fornybar strømproduksjon</p>
+                <p class="text-xs text-stone-600 mt-2">~140 TWh vannkraft + ~17 TWh vindkraft driver lys, varme, industri og elbiler.</p>
+              </div>
+              <div class="bg-stone-900 text-stone-100 rounded-xl p-5 text-center">
+                <p class="font-serif text-4xl font-bold text-amber-400">45 %</p>
+                <p class="text-xs font-bold uppercase tracking-wider text-stone-300 mt-1">Fossilt totalt energiforbruk</p>
+                <p class="text-xs text-stone-300 mt-2">Tilsvarer ca. <strong>124 TWh</strong> årlig fra olje/gass-plattformer, tungtransport, skipsfart, luftfart og industri.</p>
+              </div>
+            </div>
+            <p class="text-xs text-stone-600 mt-4 leading-relaxed">
+              <strong>Konsekvens:</strong> Over <strong>80 % av alle norske klimagassutslipp</strong> kommer fra olje- og gassutvinning (den største enkeltbrukeren av fossil energi), transport og industri. For å erstatte 124 TWh fossil energi kreves massiv <strong>elektrifisering</strong>, mer kraftutbygging og store mengder kritiske mineraler som kobber og kobolt.
+            </p>
+          </div>
+
+          <div class="bg-nordic-50/70 border border-nordic-200 rounded-xl p-4 text-xs sm:text-sm text-nordic-900">
+            <p class="font-bold uppercase tracking-wider text-nordic-800 text-[11px] mb-1">⚡ Super-sammendrag · Det fossile paradokset</p>
+            <p>Selv om 98 % av norsk strøm er fornybar (90 % vannkraft), kommer 45 % (ca. 124 TWh) av Norges totale energiforbruk fortsatt fra fossile kilder – hovedsakelig på sokkelen, i tungtransport og industri.</p>
+          </div>
+        </section>
+
+        <!-- 3. Olje, vind, sol & bio -->
+        <section id="energi" class="scroll-mt-header space-y-6">
+          <div class="border-l-4 border-nordic-600 pl-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-nordic-700">Del 2</span>
+            <h2 class="font-serif text-3xl font-bold text-stone-900 mt-1">Olje og gass, vindkraft, sol og bioenergi</h2>
+          </div>
+
+          <figure class="overflow-hidden rounded-xl border border-stone-200 bg-white">
+            <img src="Images/statfjord-a.jpg" alt="Oljeplattformen Statfjord A i Nordsjøen" class="w-full h-56 sm:h-64 object-cover" />
+            <figcaption class="px-4 py-2 text-xs text-stone-500 border-t border-stone-200/80">
+              Statfjord A i Nordsjøen. Petroleumsnæringen har finansiert velferdsstaten og Oljefondet, men reiser store klimadilemmaer. Foto: Wikimedia Commons (åpen lisens).
+            </figcaption>
+          </figure>
+
+          <div class="space-y-4 text-stone-700 leading-relaxed">
+            <p>
+              <strong>Hvordan oljen ble til &amp; oljeeventyret:</strong> Gjennom millioner av år sank mikroskopiske alger til bunns i havet, ble dekket av slam uten oksygen, og omdannet under høyt trykk og temperatur til olje og gass i en <em>reservoarbergart</em> under en tett <em>takbergart</em> (oljefelle). Siden 1960–70-tallet har petroleum vært motoren i norsk økonomi: I 2024 sto næringen for rundt <strong>30 % av statens inntekter</strong> og ca. <strong>210 000 arbeidsplasser</strong>, og <strong>Oljefondet</strong> (Statens pensjonsfond utland) passerte <strong>20 000 milliarder kroner</strong> i januar 2025 (en dobling på fem år).
+            </p>
+            <p>
+              <strong>Prisen for kraften og velstanden:</strong> Rundt 70 % av norske vassdrag er allerede påvirket av vannkraftutbygging (og i 2025 ble det åpnet for vurdering av utbygging i vernede vassdrag for flomsikring). Samtidig er forbrenningen av eksportert norsk olje og gass en stor kilde til globale CO₂-utslipp, og i 2024 ble 34 nye leteområder utlyst i det sårbare Barentshavet. På Svalbard har Norge også historisk drevet kullutvinning (Store Norske) – det fossile brenselet med høyest CO₂-utslipp.
+            </p>
+          </div>
+
+          <div class="grid sm:grid-cols-3 gap-4">
+            <div class="bg-white border border-stone-200 rounded-xl p-5 space-y-2">
+              <h3 class="font-serif text-lg font-bold text-stone-900">💨 Vindkraft (17 TWh)</h3>
+              <p class="text-xs sm:text-sm text-stone-700 leading-relaxed">
+                Dekker strømforbruket til nesten 900 000 husstander, men krever store arealer, synes på 40–50 km avstand og skaper konflikter med fugleliv (havørn på Smøla) og reindrift (<a href="urfolk.html#fosen-saken" class="underline font-medium text-nordic-800">Fosen-saken →</a>).
+              </p>
+            </div>
+            <div class="bg-white border border-stone-200 rounded-xl p-5 space-y-2">
+              <h3 class="font-serif text-lg font-bold text-stone-900">☀️ Solenergi (0,2 %)</h3>
+              <p class="text-xs sm:text-sm text-stone-700 leading-relaxed">
+                Liten andel i 2024, men vokser raskt på Øst- og Sørlandet. Solceller er faktisk <em>mer effektive i kulde</em> (brukes bl.a. på Svalbard om sommeren). På tak og «grå arealer» gir de svært lav naturkonflikt.
+              </p>
+            </div>
+            <div class="bg-white border border-stone-200 rounded-xl p-5 space-y-2">
+              <h3 class="font-serif text-lg font-bold text-stone-900">🔥 Bioenergi (7 %)</h3>
+              <p class="text-xs sm:text-sm text-stone-700 leading-relaxed">
+                Fra biomasse (trevirke, matavfall, gjødsel) – brukes til vedfyring, fjernvarme og biodrivstoff. Regnes som del av det naturlige karbonkretsløpet, men biodrivstoff fra matvekster kan true matjord og regnskog.
+              </p>
+            </div>
+          </div>
+
+          <div class="bg-nordic-50/70 border border-nordic-200 rounded-xl p-4 text-xs sm:text-sm text-nordic-900">
+            <p class="font-bold uppercase tracking-wider text-nordic-800 text-[11px] mb-1">⚡ Super-sammendrag · Energi &amp; velstand</p>
+            <p>Petroleum står for 30 % av statens inntekter og har skapt et Oljefond på over 20 000 mrd. kr, men gir klimautslipp. Vindkraft (17 TWh), solenergi og bioenergi er viktige fornybare løsninger, men alle skaper egne areal- og ressursdilemmaer.</p>
+          </div>
+        </section>
+
+        <!-- 4. Berggrunn & sjødeponi -->
+        <section id="berggrunn" class="scroll-mt-header space-y-6">
+          <div class="border-l-4 border-nordic-600 pl-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-nordic-700">Del 3</span>
+            <h2 class="font-serif text-3xl font-bold text-stone-900 mt-1">Berggrunn, naturstein og gruvedriftens dilemma</h2>
+          </div>
+
+          <div class="grid sm:grid-cols-2 gap-4">
+            <figure class="overflow-hidden rounded-xl border border-stone-200 bg-white">
+              <img src="Images/larvikitt.jpg" alt="Larvikitt – Norges nasjonalbergart fra Vestfold" class="w-full h-44 object-cover" />
+              <figcaption class="px-3 py-2 text-xs text-stone-500 border-t border-stone-200/80">
+                Larvikitt – Norges nasjonalbergart. Foto: Wikimedia Commons (åpen lisens).
+              </figcaption>
+            </figure>
+            <figure class="overflow-hidden rounded-xl border border-stone-200 bg-white">
+              <img src="Images/tellnes-dagbrudd.jpg" alt="Tellnes dagbrudd i Rogaland" class="w-full h-44 object-cover" />
+              <figcaption class="px-3 py-2 text-xs text-stone-500 border-t border-stone-200/80">
+                Tellnes ilmenittdagbrudd i Rogaland. Foto: Wikimedia Commons (åpen lisens).
+              </figcaption>
+            </figure>
+          </div>
+
+          <div class="space-y-4 text-stone-700 leading-relaxed">
+            <p>
+              Under føttene våre ligger store verdier i fast fjell: <strong>pukk</strong> (knust gneis og granitt til veier og betong), <strong>kalkstein</strong> (viktig for sementproduksjon; omdannet blir den til marmor), <strong>skifer</strong> (lagdelt og slitesterk bergart fra Oppdal og Alta – brukt på Nasjonalmuseet i Oslo) og Norges nasjonalbergart <strong>larvikitt</strong> (finnes kun ved Larvik og eksporteres til hele verden på grunn av sitt blå fargespill).
+            </p>
+            <p>
+              I hverdagen er vi helt avhengige av metaller: En moderne mobiltelefon inneholder opptil <strong>40 forskjellige metaller</strong> (som titan til lette komponenter, grafitt til batterier og kobber til strømledninger). Det grønne skiftet krever også enorme mengder kvarts (solceller), litium/grafitt (batterier) og sjeldne jordarter (<a href="mineraler.html" class="underline font-medium text-nordic-800">se kapittel 3 om Fensfeltet, havbunn og Dalane →</a>).
+            </p>
+            <p>
+              <strong>Konflikter om gruvedrift og sjødeponi:</strong> Utvinning av mineraler gir store naturinngrep og gruveavfall. I <strong>Førdefjorden</strong> har tillatelse til å utvinne rutil (titan) med deponering av gruveavfall i fjorden (<button type="button" class="glossary-term" data-term="sjodeponi">sjødeponi</button>) skapt sterk strid med miljøvern og fiskeri. I <strong>Repparfjorden</strong> i Finnmark har planer om kobbergruve skapt konflikt med samisk reindrift og urfolksrettigheter.
+            </p>
+          </div>
+
+          <div class="bg-nordic-50/70 border border-nordic-200 rounded-xl p-4 text-xs sm:text-sm text-nordic-900">
+            <p class="font-bold uppercase tracking-wider text-nordic-800 text-[11px] mb-1">⚡ Super-sammendrag · Berggrunn &amp; gruvedrift</p>
+            <p>Norsk berggrunn gir alt fra larvikitt og skifer til titan, kobber og sjeldne jordarter. Men gruvedrift skaper også konflikter om naturinngrep, sjødeponi (Førdefjorden) og samisk reindrift (Repparfjorden).</p>
+          </div>
+        </section>
+
+        <!-- 5. Grønne ressurser -->
+        <section id="gronne-ressurser" class="scroll-mt-header space-y-6">
+          <div class="border-l-4 border-nordic-600 pl-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-nordic-700">Del 4</span>
+            <h2 class="font-serif text-3xl font-bold text-stone-900 mt-1">Grønne ressurser: Jordbruk, skogbruk og havet</h2>
+          </div>
+
+          <figure class="overflow-hidden rounded-xl border border-stone-200 bg-white">
+            <img src="Images/lakseoppdrett.jpg" alt="Lakseoppdrettsanlegg i en norsk fjord" class="w-full h-56 sm:h-64 object-cover" />
+            <figcaption class="px-4 py-2 text-xs text-stone-500 border-t border-stone-200/80">
+              Norge er verdens største eksportør av oppdrettslaks, men næringen har utfordringer med lakselus, rømming og fôrressurser. Foto: Wikimedia Commons (åpen lisens).
+            </figcaption>
+          </figure>
+
+          <div class="grid sm:grid-cols-2 gap-6">
+            <div class="bg-white border border-stone-200 rounded-xl p-6 space-y-2.5">
+              <h3 class="font-serif text-xl font-bold text-stone-900">🌾 Jordbruk – et knapt gode</h3>
+              <p class="text-sm text-stone-700 leading-relaxed">
+                Kun <strong>3 % av Norges landareal</strong> er dyrket mark, og antall gårdsbruk har falt fra 155 000 i 1969 til 37 600 i 2023. Østlandet, Trøndelag og Jæren har god jord til korn og intensiv drift, mens bratt terreng og mye nedbør på Vestlandet og i Nord-Norge egner seg best til gress og husdyr. Nedbygging av matjord og jordbrukets klimagassutslipp (nesten 10 % av Norges utslipp) skaper et tydelig dilemma.
+              </p>
+            </div>
+            <div class="bg-white border border-stone-200 rounded-xl p-6 space-y-2.5">
+              <h3 class="font-serif text-xl font-bold text-stone-900">🌲 Skogen – det grønne gullet</h3>
+              <p class="text-sm text-stone-700 leading-relaxed">
+                Nesten <strong>40 % av Norge</strong> er dekket av skog (mest gran). Skogen gir byggematerialer, papir og bioenergi, og er et kritisk <strong>karbonlager</strong> som binder CO₂. Samtidig lever halvparten av Norges truede arter i skog, noe som krever balanse mellom tømmerhogst, friluftsliv og biologisk mangfold.
+              </p>
+            </div>
+          </div>
+
+          <div class="bg-white border border-stone-200 rounded-xl p-6 space-y-3">
+            <h3 class="font-serif text-xl font-bold text-stone-900">🐟 Fiskeri og havbruk (akvakultur)</h3>
+            <p class="text-sm text-stone-700 leading-relaxed">
+              Møtet mellom den varme Golfstrømmen og kaldt arktisk vann skaper <button type="button" class="glossary-term" data-term="oppvelling">oppvelling</button> av næringsrikt bunnvann, noe som gir grunnlag for rike fiskerier (torsk/skrei, sild, makrell). For å unngå overfiske (slik silda nesten ble utryddet på 1950-tallet) forvaltes havet gjennom internasjonale <strong>fiskekvoter</strong> og Norges <strong>200 nautiske mils økonomiske sone</strong>.
+            </p>
+            <p class="text-sm text-stone-700 leading-relaxed">
+              Norge er også verdens største eksportør av <strong>oppdrettslaks</strong>. Men oppdrett i åpne merder sliter med lakselus, rømming (som truer villaksen, <a href="samenes-hjemland.html#natur-og-rovdyr" class="underline font-medium text-nordic-800">se konflikten i Tanaelva →</a>), lokal forurensning og at laksefôret inneholder soya importert fra Brasil (som legger press på regnskogen).
+            </p>
+          </div>
+
+          <div class="bg-nordic-50/70 border border-nordic-200 rounded-xl p-4 text-xs sm:text-sm text-nordic-900">
+            <p class="font-bold uppercase tracking-wider text-nordic-800 text-[11px] mb-1">⚡ Super-sammendrag · Jord, skog &amp; hav</p>
+            <p>Kun 3 % av Norge er dyrket mark, mens 40 % er skog. Havet er en rik matkilde som krever kvotestyring, mens lakseoppdrett skaper store eksportinntekter men utfordres av lakselus, rømming og soyafôr.</p>
+          </div>
+        </section>
+
+        <!-- 6. Bærekraft & balansegang -->
+        <section id="baerekraft" class="scroll-mt-header space-y-6">
+          <div class="border-l-4 border-nordic-600 pl-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-nordic-700">Del 5</span>
+            <h2 class="font-serif text-3xl font-bold text-stone-900 mt-1">Veien mot bærekraft: En kontinuerlig balansegang</h2>
+          </div>
+
+          <!-- Clean SVG Balance Scale -->
+          <div class="bg-white border border-stone-200 rounded-2xl p-6 shadow-xs">
+            <div class="grid sm:grid-cols-[1fr_1.3fr] gap-6 items-center">
+              <svg viewBox="0 0 280 200" class="w-full h-auto" aria-label="Vektskål mellom velferd/økonomi og klima/natur">
+                <line x1="140" y1="28" x2="140" y2="175" stroke="#44403c" stroke-width="5" stroke-linecap="round"/>
+                <rect x="95" y="172" width="90" height="10" rx="4" fill="#44403c"/>
+                <line x1="40" y1="45" x2="240" y2="45" stroke="#185952" stroke-width="4" stroke-linecap="round"/>
+                <circle cx="140" cy="45" r="7" fill="#d97706"/>
+                <!-- Left pan -->
+                <line x1="50" y1="45" x2="32" y2="105" stroke="#78716c" stroke-width="1.5"/>
+                <line x1="50" y1="45" x2="68" y2="105" stroke="#78716c" stroke-width="1.5"/>
+                <path d="M 22 105 Q 50 128 78 105 Z" fill="#d97706" opacity="0.88"/>
+                <text x="50" y="142" text-anchor="middle" font-size="10" font-weight="700" fill="#9a3412">Velferd &amp; Økonomi</text>
+                <!-- Right pan -->
+                <line x1="230" y1="45" x2="212" y2="105" stroke="#78716c" stroke-width="1.5"/>
+                <line x1="230" y1="45" x2="248" y2="105" stroke="#78716c" stroke-width="1.5"/>
+                <path d="M 202 105 Q 230 128 258 105 Z" fill="#185952" opacity="0.9"/>
+                <text x="230" y="142" text-anchor="middle" font-size="10" font-weight="700" fill="#123a36">Klima &amp; Natur</text>
+              </svg>
+              <div class="space-y-3 text-sm text-stone-700 leading-relaxed">
+                <p>
+                  <button type="button" class="glossary-term" data-term="baerekraftig-utvikling">Bærekraftig utvikling</button> betyr å dekke dagens behov uten å ødelegge mulighetene for framtidige generasjoner. Det krever <strong>sirkulær økonomi</strong> (gjenvinning), mer fornybar energi og vern av natur.
+                </p>
+                <p>
+                  Norges valg har globale konsekvenser: Vår strøm kan erstatte kullkraft i Europa, vår gass gir energitrygghet men øker globale utslipp, og våre mineraler kan drive det grønne skiftet men krever lokale naturinngrep. Det grønne skiftet handler derfor om å velge hvilke kompromisser vi som nasjon er villige til å leve med.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 7. Test deg selv & Reflekter -->
+        <section id="aktiviteter" class="scroll-mt-header space-y-6">
+          <div class="border-l-4 border-nordic-600 pl-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-nordic-700">Del 6</span>
+            <h2 class="font-serif text-3xl font-bold text-stone-900 mt-1">Test deg selv &amp; diskuter</h2>
+          </div>
+
+          <div class="bg-white border border-stone-200 rounded-2xl p-6 sm:p-8 shadow-xs space-y-6">
+            <div class="flex items-center justify-between border-b border-stone-200 pb-4">
+              <div>
+                <h3 class="font-serif text-xl font-bold text-stone-900">Kontrollspørsmål</h3>
+                <p class="text-xs text-stone-500 mt-0.5">Velg riktig svar på oppgavene under.</p>
+              </div>
+              <span id="quiz-score" class="text-xs font-semibold bg-nordic-50 text-nordic-800 px-3 py-1 rounded-full">0 / 4 riktig</span>
+            </div>
+            <div id="quiz-container" class="space-y-6"></div>
+          </div>
+
+          <div class="bg-amber-50/60 border border-amber-200/80 rounded-2xl p-6 sm:p-8 space-y-3">
+            <h3 class="font-serif text-xl font-bold text-amber-950">Reflekter og diskuter</h3>
+            <ol class="space-y-3 text-sm sm:text-base text-amber-950/90 list-decimal list-inside leading-relaxed">
+              <li>Hvorfor kaller vi det «Norges fossile paradoks» når 98 % av strømmen vår er fornybar?</li>
+              <li>Hvordan bør Norge veie hensynet til arbeidsplasser og verdiskaping fra olje, oppdrett og gruvedrift opp mot klima- og naturhensyn?</li>
+              <li>Hva betyr det at bare 3 % av Norges areal er dyrket mark for vår fremtidige matsikkerhet?</li>
+            </ol>
+          </div>
+        </section>
+
+        <!-- 8. Sammendrag & Ordliste -->
+        <section id="ordliste" class="scroll-mt-header space-y-8">
+          <div class="border-l-4 border-nordic-600 pl-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-nordic-700">Del 7</span>
+            <h2 class="font-serif text-3xl font-bold text-stone-900 mt-1">Sammendrag &amp; Ordliste</h2>
+          </div>
+
+          <div class="bg-white border border-stone-200 rounded-2xl p-6 sm:p-8 shadow-xs space-y-3">
+            <h3 class="font-serif text-xl font-bold text-stone-900 mb-2">Hovedpunkter fra kapittelet</h3>
+            <ul class="space-y-2.5 text-sm text-stone-700 leading-relaxed">
+              <li class="flex items-start gap-2.5"><span class="text-nordic-600 font-bold">✓</span><span>Naturressurser deles i fornybare, betinget fornybare (jord, skog, fisk) og ikke-fornybare ressurser (olje, kull, mineraler).</span></li>
+              <li class="flex items-start gap-2.5"><span class="text-nordic-600 font-bold">✓</span><span>90 % av norsk strøm er vannkraft, men 45 % (124 TWh) av Norges totale energiforbruk er fortsatt fossilt.</span></li>
+              <li class="flex items-start gap-2.5"><span class="text-nordic-600 font-bold">✓</span><span>Olje og gass gir 30 % av statens inntekter og har bygget opp Oljefondet (> 20 000 mrd. kr), men utløser store klimadilemmaer.</span></li>
+              <li class="flex items-start gap-2.5"><span class="text-nordic-600 font-bold">✓</span><span>Både jordbruk (3 % areal), skogbruk (40 %), fiskeri, oppdrett og gruvedrift (Førdefjorden, Repparfjorden) krever bærekraftige kompromisser.</span></li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="font-serif text-2xl font-bold text-stone-900 mb-4">Viktige fagbegreper (Ordliste)</h3>
+            <div id="glossary-grid" class="grid sm:grid-cols-2 gap-4"></div>
+          </div>
+        </section>
+
+        <!-- 9. Kilder -->
+        <section id="kilder" class="scroll-mt-header pb-16 space-y-6">
+          <div class="no-print bg-white border border-stone-200 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex flex-wrap items-center gap-2">
+              <a href="index.html" class="px-3 py-1.5 rounded-lg bg-stone-900 hover:bg-stone-800 text-xs font-semibold text-white transition-colors">🌳 Kunnskapstreet</a>
+              <a href="urfolk.html" class="px-3 py-1.5 rounded-lg bg-nordic-50 hover:bg-nordic-100 border border-nordic-200 text-xs font-semibold text-nordic-800 transition-colors">1. Urfolk</a>
+              <a href="samenes-hjemland.html" class="px-3 py-1.5 rounded-lg bg-nordic-50 hover:bg-nordic-100 border border-nordic-200 text-xs font-semibold text-nordic-800 transition-colors">2. Samenes hjemland</a>
+              <a href="mineraler.html" class="px-3 py-1.5 rounded-lg bg-nordic-50 hover:bg-nordic-100 border border-nordic-200 text-xs font-semibold text-nordic-800 transition-colors">← 3. Mineraler</a>
+              <span class="px-3 py-1.5 rounded-lg bg-nordic-100 text-xs font-semibold text-nordic-900">4. Ressursparadokset</span>
+            </div>
+            <button type="button" onclick="window.print()" class="px-3.5 py-1.5 rounded-lg bg-nordic-700 hover:bg-nordic-800 text-xs font-semibold text-white transition-colors">📄 Last ned som PDF</button>
+          </div>
+
+          <div class="bg-stone-100 border border-stone-200 rounded-2xl p-6 sm:p-8 space-y-4">
+            <h2 class="font-serif text-2xl font-bold text-stone-900">Kilder</h2>
+            <div class="grid sm:grid-cols-2 gap-6 text-xs text-stone-600 leading-relaxed">
+              <div class="space-y-2">
+                <p class="font-semibold text-stone-800 uppercase tracking-wider">Faggrunnlag</p>
+                <ul class="space-y-1.5 list-disc list-inside">
+                  <li>Naas, Nils (2025). <em>Norges Ressursparadoks / Norges Grønne Paradoks</em>.</li>
+                  <li>Geografi VGS: <em>Ressurser i jord og berggrunn &amp; Ressurser og næringsliv</em>.</li>
+                  <li>Norges vassdrags- og energidirektorat (NVE) &amp; Statistisk sentralbyrå (SSB) – tall for kraftproduksjon, energiforbruk og jordbruk.</li>
+                </ul>
+              </div>
+              <div class="space-y-2">
+                <p class="font-semibold text-stone-800 uppercase tracking-wider">Bilder &amp; eksterne kilder</p>
+                <ul class="space-y-1.5 list-disc list-inside">
+                  <li>Norges Bank Investment Management (NBIM) – Oljefondet (2025).</li>
+                  <li>Norges geologiske undersøkelse (NGU) – larvikitt, skifer og mineralressurser.</li>
+                  <li>Wikimedia Commons (Public Domain / CC0 / åpne lisenser) – Vemork (Wilse 1935), Statfjord A, Larvikitt, Tellnes og lakseoppdrett.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Floating Glossary Tooltip -->
+  <div id="glossary-tooltip" role="tooltip" class="hidden-tooltip fixed z-50 max-w-xs sm:max-w-sm bg-stone-900 text-stone-100 rounded-xl p-4 shadow-xl border border-stone-700/80">
+    <div class="flex items-start justify-between gap-3 mb-1">
+      <span id="tooltip-title" class="font-serif font-bold text-base text-nordic-200"></span>
+      <button id="tooltip-close" type="button" aria-label="Lukk begrepsforklaring" class="text-stone-400 hover:text-white text-xs px-1">✕</button>
+    </div>
+    <p id="tooltip-body" class="text-xs sm:text-sm text-stone-200 leading-relaxed"></p>
+  </div>
+
+  <script>
+    const GLOSSARY = {
+      'ressurs': {
+        title: 'Ressurs',
+        definition: 'Alt vi kan bruke for å skaffe oss noe vi trenger – både naturressurser (det som finnes i naturen) og menneskelige ressurser (kunnskap og teknologi som gjør naturforekomster utnyttbare).'
+      },
+      'primaernaering': {
+        title: 'Primærnæring',
+        definition: 'Næringer som utnytter naturen direkte, som jordbruk, skogbruk, fiske og reindrift.'
+      },
+      'sekundaernaering': {
+        title: 'Sekundærnæring',
+        definition: 'Næringer som bearbeider råvarer til produkter eller energi, som industri, bergverk, bygg/anlegg og kraftforsyning.'
+      },
+      'tertiaernaering': {
+        title: 'Tertiærnæring',
+        definition: 'Tjenesteytende næringer som handel, undervisning, helsevesen, transport og IT – der de fleste jobber i dag.'
+      },
+      'lokaliseringsfaktorer': {
+        title: 'Lokaliseringsfaktorer',
+        definition: 'Forhold som avgjør hvor en bedrift etablerer seg: nærhet til råvarer (viktigst for primærnæring), energi (viktigst for kraftkrevende industri) eller marked/kunder (viktigst for tjenester).'
+      },
+      'oppvelling': {
+        title: 'Oppvelling',
+        definition: 'Når kaldt, næringsrikt bunnvann strømmer opp til havoverflaten i møtet med varmere havstrømmer (som Golfstrømmen), noe som gir oppblomstring av planteplankton og rike fiskeressurser.'
+      },
+      'sjodeponi': {
+        title: 'Sjødeponi',
+        definition: 'Deponering (lagring/dumping) av finknust gruveavfall på bunnen av en fjord eller i havet, som i Førdefjorden – ofte omstridt av hensyn til marint liv og fiskeri.'
+      },
+      'baerekraftig-utvikling': {
+        title: 'Bærekraftig utvikling',
+        definition: 'En utvikling som dekker dagens behov uten å ødelegge mulighetene for at kommende generasjoner skal få dekket sine behov – i balanse mellom økonomi, klima og natur.'
+      }
+    };
+
+    const glossaryGrid = document.getElementById('glossary-grid');
+    Object.values(GLOSSARY).forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'bg-white border border-stone-200 rounded-xl p-5 shadow-xs hover:border-nordic-300 transition-colors';
+      card.innerHTML = `
+        <dt class="font-serif font-bold text-lg text-nordic-800 mb-1.5">${item.title}</dt>
+        <dd class="text-sm text-stone-700 leading-relaxed">${item.definition}</dd>
+      `;
+      glossaryGrid.appendChild(card);
+    });
+
+    const tooltip = document.getElementById('glossary-tooltip');
+    const tooltipTitle = document.getElementById('tooltip-title');
+    const tooltipBody = document.getElementById('tooltip-body');
+    const tooltipClose = document.getElementById('tooltip-close');
+    let activeTrigger = null;
+    let hideTimeout = null;
+
+    function showTooltip(trigger) {
+      const entry = GLOSSARY[trigger.dataset.term];
+      if (!entry) return;
+      clearTimeout(hideTimeout);
+      activeTrigger = trigger;
+      tooltipTitle.textContent = entry.title;
+      tooltipBody.textContent = entry.definition;
+      tooltip.classList.remove('hidden-tooltip');
+      tooltip.classList.add('visible-tooltip');
+      const rect = trigger.getBoundingClientRect();
+      const ttRect = tooltip.getBoundingClientRect();
+      let left = Math.max(12, Math.min(rect.left + rect.width / 2 - ttRect.width / 2, window.innerWidth - ttRect.width - 12));
+      let top = rect.top - ttRect.height - 10;
+      if (top < 12) top = rect.bottom + 10;
+      tooltip.style.left = `${left}px`;
+      tooltip.style.top = `${top}px`;
+    }
+    function hideTooltip() {
+      tooltip.classList.remove('visible-tooltip');
+      tooltip.classList.add('hidden-tooltip');
+      activeTrigger = null;
+    }
+
+    document.querySelectorAll('.glossary-term').forEach(btn => {
+      btn.addEventListener('mouseenter', () => showTooltip(btn));
+      btn.addEventListener('focus', () => showTooltip(btn));
+      btn.addEventListener('mouseleave', () => { hideTimeout = setTimeout(hideTooltip, 150); });
+      btn.addEventListener('blur', () => { hideTimeout = setTimeout(hideTooltip, 150); });
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (activeTrigger === btn && tooltip.classList.contains('visible-tooltip')) hideTooltip();
+        else showTooltip(btn);
+      });
+    });
+    tooltip.addEventListener('mouseenter', () => clearTimeout(hideTimeout));
+    tooltip.addEventListener('mouseleave', () => { hideTimeout = setTimeout(hideTooltip, 150); });
+    tooltipClose.addEventListener('click', hideTooltip);
+    document.addEventListener('click', (e) => {
+      if (!tooltip.contains(e.target) && !e.target.classList.contains('glossary-term')) hideTooltip();
+    });
+
+    const QUIZ_QUESTIONS = [
+      {
+        q: '1. Hva menes med «Norges fossile paradoks»?',
+        options: [
+          'At Norge ikke har vannkraftverk',
+          'At 98 % av strømproduksjonen er fornybar, men hele 45 % (ca. 124 TWh) av totalt energiforbruk fortsatt er fossilt',
+          'At Norge bare bruker kullkraft',
+          'At elbiler bruker mer bensin enn dieselbiler'
+        ],
+        correct: 1,
+        feedback: 'Riktig! Strøm er bare én del av energibruken – plattformer, tungtransport, skipsfart og industri gjør at 45 % av totalenergien er fossil.'
+      },
+      {
+        q: '2. Hvilken gruppe tilhører ressurser som matjord, skog og fisk?',
+        options: ['Ikke-fornybare ressurser', 'Betinget fornybare ressurser', 'Fossile lagerressurser', 'Syntetiske ressurser'],
+        correct: 1,
+        feedback: 'Riktig! Betinget fornybare ressurser fornyes hvis de forvaltes bærekraftig, men kan ødelegges ved overforbruk.'
+      },
+      {
+        q: '3. Hvilken bergart er Norges nasjonalbergart og finnes kun ved Larvik i Vestfold?',
+        options: ['Altaskifer', 'Larvikitt', 'Kalkstein', 'Pukk'],
+        correct: 1,
+        feedback: 'Riktig! Larvikitt er kjent for sitt blå fargespill og eksporteres til hele verden.'
+      },
+      {
+        q: '4. Hvor stor andel av Norges landareal er dyrket mark?',
+        options: ['Omtrent 40 %', 'Omtrent 25 %', 'Kun 3 %', 'Over 50 %'],
+        correct: 2,
+        feedback: 'Riktig! Kun 3 % av Norge er dyrket mark, noe som gjør vern av matjord ekstra viktig.'
+      }
+    ];
+
+    const quizContainer = document.getElementById('quiz-container');
+    const quizScoreEl = document.getElementById('quiz-score');
+    const answeredState = {};
+
+    QUIZ_QUESTIONS.forEach((item, idx) => {
+      const block = document.createElement('div');
+      block.className = 'space-y-2.5';
+      block.innerHTML = `
+        <p class="font-semibold text-stone-900 text-sm sm:text-base">${item.q}</p>
+        <div class="space-y-2">
+          ${item.options.map((opt, optIdx) => `
+            <button type="button" data-opt="${optIdx}" class="quiz-opt w-full text-left px-4 py-2.5 rounded-xl border border-stone-200 bg-stone-50/70 hover:bg-stone-100 text-sm text-stone-800 transition-colors">
+              ${opt}
+            </button>
+          `).join('')}
+        </div>
+        <p class="quiz-feedback hidden text-xs sm:text-sm rounded-lg px-3.5 py-2.5"></p>
+      `;
+      quizContainer.appendChild(block);
+
+      const opts = block.querySelectorAll('.quiz-opt');
+      const feedbackEl = block.querySelector('.quiz-feedback');
+      opts.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const chosen = Number(btn.dataset.opt);
+          const isCorrect = chosen === item.correct;
+          answeredState[idx] = isCorrect;
+          opts.forEach((o, i) => {
+            o.classList.remove('border-nordic-600', 'bg-nordic-50', 'border-red-400', 'bg-red-50', 'font-medium');
+            if (i === item.correct) o.classList.add('border-nordic-600', 'bg-nordic-50', 'font-medium');
+            else if (i === chosen && !isCorrect) o.classList.add('border-red-400', 'bg-red-50');
+          });
+          feedbackEl.classList.remove('hidden', 'bg-nordic-50', 'text-nordic-900', 'bg-red-50', 'text-red-900');
+          if (isCorrect) {
+            feedbackEl.classList.add('bg-nordic-50', 'text-nordic-900');
+            feedbackEl.textContent = item.feedback;
+          } else {
+            feedbackEl.classList.add('bg-red-50', 'text-red-900');
+            feedbackEl.textContent = 'Ikke helt riktig. Se det grønne alternativet over.';
+          }
+          const score = Object.values(answeredState).filter(Boolean).length;
+          quizScoreEl.textContent = `${score} / ${QUIZ_QUESTIONS.length} riktig`;
+        });
+      });
+    });
+
+    const desktopNavList = document.getElementById('desktop-nav-list');
+    const mobileNavList = document.getElementById('mobile-nav-list');
+    mobileNavList.innerHTML = desktopNavList.innerHTML + `
+      <li class="pt-3 mt-3 border-t border-stone-200 space-y-1.5">
+        <button type="button" onclick="window.print()" class="w-full text-left px-3 py-2 rounded-lg bg-nordic-700 text-white font-semibold">📄 Last ned som PDF</button>
+        <a href="index.html" class="block px-3 py-2 rounded-lg bg-stone-900 text-white font-medium">🌳 Kunnskapstreet</a>
+        <a href="urfolk.html" class="block px-3 py-2 rounded-lg text-nordic-700 font-medium hover:bg-nordic-50">1. Urfolk</a>
+        <a href="samenes-hjemland.html" class="block px-3 py-2 rounded-lg text-nordic-700 font-medium hover:bg-nordic-50">2. Samenes hjemland</a>
+        <a href="mineraler.html" class="block px-3 py-2 rounded-lg text-nordic-700 font-medium hover:bg-nordic-50">3. Mineraler</a>
+      </li>
+    `;
+
+    const allNavLinks = document.querySelectorAll('.nav-link');
+    const sectionIds = Array.from(document.querySelectorAll('#desktop-nav-list .nav-link')).map(a => a.dataset.target);
+    const sections = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
+
+    function setActiveLink(id) {
+      allNavLinks.forEach(link => {
+        const isMatch = link.dataset.target === id;
+        if (isMatch) {
+          link.classList.add('bg-nordic-50', 'text-nordic-800', 'font-semibold');
+          link.classList.remove('text-stone-600');
+        } else {
+          link.classList.remove('bg-nordic-50', 'text-nordic-800', 'font-semibold');
+          link.classList.add('text-stone-600');
+        }
+      });
+    }
+
+    function updateScrollSpy() {
+      const scrollPos = window.scrollY + 140;
+      let currentId = sections[0]?.id;
+      for (const sec of sections) {
+        if (sec.offsetTop <= scrollPos) currentId = sec.id;
+      }
+      if (currentId) setActiveLink(currentId);
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? Math.min(100, Math.max(0, (window.scrollY / docHeight) * 100)) : 0;
+      document.getElementById('reading-progress').style.width = `${progress}%`;
+    }
+
+    window.addEventListener('scroll', updateScrollSpy, { passive: true });
+    updateScrollSpy();
+
+    const mobileDrawer = document.getElementById('mobile-drawer');
+    const openDrawer = () => mobileDrawer.classList.remove('hidden');
+    const closeDrawer = () => mobileDrawer.classList.add('hidden');
+    document.getElementById('mobile-menu-btn').addEventListener('click', openDrawer);
+    document.getElementById('mobile-drawer-close').addEventListener('click', closeDrawer);
+    document.getElementById('mobile-drawer-backdrop').addEventListener('click', closeDrawer);
+    mobileNavList.querySelectorAll('a').forEach(a => a.addEventListener('click', closeDrawer));
+
+    if (new URLSearchParams(window.location.search).get('print') === '1') {
+      window.addEventListener('load', () => setTimeout(() => window.print(), 300));
+    }
+  </script>
+</body>
+</html>
