@@ -231,13 +231,13 @@
 
     return `
       <div class="flex items-center justify-between gap-2 pb-3 mb-3 border-b border-stone-200">
-        <div class="flex items-center gap-2.5 min-w-0">
+        <a href="index.html" class="flex items-center gap-2.5 min-w-0 group" title="Til startsiden">
           <div class="sg-brand-badge w-9 h-9 rounded-xl font-bold text-sm flex items-center justify-center tracking-tight shrink-0">NN</div>
           <div class="min-w-0">
-            <span class="text-sm font-bold text-stone-900 block truncate leading-tight">Nils sin geografibok</span>
+            <span class="text-sm font-bold text-stone-900 block truncate leading-tight group-hover:underline decoration-teal-500/60 underline-offset-2">Nils sin geografibok</span>
             <span class="text-[10px] font-semibold uppercase tracking-widest text-stone-500 block mt-0.5">Læringsplattform</span>
           </div>
-        </div>
+        </a>
         <div class="flex items-center gap-1 shrink-0">
           <button type="button" onclick="toggleClassicTheme()" title="Bytt mørk/lys modus" class="theme-toggle-btn w-8 h-8 rounded-lg border border-stone-200 flex items-center justify-center text-sm hover:bg-stone-100">🌙</button>
           ${isMobile ? `<button id="mobile-drawer-close" type="button" aria-label="Lukk meny" class="w-8 h-8 rounded-lg border border-stone-200 flex items-center justify-center text-stone-500 hover:bg-stone-100">
@@ -263,13 +263,16 @@
       <div class="mt-4 pt-3.5 border-t border-stone-200 space-y-2">
         <p class="text-[10px] font-semibold uppercase tracking-widest text-stone-500 px-1">Visning &amp; verktøy</p>
         <div class="grid grid-cols-2 gap-1.5">
-          <a href="index.html" class="flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-lg bg-stone-900 hover:bg-stone-800 text-xs font-medium text-white transition-colors">
+          <a href="kunnskapstre.html" class="flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-lg bg-stone-900 hover:bg-stone-800 text-xs font-medium text-white transition-colors">
             <span>🌳 Kunnskapstre</span>
           </a>
           <button type="button" onclick="window.print()" class="flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-lg bg-nordic-700 hover:bg-nordic-800 text-xs font-semibold text-white transition-colors">
             <span>📄 PDF</span>
           </button>
         </div>
+        <a href="index.html" class="flex items-center justify-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-stone-200 hover:bg-stone-100 text-xs font-medium text-stone-700 transition-colors">
+          <span>🏠 Startside</span>
+        </a>
       </div>
     `;
   }
