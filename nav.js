@@ -73,6 +73,28 @@
           ]
         }
       ]
+    },
+    {
+      num: '4',
+      title: 'Velstand',
+      href: 'velstand.html',
+      parts: [
+        {
+          title: '4.1 Hvorfor er vi rike i Norge?',
+          href: 'velstand.html',
+          sections: [
+            { id: 'innledning', label: '1. Innledning' },
+            { id: 'rikt-land', label: '2. Hva er et rikt land?' },
+            { id: 'storbritannia', label: '3. Det begynte i Storbritannia' },
+            { id: 'norge-kopierte', label: '4. Britisk teknologi & toll' },
+            { id: 'eksportindustri', label: '5. Eksportindustri & fisk' },
+            { id: 'vannkraft-og-industri', label: '6. Vannkraft & Telemark' },
+            { id: 'aktiviteter', label: '7. Test deg selv & diskusjon' },
+            { id: 'ordliste', label: '8. Sammendrag & Ordliste' },
+            { id: 'kilder', label: '9. Kilder' }
+          ]
+        }
+      ]
     }
   ];
 

@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="nb" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Velstand: Hvorfor er vi rike i Norge? – Samfunnsgeografi</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,600;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            serif: ['Source Serif 4', 'Georgia', 'serif'],
+          },
+          colors: {
+            nordic: {
+              50: '#f4f7f6',
+              100: '#e3ebe8',
+              200: '#c6d8d2',
+              600: '#1f6f66',
+              700: '#185952',
+              800: '#154742',
+              900: '#123a36',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #fafaf9;
+      color: #1c1917;
+      font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    }
+    .scroll-mt-header { scroll-margin-top: 2rem; }
+    .glossary-term {
+      font-weight: 700;
+      color: #185952;
+      border-bottom: 1.5px dotted #1f6f66;
+      padding: 0 2px;
+      border-radius: 3px;
+      transition: background-color 150ms ease, color 150ms ease;
+      cursor: help;
+      text-align: left;
+    }
+    .glossary-term:hover,
+    .glossary-term:focus-visible {
+      background-color: #e3ebe8;
+      color: #123a36;
+      outline: none;
+    }
+    #glossary-tooltip { transition: opacity 150ms ease, transform 150ms ease; }
+    #glossary-tooltip.hidden-tooltip { opacity: 0; pointer-events: none; transform: translateY(4px); }
+    #glossary-tooltip.visible-tooltip { opacity: 1; pointer-events: auto; transform: translateY(0); }
+    @media print {
+      aside, header, #mobile-drawer, #reading-progress, #glossary-tooltip, .no-print { display: none !important; }
+      body { background: #fff !important; color: #000 !important; }
+      main { max-width: 100% !important; }
+      section { break-inside: avoid-page; }
+    }
+    html.dark-mode body { background-color: #0b111e !important; color: #e2e8f0 !important; }
+    html.dark-mode header, html.dark-mode aside > div, html.dark-mode #mobile-drawer nav { background-color: #111827 !important; border-color: rgba(148,163,184,0.18) !important; }
+    html.dark-mode .bg-white { background-color: #111827 !important; border-color: rgba(148,163,184,0.18) !important; }
+    html.dark-mode .bg-stone-50, html.dark-mode .bg-stone-100, html.dark-mode .bg-stone-100\/80 { background-color: #1e293b !important; border-color: rgba(148,163,184,0.18) !important; }
+    html.dark-mode .bg-nordic-50, html.dark-mode .bg-nordic-50\/70 { background-color: rgba(16,185,129,0.1) !important; border-color: rgba(16,185,129,0.28) !important; }
+    html.dark-mode .bg-amber-50, html.dark-mode .bg-amber-50\/60, html.dark-mode .bg-amber-50\/70 { background-color: rgba(245,158,11,0.1) !important; border-color: rgba(245,158,11,0.28) !important; }
+    html.dark-mode .bg-emerald-50\/70 { background-color: rgba(16,185,129,0.1) !important; border-color: rgba(16,185,129,0.28) !important; }
+    html.dark-mode .text-stone-900, html.dark-mode .text-stone-800 { color: #f1f5f9 !important; }
+    html.dark-mode .text-stone-700, html.dark-mode .text-stone-600 { color: #cbd5e1 !important; }
+    html.dark-mode .text-stone-500 { color: #94a3b8 !important; }
+    html.dark-mode .text-nordic-900, html.dark-mode .text-nordic-800, html.dark-mode .text-nordic-700 { color: #6ee7b7 !important; }
+    html.dark-mode .text-amber-950, html.dark-mode .text-amber-950\/90, html.dark-mode .text-amber-900 { color: #fde68a !important; }
+    html.dark-mode .glossary-term { color: #34d399 !important; border-bottom-color: #10b981 !important; }
+    html.dark-mode .glossary-term:hover { background-color: rgba(16,185,129,0.18) !important; }
+    html.dark-mode .border-stone-200, html.dark-mode .border-stone-200\/80, html.dark-mode .border-stone-200\/90 { border-color: rgba(148,163,184,0.18) !important; }
+  </style>
+</head>
+<body class="antialiased selection:bg-nordic-100 selection:text-nordic-900">
+
+  <!-- Top reading progress bar -->
+  <div class="fixed top-0 left-0 right-0 h-1 bg-stone-200 z-50">
+    <div id="reading-progress" class="h-full bg-nordic-600 transition-all duration-150" style="width: 0%"></div>
+  </div>
+
+  <!-- Mobile Header -->
+  <header class="lg:hidden sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-stone-200 px-4 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-lg bg-teal-400 text-stone-900 font-bold text-xs flex items-center justify-center tracking-tight shrink-0">NN</div>
+      <div>
+        <span class="text-[11px] font-semibold uppercase tracking-wider text-nordic-700 block">Nils sin geografibok · 4.1</span>
+        <span class="font-serif font-bold text-lg text-stone-900 leading-tight block">Velstand</span>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <button type="button" onclick="toggleClassicTheme()" aria-label="Bytt mørk/lys modus" class="theme-toggle-btn p-1.5 rounded-lg border border-stone-300 text-sm hover:bg-stone-100">🌙</button>
+      <button id="mobile-menu-btn" type="button" aria-label="Åpne innholdsmeny" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-stone-300 text-sm font-medium text-stone-700 hover:bg-stone-100">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        Innhold
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div id="mobile-drawer" class="lg:hidden fixed inset-0 z-50 hidden">
+    <div id="mobile-drawer-backdrop" class="absolute inset-0 bg-stone-900/40 backdrop-blur-xs"></div>
+    <nav class="relative w-72 max-w-[85vw] h-full bg-white border-r border-stone-200 p-6 overflow-y-auto shadow-xl"></nav>
+  </div>
+
+  <!-- Main Layout Wrapper -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+    <div class="lg:grid lg:grid-cols-[295px_1fr] lg:gap-12 xl:gap-16 items-start">
+
+      <!-- Left Sticky Sidebar (populated by nav.js) -->
+      <aside class="hidden lg:block sticky top-5"></aside>
+
+      <!-- Main Article Content -->
+      <main class="max-w-3xl space-y-14">
+
+        <!-- 1. Innledning -->
+        <section id="innledning" class="scroll-mt-header">
+          <div class="bg-white border border-stone-200 rounded-2xl p-6 sm:p-10 shadow-xs">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+              <div class="flex flex-wrap items-center gap-2 text-xs font-medium text-nordic-700">
+                <span class="bg-nordic-50 border border-nordic-200/70 px-2.5 py-1 rounded-md">Samfunnsgeografi</span>
+                <span class="text-stone-400">/</span>
+                <span>Kapittel 4.1 · Velstand</span>
+              </div>
+              <button type="button" onclick="window.print()" class="no-print inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-nordic-700 hover:bg-nordic-800 text-xs font-semibold text-white transition-colors shadow-xs">
+                <span>📄 Last ned kapittel som PDF</span>
+              </button>
+            </div>
+
+            <h1 class="font-serif text-4xl sm:text-5xl font-bold tracking-tight text-stone-900 mb-4">Hvorfor er vi rike i Norge?</h1>
+            <p class="text-lg sm:text-xl text-stone-600 leading-relaxed mb-6">
+              Norge regnes i dag som et av verdens rikeste land. Men skyldes det oljen, fisken eller vannkraften? For å forstå velstanden i dag må vi helt tilbake til industrialiseringen i Storbritannia – og til elvene og fabrikkene i Grenland og Telemark.
+            </p>
+
+            <figure class="my-6 overflow-hidden rounded-xl border border-stone-200 bg-stone-50">
+              <img src="Images/velstand-heroya.jpg" alt="Herøya industripark i Porsgrunn i skumringen, speilet i Frierfjorden" class="w-full h-56 sm:h-64 object-cover" />
+              <figcaption class="px-4 py-2.5 text-xs text-stone-500 border-t border-stone-200/80">
+                Herøya i Porsgrunn ved Frierfjorden – et av Norges viktigste tyngdepunkter for kraftkrevende industri siden 1927. Foto: Wikimedia Commons (CC BY-SA 2.0).
+              </figcaption>
+            </figure>
+
+            <p class="text-stone-700 leading-relaxed mb-6">
+              Utviklingen fra et enkelt jordbrukssamfunn til et velstående industrisamfunn handler om hvordan <button type="button" class="glossary-term" data-term="naturressurs">naturressurser</button> kombineres med teknologi, kunnskap og politikk. For elever ved <strong>Hjalmar Johansen videregående skole i Skien</strong> ligger sporene etter denne historien bokstavelig talt rett utenfor skoledøra – fra Laugstol Brug i Skien sentrum til Herøya i Porsgrunn og Rafnes i Bamble.
+            </p>
+
+            <div class="grid sm:grid-cols-2 gap-4 mt-6">
+              <div class="bg-stone-50 border border-stone-200 rounded-xl p-5">
+                <h3 class="text-sm font-semibold uppercase tracking-wider text-stone-800 mb-3">Du skal lære om</h3>
+                <ul class="space-y-2 text-sm text-stone-700">
+                  <li class="flex items-start gap-2"><span class="text-nordic-600 font-bold">•</span><span>hva som kjennetegner et rikt land og begrepet arbeidsproduktivitet</span></li>
+                  <li class="flex items-start gap-2"><span class="text-nordic-600 font-bold">•</span><span>hvordan industrialiseringen startet i Storbritannia og spredte seg</span></li>
+                  <li class="flex items-start gap-2"><span class="text-nordic-600 font-bold">•</span><span>hvordan norsk økonomi og industri utviklet seg fra 1800-tallet til i dag</span></li>
+                  <li class="flex items-start gap-2"><span class="text-nordic-600 font-bold">•</span><span>hvordan vannkraft og industri formet Skien, Porsgrunn, Bamble og Telemark</span></li>
+                </ul>
+              </div>
+
+              <div class="bg-amber-50/70 border border-amber-200 rounded-xl p-5">
+                <h3 class="text-sm font-semibold uppercase tracking-wider text-amber-900 mb-3">Tenk over</h3>
+                <ul class="space-y-2 text-sm text-amber-950/90">
+                  <li class="flex items-start gap-2"><span class="font-bold">1.</span><span>Hva mener du gjør et land rikt – høye inntekter, trygge jobber eller tilgang på velferd?</span></li>
+                  <li class="flex items-start gap-2"><span class="font-bold">2.</span><span>Hvorfor tror du at Norge var et rikt land allerede før vi fant olje i Nordsjøen?</span></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. Hva er et rikt land? -->
+        <section id="rikt-land" class="scroll-mt-header space-y-6">
+          <div class="border-l-4 border-nordic-600 pl-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-nordic-700">Del 1</span>
+            <h2 class="font-serif text-3xl font-bold text-stone-900 mt-1">Hva er et rikt land?</h2>
+          </div>
+
+          <div class="bg-white border border-stone-200 rounded-xl p-5 shadow-xs">
+            <p class="text-xs font-bold uppercase tracking-wider text-stone-500 mb-1.5">Kort fortalt</p>
+            <p class="text-stone-800 leading-relaxed">
+              At et land er rikt, kan ikke bare forklares med naturressurser. <button type="button" class="glossary-term" data-term="arbeidsproduktivitet">Arbeidsproduktiviteten</button> – hvor store verdier man klarer å skape per person og per time – er avgjørende. Land med industriteknologi skaper langt større verdier enn land som er avhengige av håndverksproduksjon.
+            </p>
+          </div>
+
+          <div class="space-y-4 text-stone-700 leading-relaxed">
+            <h3 class="font-serif text-xl font-bold text-stone-900">Ligger svaret i naturressursene?</h3>
+            <p>
+              Når vi skal forklare hvorfor Norge er rikt, nevner mange olje, gass og fisk – som i dag er Norges viktigste eksportvarer (<a href="ressurser.html#innledning" class="underline decoration-nordic-600/60 hover:text-nordic-700 font-medium">se kapittel 3.1 om naturressurser →</a>). Men dersom vi definerer et rikt land som et samfunn der nesten alle har nok mat, varme klær, bolig med innlagt vann og kloakk, helsestell og mulighet til å dra på ferie, kunne Norge beskrives som et rikt land allerede på <strong>1960-tallet</strong> – før den første oljekrona kom inn på statsbudsjettet i 1975.
+            </p>
+            <p>
+              Det viser at det ikke er naturressurser i seg selv som skaper velstand, men hvordan de kombineres med <button type="button" class="glossary-term" data-term="menneskelige-ressurser">menneskelige ressurser</button> – altså kunnskap, utdanning og arbeidsevne. Flere av verdens fattigste land, som <strong>Den demokratiske republikken Kongo</strong>, har enorme mineralressurser (blant annet kobolt til batterier), men lever likevel under svært krevende levekår.
+            </p>
+          </div>
+
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div class="bg-white border border-stone-200 rounded-xl p-5 space-y-2">
+              <p class="text-xs font-bold uppercase tracking-wider text-nordic-700">FN · Human Development Index (HDI)</p>
+              <p class="font-serif text-2xl font-bold text-stone-900">2. plass i verden</p>
+              <p class="text-xs text-stone-600 leading-relaxed">
+                FNs <button type="button" class="glossary-term" data-term="hdi">HDI</button> måler forventet levealder, utdanningsnivå og inntekt per innbygger. Norge ligger helt i verdenstoppen sammen med Island og Sveits.
+              </p>
+            </div>
+            <div class="bg-white border border-stone-200 rounded-xl p-5 space-y-2">
+              <p class="text-xs font-bold uppercase tracking-wider text-nordic-700">SSB · Verdiskaping</p>
+              <p class="font-serif text-2xl font-bold text-stone-900">&gt; 50 % over EU-snittet</p>
+              <p class="text-xs text-stone-600 leading-relaxed">
+                Statistisk sentralbyrå viser at Norges BNP per innbygger ligger langt over snittet i EU, drevet av både høy produktivitet i fastlandsøkonomien og olje- og gassproduksjon.
+              </p>
+            </div>
+          </div>
+
+          <div class="space-y-4 text-stone-700 leading-relaxed">
+            <h3 class="font-serif text-xl font-bold text-stone-900">Industrialisering og arbeidsproduktivitet</h3>
+            <p>
+              Forskjellen på rike og fattige land handler ikke om hvor hardt folk jobber. En arbeider som syr fotballer for hånd eller plukker teblader i høyt tempo, jobber svært hardt – men med enkle redskaper skapes små verdier per time. Med <button type="button" class="glossary-term" data-term="teknologi">teknologi</button> og maskiner drevet av mekanisk energi (<button type="button" class="glossary-term" data-term="industri">industri</button>) kan de samme menneskene på samme antall arbeidstimer produsere mangedobbelt mer enn i <button type="button" class="glossary-term" data-term="handverk">håndverk</button>.
+            </p>
+            <p>
+              Rike, industrialiserte land kalles ofte <button type="button" class="glossary-term" data-term="i-land">industriland (i-land)</button>, mens land med lavere industrialisering omtales som <button type="button" class="glossary-term" data-term="u-land">utviklingsland (u-land)</button>. Samtidig er disse begrepene omstridte: mange land faller mellom kategoriene (som Kina eller Brasil), og «u-land» kan gi forenklede forestillinger om at alle disse landene er like eller styrt likt.
+            </p>
+          </div>
+
+          <div class="bg-nordic-50/70 border border-nordic-200 rounded-xl p-4 text-xs sm:text-sm text-nordic-900">
+            <p class="font-bold uppercase tracking-wider text-nordic-800 text-[11px] mb-1">⚡ Super-sammendrag · Hva er et rikt land?</p>
+            <p>Norge var rikt allerede før oljen fordi maskiner og teknologi økte arbeidsproduktiviteten. Naturressurser skaper bare varig velstand når de kombineres med kunnskap, teknologi og menneskelige ressurser.</p>
+          </div>
+        </section>
+
+        <!-- 3. Det begynte i Storbritannia -->
+        <section id="storbritannia" class="scroll-mt-header space-y-6">
+          <div class="border-l-4 border-nordic-600 pl-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-nordic-700">Del 2</span>
+            <h2 class="font-serif text-3xl font-bold text-stone-900 mt-1">Det begynte i Storbritannia</h2>
+          </div>
+
+          <div class="bg-white border border-stone-200 rounded-xl p-5 shadow-xs">
+            <p class="text-xs font-bold uppercase tracking-wider text-stone-500 mb-1.5">Kort fortalt</p>
+            <p class="text-stone-800 leading-relaxed">
+              Storbritannia innførte importforbud mot indiske bomullsstoffer for å beskytte egen tekstilindustri. Handelsmenn importerte i stedet råbomull og utviklet maskiner for å spinne og veve raskere – slik startet den industrielle revolusjonen på 1700-tallet.
+            </p>
+          </div>
+
+          <div class="space-y-4 text-stone-700 leading-relaxed">
+            <p>
+              På 1600- og 1700-tallet hadde India (under Mogulriket) verdens mest konkurransedyktige bomullsstoffer, produsert med dyktig håndverk. Da britiske handelsmenn importerte disse lette stoffene til Europa, stupte salget for britiske ullprodusenter. Etter protester fra ullnæringen vedtok Parlamentet tidlig på 1700-tallet et forbud mot å importere ferdige bomullsstoffer fra India – et klassisk eksempel på <button type="button" class="glossary-term" data-term="proteksjonisme">proteksjonisme</button>.
+            </p>
+            <p>
+              Forbudet gjaldt derimot ikke <strong>råbomull</strong>. Britiske kjøpmenn begynte å importere råbomull og fikk spinnere og vevere i Storbritannia til å lage stoffene selv. Fordi arbeidskraften var dyrere og mindre effektiv på bomull enn i India, lønte det seg å investere i nye oppfinnelser og maskiner (som vanndrevne spinnemaskiner og mekaniske vevstoler). Først solgte fabrikkene bare til det britiske <button type="button" class="glossary-term" data-term="hjemmemarked">hjemmemarkedet</button>, men mot slutten av 1700-tallet var de britiske maskinvaren så billige at de utkonkurrerte indisk håndverk globalt.
+            </p>
+            <p>
+              For å beholde forspranget innførte Storbritannia eksportforbud på maskiner. Men i <strong>1798</strong> klarte en ingeniør å smugle ut tekniske tegninger til dagens Belgia, og teknologien spredte seg gradvis videre i Vest-Europa.
+            </p>
+          </div>
+
+          <div class="bg-nordic-50/70 border border-nordic-200 rounded-xl p-4 text-xs sm:text-sm text-nordic-900">
+            <p class="font-bold uppercase tracking-wider text-nordic-800 text-[11px] mb-1">⚡ Super-sammendrag · Starten i Storbritannia</p>
+            <p>Britisk proteksjonisme mot indisk bomull ga grobunn for maskinell tekstilproduksjon hjemme. Smuglede tegninger spredte industriteknologien til Belgia og resten av Vest-Europa.</p>
+          </div>
+        </section>
+
+        <!-- 4. Vi kopierte britisk teknologi og politikk -->
+        <section id="norge-kopierte" class="scroll-mt-header space-y-6">
+          <div class="border-l-4 border-nordic-600 pl-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-nordic-700">Del 3</span>
+            <h2 class="font-serif text-3xl font-bold text-stone-900 mt-1">Vi kopierte britisk teknologi og politikk</h2>
+          </div>
+
+          <div class="bg-white border border-stone-200 rounded-xl p-5 shadow-xs">
+            <p class="text-xs font-bold uppercase tracking-wider text-stone-500 mb-1.5">Kort fortalt</p>
+            <p class="text-stone-800 leading-relaxed">
+              Geografisk nærhet og tette handelsbånd til Storbritannia gjorde at Norge kom tidlig i gang med industri på 1840-tallet. Norge brukte høy <button type="button" class="glossary-term" data-term="toll">toll</button> på ferdige varer og lav toll på råvarer for å bygge opp egen industri.
+            </p>
+          </div>
+
+          <figure class="overflow-hidden rounded-xl border border-stone-200 bg-white">
+            <img src="Images/velstand-nydalen.jpg" alt="Historisk fotografi av Nydalens Compagnie langs Akerselva i Oslo" class="w-full h-56 sm:h-64 object-cover" />
+            <figcaption class="px-4 py-2 text-xs text-stone-500 border-t border-stone-200/80">
+              Nydalens Compagnie ved Akerselva i Oslo, grunnlagt i 1845 av Adam Hiorth med britisk maskinteknologi og engelske fagfolk. Foto: Nasjonalbiblioteket / Wikimedia Commons (Public Domain).
+            </figcaption>
+          </figure>
+
+          <div class="space-y-4 text-stone-700 leading-relaxed">
+            <p>
+              Kort tid etter at Storbritannia opphevet eksportforbudet på maskiner, ble de første fabrikkene etablert i Norge på midten av 1840-tallet. Siden 1600-tallet hadde britene kjøpt store mengder norsk trelast, noe som skapte tette personlige og økonomiske bånd. Da <strong>Adam Hiorth</strong> grunnla <strong>Nydalens Compagnie</strong> i 1845, reiste han til Storbritannia, kjøpte maskiner og tok med seg britiske fagfolk (som spinnerimester Hargreaves Jameson) til Norge. I 1895 hadde bedriften 1 000 ansatte og var landets største industriarbeidsplass.
+            </p>
+            <p>
+              Samtidig kopierte Norge den britiske oppskriften med <button type="button" class="glossary-term" data-term="proteksjonisme">proteksjonisme</button>: høy toll på ferdige britiske tekstiler, og lav toll på råbomull. Det gjorde det lønnsomt å produsere i Norge. Da tollen gradvis ble fjernet etter andre verdenskrig (til fordel for frihandel), ble derimot de fleste norske tekstilfabrikkene utkonkurrert og nedlagt.
+            </p>
+            <p>
+              Likevel tok bred velstand tid. På slutten av 1800-tallet var industrien fortsatt konsentrert rundt Oslo og elvene på Østlandet, og arbeidernes kår var tøffe – men den teknologiske og organisatoriske kunnskapen la grunnlaget for neste bølge.
+            </p>
+          </div>
+
+          <!-- Lokal Telemark / Skien kobling -->
+          <div class="bg-nordic-50/70 border border-nordic-200 rounded-2xl p-6 space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-nordic-800 bg-nordic-100 px-3 py-1 rounded-full">
+                Lokalt perspektiv · Skien &amp; Telemark
+              </span>
+              <span class="text-xs font-medium text-nordic-700">Rett ved Hjalmar Johansen vgs</span>
+            </div>
+            <h3 class="font-serif text-xl font-bold text-stone-900">Trelast, Klosterfossen og veien mot moderne industri</h3>
+            <p class="text-sm text-stone-700 leading-relaxed">
+              Grenland var tidlig en del av denne britisk-norske handelen. Fra 1600- og 1700-tallet ble enorme mengder tømmer fløtet ned Telemarksvassdraget til sagbrukene ved <strong>Klosterfossen</strong> og <strong>Skien</strong> og skipet ut til Storbritannia og Nederland. På 1870-tallet ble trelasten videreforedlet til tremasse og papir ved blant annet <strong>Laugstol Brug (1873)</strong> og senere <strong>Union Co.</strong> på Klosterøya – bare noen minutters gange fra der <strong>Hjalmar Johansen videregående skole</strong> ligger i dag.
+            </p>
+          </div>
+
+          <div class="bg-nordic-50/70 border border-nordic-200 rounded-xl p-4 text-xs sm:text-sm text-nordic-900">
+            <p class="font-bold uppercase tracking-wider text-nordic-800 text-[11px] mb-1">⚡ Super-sammendrag · Tidlig norsk industri</p>
+            <p>Norge kopierte både maskiner og tollbeskyttelse fra Storbritannia på 1840-tallet. Trelasthandel langs kysten og i Telemark gjorde overgangen raskere og bygget viktig industrikompetanse.</p>
+          </div>
+        </section>
+
+        <!-- 5. Naturressursenes betydning for eksport -->
+        <section id="eksportindustri" class="scroll-mt-header space-y-6">
+          <div class="border-l-4 border-nordic-600 pl-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-nordic-700">Del 4</span>
+            <h2 class="font-serif text-3xl font-bold text-stone-900 mt-1">Naturressursenes betydning for eksport</h2>
+          </div>
+
+          <div class="bg-white border border-stone-200 rounded-xl p-5 shadow-xs">
+            <p class="text-xs font-bold uppercase tracking-wider text-stone-500 mb-1.5">Kort fortalt</p>
+            <p class="text-stone-800 leading-relaxed">
+              Rundt 1960 produserte Norge de fleste hverdagsvarene selv bak høye tollmurer, men utover 1900-tallet ble <button type="button" class="glossary-term" data-term="eksportindustri">eksportindustri</button> basert på norske naturressurser avgjørende – fra tørrfisk og Stavanger-sardiner til moderne lakseoppdrett.
+            </p>
+          </div>
+
+          <figure class="overflow-hidden rounded-xl border border-stone-200 bg-white">
+            <img src="Images/velstand-torrfisk.jpg" alt="Tørrfisk på hjell i Lofoten mot blå himmel" class="w-full h-52 sm:h-60 object-cover" />
+            <figcaption class="px-4 py-2 text-xs text-stone-500 border-t border-stone-200/80">
+              Tørrfisk i Lofoten. Allerede på 1300-tallet utgjorde tørrfisk rundt 80 % av Norges samlede eksport. Foto: Wikimedia Commons (CC BY-SA 2.0).
+            </figcaption>
+          </figure>
+
+          <div class="space-y-4 text-stone-700 leading-relaxed">
+            <p>
+              Eksport basert på naturressurser har røtter lenge før den industrielle revolusjonen. På 1300-tallet utgjorde tørket torsk (<button type="button" class="glossary-term" data-term="torrfisk">tørrfisk</button>) rundt 80 % av Norges eksport. Senere ble sild konservert ved salting og røyking en stor eksportvare. Da silda forsvant fra norskekysten i andre halvdel av 1800-tallet, gikk fiskerne over til småfisken <strong>brisling</strong>.
+            </p>
+            <p>
+              Ved å kombinere en fersk naturressurs med ny europeisk konserveringsteknologi (hermetikkbokser og maskinell pakking rundt år 1900) ble «norske sardiner» en global suksess. <strong>Stavanger</strong> vokste på få tiår til Norges fjerde største by, med over 4 000 sysselsatte i 44 hermetikkfabrikker i 1912.
+            </p>
+            <p>
+              Da kjøleskap og frysere ble vanlig etter krigen, sank etterspørselen etter hermetikk, og hermetikkindustrien forsvant. I stedet vokste moderne fileterings- og fryseanlegg fram – samt <strong>lakseoppdrett</strong> fra 1980-tallet, som i dag står for rundt to tredeler av Norges sjømateksport (<a href="ressurser.html#gronne-ressurser" class="underline decoration-nordic-600/60 hover:text-nordic-700 font-medium">les mer om havbruk og villfisk i kapittel 3.1 →</a>).
+            </p>
+          </div>
+
+          <div class="bg-nordic-50/70 border border-nordic-200 rounded-xl p-4 text-xs sm:text-sm text-nordic-900">
+            <p class="font-bold uppercase tracking-wider text-nordic-800 text-[11px] mb-1">⚡ Super-sammendrag · Eksportindustri</p>
+            <p>Norsk eksport har hele tiden tilpasset seg ny teknologi og nye markeder: fra tørrfisk og trelast til hermetisk brisling i Stavanger og høyteknologisk lakseoppdrett i dag.</p>
+          </div>
+        </section>
+
+        <!-- 6. Vannkraft, aluminium og Telemarks-industrien -->
+        <section id="vannkraft-og-industri" class="scroll-mt-header space-y-6">
+          <div class="border-l-4 border-nordic-600 pl-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-nordic-700">Del 5</span>
+            <h2 class="font-serif text-3xl font-bold text-stone-900 mt-1">Vannkraft, aluminium og Telemarks-industrien</h2>
+          </div>
+
+          <div class="bg-white border border-stone-200 rounded-xl p-5 shadow-xs">
+            <p class="text-xs font-bold uppercase tracking-wider text-stone-500 mb-1.5">Kort fortalt</p>
+            <p class="text-stone-800 leading-relaxed">
+              Nedbørrike fjell, bratte fossefall og dyktige ingeniører gjorde Norge til en pioner innen vannkraft på 1880-tallet. Tilgangen på billig, ren elektrisitet la grunnlaget for kunstgjødsel og aluminium – og skapte store <button type="button" class="glossary-term" data-term="hjornesteinsbedrift">hjørnesteinsbedrifter</button> i både Telemark og på Vestlandet.
+            </p>
+          </div>
+
+          <figure class="overflow-hidden rounded-xl border border-stone-200 bg-white">
+            <img src="Images/velstand-vemork.jpg" alt="Vemork vannkraftverk ved Rjukan i Telemark" class="w-full h-56 sm:h-64 object-cover" />
+            <figcaption class="px-4 py-2 text-xs text-stone-500 border-t border-stone-200/80">
+              Vemork kraftstasjon ved Rjukan i Telemark – da Norsk Hydro bygget kraftverket i 1911, var det verdens største vannkraftverk og grunnlaget for kunstgjødseleventyret. Foto: Wikimedia Commons (CC BY-SA 4.0).
+            </figcaption>
+          </figure>
+
+          <div class="space-y-4 text-stone-700 leading-relaxed">
+            <p>
+              Verdens første vannkraftverk kom i drift i Wisconsin og i Hamn på Senja i 1882. Allerede 1. oktober <strong>1885</strong> startet <strong>Laugstol Brug i Skien</strong> det som regnes som Norges første kommersielle elektrisitetsverk med strømsalg til private abonnenter og slusedrift i Telemarkskanalen. I 1891 ble Hammerfest verdens første by med elektrisk gatebelysning fra vannkraft.
+            </p>
+            <p>
+              Det avgjørende spranget kom da ingeniører som hadde studert i Europa, koblet billig fossefallskraft til ny kjemi og metallurgi. I 1905 grunnla <strong>Sam Eyde</strong> og fysikkprofessor <strong>Kristian Birkeland</strong> selskapet <strong>Norsk Hydro</strong> i Telemark (Notodden og Rjukan) for å lage verdens første kunstige nitrogengjødsel av luft og vannkraft.
+            </p>
+          </div>
+
+          <!-- Telemark & Grenland fokus -->
+          <div class="bg-white border border-stone-200 rounded-2xl p-6 space-y-4 shadow-xs">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-nordic-800 bg-nordic-50 border border-nordic-200 px-3 py-1 rounded-full">
+                Telemark &amp; Grenland · Fra 1885 til i dag
+              </span>
+              <span class="text-xs text-stone-500">Skien · Porsgrunn · Bamble</span>
+            </div>
+            <h3 class="font-serif text-xl font-bold text-stone-900">Hvorfor ble Grenland Norges viktigste industriklynge?</h3>
+            <div class="grid sm:grid-cols-3 gap-3 text-xs text-stone-700 leading-relaxed">
+              <div class="bg-stone-50 border border-stone-200 rounded-xl p-4 space-y-1.5">
+                <p class="font-bold text-stone-900">⚡ Skien (1885)</p>
+                <p><strong>Laugstol Brug</strong> ved Bryggevannet/Hjellevannet (nær dagens Hjalmar Johansen vgs) startet Norges første allmenne kraftsalg. Skienselva ga kraft til både papir, tremasse og tidlig industri.</p>
+              </div>
+              <div class="bg-stone-50 border border-stone-200 rounded-xl p-4 space-y-1.5">
+                <p class="font-bold text-stone-900">🏭 Porsgrunn · Herøya (1927)</p>
+                <p>Norsk Hydro flyttet hovedproduksjonen ned til isfri havn ved Frierfjorden. På 1960-tallet jobbet over 6 500 her. I 2004 ble gjødseldelen skilt ut som <strong>Yara</strong>; i dag huser Herøya rundt 90 bedrifter (bl.a. Yara, Eramet, Vianode).</p>
+              </div>
+              <div class="bg-stone-50 border border-stone-200 rounded-xl p-4 space-y-1.5">
+                <p class="font-bold text-stone-900">🛢️ Bamble · Rafnes (1977)</p>
+                <p>Med olje- og gassfunnene i Nordsjøen vokste petrokjemien fram på vestsiden av Frierfjorden (i dag <strong>INEOS Rafnes</strong>), knyttet med rørledninger under fjorden til plastproduksjon på Herøya.</p>
+              </div>
+            </div>
+            <p class="text-xs text-stone-600 leading-relaxed">
+              Samtidig skaper denne tunge industrien dagens klimadilemma i Grenland: industrien står for rundt 20 % av fastlandsutslippene i Norge og trenger enorme mengder ny fornybar kraft (<a href="ressurser.html#paradokset" class="underline decoration-nordic-600/60 hover:text-nordic-700 font-medium">les Grenland-caset i kapittel 3.1 →</a>), mens nye råvarer også finnes rett i nabokommunen på <a href="mineraler.html#fensfeltet" class="underline decoration-nordic-600/60 hover:text-nordic-700 font-medium">Fensfeltet i Nome →</a>.
+            </p>
+          </div>
+
+          <div class="space-y-4 text-stone-700 leading-relaxed">
+            <h3 class="font-serif text-xl font-bold text-stone-900">Høyanger, aluminium og «kabeltrusselen»</h3>
+            <p>
+              På Vestlandet ble vannkraften brukt til å smelte <button type="button" class="glossary-term" data-term="bauksitt">bauksitt</button> (importert fra Brasil) til rent aluminium. I <strong>Høyanger</strong> gikk ingeniørene Sigurd Kloumann og Emil Collett sammen med lokale politikere i 1915 om å bygge både kraftverk, fabrikk, skole og legebolig. I dag produserer 156 ansatte ved Hydro Høyanger rundt 64 000 tonn primæraluminium i året, og Norge er verdens 8. største produsent.
+            </p>
+            <p>
+              Målt per innbygger er det bare Island som produserer mer strøm enn Norge (over fire ganger EU-snittet). Likevel trues denne fordelen av <strong>kabeltrusselen</strong>: Tidligere gikk mye strøm tapt over lange avstander, slik at kraften måtte brukes lokalt. Nye sjøkabler til Europa gjør at strømmen kan eksporteres – noe som gir høyere inntekter for kraftprodusenter, men høyere strømpriser og tøffere konkurranse for hjørnesteinsbedrifter i Høyanger og på Herøya.
+            </p>
+            <p class="text-sm text-stone-600">
+              <em>Husk også baksiden av kraftutbyggingen:</em> Når vassdrag ble demmet opp for å skape velstand i sør og nord, kom det ofte i konflikt med urfolks rettigheter og reindrift – som i <a href="samenes-hjemland.html#alta-aksjonen" class="underline decoration-nordic-600/60 hover:text-nordic-700 font-medium">Alta-aksjonen (kapittel 2) →</a> og senere i <a href="urfolk.html#fosen-saken" class="underline decoration-nordic-600/60 hover:text-nordic-700 font-medium">Fosen-saken (kapittel 1) →</a>.
+            </p>
+          </div>
+
+          <div class="bg-nordic-50/70 border border-nordic-200 rounded-xl p-4 text-xs sm:text-sm text-nordic-900">
+            <p class="font-bold uppercase tracking-wider text-nordic-800 text-[11px] mb-1">⚡ Super-sammendrag · Vannkraft og industri</p>
+            <p>Fra Laugstol Brug i Skien (1885) til Norsk Hydro på Rjukan/Herøya og aluminiumsverket i Høyanger skapte billig vannkraft høyproduktiv eksportindustri og hjørnesteinsbedrifter. Nye strømkabler til Europa utfordrer denne strømprisfordelen i dag.</p>
+          </div>
+        </section>
+
+        <!-- 7. Test deg selv & diskusjon -->
+        <section id="aktiviteter" class="scroll-mt-header space-y-6">
+          <div class="border-l-4 border-nordic-600 pl-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-nordic-700">Del 6</span>
+            <h2 class="font-serif text-3xl font-bold text-stone-900 mt-1">Test deg selv &amp; diskusjon</h2>
+          </div>
+
+          <div class="bg-white border border-stone-200 rounded-2xl p-6 sm:p-8 shadow-xs space-y-6">
+            <div class="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-stone-200">
+              <div>
+                <h3 class="font-serif text-xl font-bold text-stone-900">Flervalgsquiz</h3>
+                <p class="text-xs text-stone-500">Test forståelsen av hvorfor Norge ble et rikt land</p>
+              </div>
+              <span id="quiz-score" class="text-xs font-semibold px-3 py-1 rounded-full bg-nordic-50 text-nordic-800 border border-nordic-200">0 / 5 riktig</span>
+            </div>
+            <div id="quiz-container" class="space-y-6"></div>
+          </div>
+
+          <div class="bg-stone-100/80 border border-stone-200 rounded-2xl p-6 space-y-4">
+            <h3 class="font-serif text-xl font-bold text-stone-900">Diskusjonsoppgaver (Skien, Porsgrunn &amp; Bamble)</h3>
+            <ol class="list-decimal pl-5 space-y-3 text-sm text-stone-700 leading-relaxed">
+              <li><strong>Rikdom før oljen:</strong> Hvorfor kan vi si at Norge var et rikt land allerede på 1960-tallet, selv om oljepengene først kom inn på statsbudsjettet i 1975?</li>
+              <li><strong>Fra Laugstol Brug til Herøya og Rafnes:</strong> Hvordan henger vannkraften i Skien (1885), kunstgjødselen på Herøya (1927) og petrokjemien på Rafnes i Bamble (1977) sammen med hvorfor Grenland har så mange industriarbeidsplasser i dag?</li>
+              <li><strong>Kabeltrusselen og grønn omstilling:</strong> Bør Norge prioritere billig strøm til hjørnesteinsbedrifter som Yara på Herøya og Hydro i Høyanger, eller tjene penger på å eksportere kraft til Europa via sjøkabler?</li>
+            </ol>
+          </div>
+        </section>
+
+        <!-- 8. Sammendrag & Ordliste -->
+        <section id="ordliste" class="scroll-mt-header space-y-6">
+          <div class="border-l-4 border-nordic-600 pl-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-nordic-700">Del 7</span>
+            <h2 class="font-serif text-3xl font-bold text-stone-900 mt-1">Sammendrag &amp; Ordliste</h2>
+          </div>
+
+          <div class="bg-white border border-stone-200 rounded-2xl p-6 space-y-3 text-sm text-stone-700 leading-relaxed">
+            <h3 class="font-serif text-lg font-bold text-stone-900">Hovedlinjer i kapittelet</h3>
+            <p>
+              Velstand skapes av høy <strong>arbeidsproduktivitet</strong> – når mennesker bruker maskiner og teknologi til å skape større verdier per time. Industrialiseringen startet i britisk bomullsindustri på 1700-tallet og spredte seg til Norge på 1840-tallet gjennom nærhet, handel og tollbeskyttelse. Senere ga kombinasjonen av norske naturressurser (fisk, trelast, vannkraft) og ingeniørkunst grunnlaget for eksportindustri og hjørnesteinsbedrifter i hele landet – med Skien, Porsgrunn og Bamble som et av de viktigste eksemplene.
+            </p>
+          </div>
+
+          <div id="glossary-list" class="grid sm:grid-cols-2 gap-4"></div>
+        </section>
+
+        <!-- 9. Kilder -->
+        <section id="kilder" class="scroll-mt-header space-y-4">
+          <div class="border-l-4 border-nordic-600 pl-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-nordic-700">Del 8</span>
+            <h2 class="font-serif text-3xl font-bold text-stone-900 mt-1">Kilder</h2>
+          </div>
+          <div class="bg-white border border-stone-200 rounded-2xl p-6 text-xs sm:text-sm text-stone-700 space-y-2">
+            <ul class="list-disc pl-5 space-y-1.5">
+              <li><strong>Cappelen Damm – Samfunnsgeografi:</strong> Leksjonen <em>«Hvorfor er vi rike i Norge?»</em> (hovedkilde).</li>
+              <li><strong>Store norske leksikon (SNL):</strong> Artikler om <em>Laugstol Brug</em>, <em>Herøya</em>, <em>Norsk Hydro</em>, <em>Yara</em> og <em>INEOS Rafnes</em> – <a href="https://snl.no" target="_blank" rel="noopener noreferrer" class="underline text-nordic-700">snl.no</a></li>
+              <li><strong>NVE (Norges vassdrags- og energidirektorat):</strong> Norsk vannkraft- og elektrisitetshistorie – <a href="https://www.nve.no" target="_blank" rel="noopener noreferrer" class="underline text-nordic-700">nve.no</a></li>
+              <li><strong>Statistisk sentralbyrå (SSB):</strong> Nasjonalregnskap og BNP per innbygger sammenlignet med EU – <a href="https://www.ssb.no" target="_blank" rel="noopener noreferrer" class="underline text-nordic-700">ssb.no</a></li>
+              <li><strong>FN-sambandet / UNDP:</strong> Human Development Index (HDI) – <a href="https://fn.no" target="_blank" rel="noopener noreferrer" class="underline text-nordic-700">fn.no</a></li>
+              <li><strong>Bilder (åpen lisens):</strong> Wikimedia Commons (Herøya CC BY-SA 2.0, Nydalens Compagnie / Nasjonalbiblioteket Public Domain, Lofoten tørrfisk CC BY-SA 2.0, Vemork CC BY-SA 4.0).</li>
+            </ul>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Floating Glossary Tooltip -->
+  <div id="glossary-tooltip" role="tooltip" class="hidden-tooltip fixed z-50 max-w-xs bg-stone-900 text-stone-100 text-xs rounded-xl p-3.5 shadow-xl border border-stone-700/80">
+    <div class="flex items-start justify-between gap-2 mb-1">
+      <span id="tooltip-title" class="font-bold text-teal-300"></span>
+      <button type="button" id="tooltip-close" aria-label="Lukk begrep" class="text-stone-400 hover:text-white leading-none">✕</button>
+    </div>
+    <p id="tooltip-body" class="leading-relaxed text-stone-200"></p>
+  </div>
+
+  <script>
+    // 1. Glossary data
+    const GLOSSARY = {
+      'naturressurs': { title: 'Naturressurs', def: 'Råstoff eller energi som finnes i naturen og som mennesker kan utnytte til produksjon og forbruk, for eksempel fisk, skog, vannkraft, olje og mineraler.' },
+      'menneskelige-ressurser': { title: 'Menneskelige ressurser', def: 'Kunnskapen, utdanningen, kompetansen og arbeidsevnen menneskene i et samfunn har.' },
+      'arbeidsproduktivitet': { title: 'Arbeidsproduktivitet', def: 'Hvor store økonomiske verdier som produseres per arbeidstaker og per arbeidstime.' },
+      'teknologi': { title: 'Teknologi', def: 'Redskaper, maskiner, metoder og kunnskap som brukes for å løse oppgaver og effektivisere produksjon.' },
+      'handverk': { title: 'Håndverk', def: 'Produksjon av varer ved hjelp av enkle håndredskaper uten mekaniske maskiner.' },
+      'industri': { title: 'Industri', def: 'Produksjon av varer ved hjelp av maskiner drevet av en mekanisk energikilde (som damp, vannkraft eller elektrisitet).' },
+      'hdi': { title: 'HDI (Human Development Index)', def: 'FNs indeks for menneskelig utvikling, som måler forventet levealder, utdanningsnivå og bruttonasjonalinntekt per innbygger.' },
+      'i-land': { title: 'Industriland (i-land)', def: 'Betegnelse på rike, høyt industrialiserte land med høy levestandard og produktivitet.' },
+      'u-land': { title: 'Utviklingsland (u-land)', def: 'Betegnelse på land som er mindre industrialiserte og der en større del av befolkningen lever i fattigdom. Begrepet er omstridt fordi det forenkler store forskjeller.' },
+      'proteksjonisme': { title: 'Proteksjonisme', def: 'Handelspolitikk der myndighetene beskytter egne produsenter mot utenlandsk konkurranse gjennom toll, avgifter eller importforbud. Det motsatte er frihandel.' },
+      'hjemmemarked': { title: 'Hjemmemarked', def: 'Kundene og etterspørselen som befinner seg innenfor landets egne grenser.' },
+      'toll': { title: 'Toll', def: 'En avgift som legges på importerte varer når de krysser landegrensen, slik at utenlandske varer blir dyrere enn innenlandske.' },
+      'eksportindustri': { title: 'Eksportindustri', def: 'Industri som i hovedsak selger varene sine til kunder i utlandet.' },
+      'torrfisk': { title: 'Tørrfisk', def: 'Usaltet torsk som tørkes naturlig på hjell i kald vind, Norges viktigste eksportvare i middelalderen.' },
+      'bauksitt': { title: 'Bauksitt', def: 'Råstoffet som brukes for å framstille rent aluminium. Finnes ikke i Norge, og importeres blant annet fra Brasil.' },
+      'hjornesteinsbedrift': { title: 'Hjørnesteinsbedrift', def: 'En stor bedrift som har avgjørende direkte og indirekte betydning for sysselsetting, tjenestetilbud og bosetting på et sted (f.eks. Hydro i Høyanger eller Yara på Herøya).' }
+    };
+
+    const glossaryListEl = document.getElementById('glossary-list');
+    Object.entries(GLOSSARY).forEach(([key, item]) => {
+      const card = document.createElement('div');
+      card.className = 'bg-white border border-stone-200 rounded-xl p-4 space-y-1';
+      card.innerHTML = `<p class="font-bold text-sm text-nordic-800">${item.title}</p><p class="text-xs text-stone-600 leading-relaxed">${item.def}</p>`;
+      glossaryListEl.appendChild(card);
+    });
+
+    // Tooltip logic
+    const tooltip = document.getElementById('glossary-tooltip');
+    const tooltipTitle = document.getElementById('tooltip-title');
+    const tooltipBody = document.getElementById('tooltip-body');
+    function hideTooltip() {
+      tooltip.classList.remove('visible-tooltip');
+      tooltip.classList.add('hidden-tooltip');
+    }
+    document.getElementById('tooltip-close').addEventListener('click', hideTooltip);
+    document.querySelectorAll('.glossary-term').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const item = GLOSSARY[btn.dataset.term];
+        if (!item) return;
+        tooltipTitle.textContent = item.title;
+        tooltipBody.textContent = item.def;
+        const rect = btn.getBoundingClientRect();
+        tooltip.style.left = `${Math.min(window.innerWidth - 330, Math.max(12, rect.left))}px`;
+        tooltip.style.top = `${Math.min(window.innerHeight - 140, rect.bottom + 8)}px`;
+        tooltip.classList.remove('hidden-tooltip');
+        tooltip.classList.add('visible-tooltip');
+      });
+    });
+    document.addEventListener('click', hideTooltip);
+
+    // 2. Interactive Quiz
+    const QUIZ_QUESTIONS = [
+      {
+        q: '1. Hva er den viktigste forklaringen på forskjellen mellom rike og fattige land?',
+        options: [
+          'At folk i rike land jobber flere timer om dagen',
+          'Arbeidsproduktiviteten – hvor store verdier som skapes per person og time ved hjelp av teknologi',
+          'At rike land alltid har mer olje og mineraler enn fattige land',
+          'At fattige land mangler arbeidskraft'
+        ],
+        correct: 1,
+        feedback: 'Riktig! Arbeidsproduktivitet – kombinasjonen av menneskelige ressurser, maskiner og teknologi – avgjør hvor store verdier som skapes.'
+      },
+      {
+        q: '2. Hva er det motsatte av proteksjonisme?',
+        options: ['Merkantilisme', 'Tollmur', 'Frihandel', 'Eksportindustri'],
+        correct: 2,
+        feedback: 'Riktig! Proteksjonisme beskytter egen industri med toll eller importforbud, mens frihandel fjerner slike hindringer.'
+      },
+      {
+        q: '3. Hvilken industri startet industrialiseringen i Norge på 1840-tallet?',
+        options: ['Aluminiumsindustri', 'Oljeindustri', 'Bomullstekstilindustri', 'Bilindustri'],
+        correct: 2,
+        feedback: 'Riktig! Nydalens Compagnie (1845) og andre bomullsspinnerier i Oslo-området var Norges første moderne industribedrifter.'
+      },
+      {
+        q: '4. Hva gjorde Laugstol Brug i Skien (1885) historisk i norsk sammenheng?',
+        options: [
+          'Det var Norges første oljeraffineri',
+          'Det var det første vannkraftverket i Norge som solgte strøm til private abonnenter',
+          'Det produserte verdens første aluminium',
+          'Det var verdens største hermetikkfabrikk'
+        ],
+        correct: 1,
+        feedback: 'Riktig! Laugstol Brug i Skien startet 1. oktober 1885 med kommersielt strømsalg til abonnenter og slusedrift i Telemarkskanalen.'
+      },
+      {
+        q: '5. Hva menes med «kabeltrusselen» for norsk kraftkrevende industri i Høyanger og på Herøya?',
+        options: [
+          'At sjøkabler til Europa gjør strømmen billigere i Norge',
+          'At strømeksport via nye sjøkabler kan viske ut Norges tidligere strømprisfordel',
+          'At internettkabler bruker for mye strøm',
+          'At aluminiumskabler ruster i saltvann'
+        ],
+        correct: 1,
+        feedback: 'Riktig! Når strøm enkelt kan sendes til Europa med lavt energitap, stiger norske strømpriser nærmere europeisk nivå.'
+      }
+    ];
+
+    const quizContainer = document.getElementById('quiz-container');
+    const quizScoreEl = document.getElementById('quiz-score');
+    const answeredState = {};
+
+    QUIZ_QUESTIONS.forEach((item, idx) => {
+      const block = document.createElement('div');
+      block.className = 'space-y-2.5';
+      block.innerHTML = `
+        <p class="font-semibold text-sm text-stone-900">${item.q}</p>
+        <div class="grid gap-2">
+          ${item.options.map((opt, i) => `
+            <button type="button" data-opt="${i}" class="quiz-opt text-left text-xs sm:text-sm px-4 py-2.5 rounded-xl border border-stone-200 hover:border-nordic-600/60 transition-colors text-stone-700">${opt}</button>
+          `).join('')}
+        </div>
+        <p class="quiz-feedback hidden text-xs rounded-lg px-3.5 py-2"></p>
+      `;
+      quizContainer.appendChild(block);
+
+      const opts = block.querySelectorAll('.quiz-opt');
+      const feedbackEl = block.querySelector('.quiz-feedback');
+      opts.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const chosen = Number(btn.dataset.opt);
+          const isCorrect = chosen === item.correct;
+          answeredState[idx] = isCorrect;
+          opts.forEach((o, i) => {
+            o.classList.remove('border-nordic-600', 'bg-nordic-50', 'border-red-400', 'bg-red-50');
+            if (i === item.correct) o.classList.add('border-nordic-600', 'bg-nordic-50', 'font-medium');
+            else if (i === chosen && !isCorrect) o.classList.add('border-red-400', 'bg-red-50');
+          });
+          feedbackEl.classList.remove('hidden', 'bg-nordic-50', 'text-nordic-900', 'bg-red-50', 'text-red-900');
+          if (isCorrect) {
+            feedbackEl.classList.add('bg-nordic-50', 'text-nordic-900');
+            feedbackEl.textContent = item.feedback;
+          } else {
+            feedbackEl.classList.add('bg-red-50', 'text-red-900');
+            feedbackEl.textContent = 'Ikke helt riktig. Se det grønne alternativet over og prøv gjerne å lese avsnittet på nytt.';
+          }
+          const score = Object.values(answeredState).filter(Boolean).length;
+          quizScoreEl.textContent = `${score} / ${QUIZ_QUESTIONS.length} riktig`;
+        });
+      });
+    });
+
+    // 3. Mobile drawer & Dark mode
+    const mobileDrawer = document.getElementById('mobile-drawer');
+    const openDrawer = () => mobileDrawer.classList.remove('hidden');
+    const closeDrawer = () => mobileDrawer.classList.add('hidden');
+    document.getElementById('mobile-menu-btn').addEventListener('click', openDrawer);
+    document.getElementById('mobile-drawer-backdrop').addEventListener('click', closeDrawer);
+
+    if (new URLSearchParams(window.location.search).get('print') === '1') {
+      window.addEventListener('load', () => setTimeout(() => window.print(), 300));
+    }
+
+    function applyClassicTheme(dark) {
+      document.documentElement.classList.toggle('dark-mode', dark);
+      document.querySelectorAll('.theme-toggle-btn').forEach(b => b.textContent = dark ? '☀️' : '🌙');
+    }
+    function toggleClassicTheme() {
+      const next = !document.documentElement.classList.contains('dark-mode');
+      localStorage.setItem('samfgeo_classic_dark', next ? '1' : '0');
+      applyClassicTheme(next);
+    }
+    if (localStorage.getItem('samfgeo_classic_dark') === '1') applyClassicTheme(true);
+  </script>
+  <script src="nav.js"></script>
+</body>
+</html>
