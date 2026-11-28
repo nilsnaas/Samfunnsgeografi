@@ -256,7 +256,7 @@
         <a href="index.html" class="flex items-center gap-2.5 min-w-0 group" title="Til startsiden">
           <div class="sg-brand-badge w-9 h-9 rounded-xl font-bold text-sm flex items-center justify-center tracking-tight shrink-0">NN</div>
           <div class="min-w-0">
-            <span class="text-sm font-bold text-stone-900 block truncate leading-tight group-hover:underline decoration-teal-500/60 underline-offset-2">Nils sin geografibok</span>
+            <span class="text-sm font-bold text-stone-900 block truncate leading-tight group-hover:underline decoration-teal-500/60 underline-offset-2">Nils sin samfunnsgeografi</span>
             <span class="text-[10px] font-semibold uppercase tracking-widest text-stone-500 block mt-0.5">Læringsplattform</span>
           </div>
         </a>
