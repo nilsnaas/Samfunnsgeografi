@@ -21,7 +21,7 @@
     },
     {
       num: '2',
-      title: 'Samer i Norge',
+      title: 'Norges urfolk',
       href: 'samenes-hjemland.html',
       sections: [
         { id: 'innledning', label: '1. Innledning' },
