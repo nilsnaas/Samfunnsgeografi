@@ -89,9 +89,10 @@
             { id: 'norge-kopierte', label: '4. Britisk teknologi & toll' },
             { id: 'eksportindustri', label: '5. Eksportindustri & fisk' },
             { id: 'vannkraft-og-industri', label: '6. Vannkraft & Telemark' },
-            { id: 'aktiviteter', label: '7. Test deg selv & diskusjon' },
-            { id: 'ordliste', label: '8. Sammendrag & Ordliste' },
-            { id: 'kilder', label: '9. Kilder' }
+            { id: 'flaks-og-klokt', label: '7. Flaks, kløkt & demokrati' },
+            { id: 'aktiviteter', label: '8. Test deg selv & diskusjon' },
+            { id: 'ordliste', label: '9. Sammendrag & Ordliste' },
+            { id: 'kilder', label: '10. Kilder' }
           ]
         }
       ]
